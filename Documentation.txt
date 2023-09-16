@@ -1,0 +1,38 @@
+(ALL OF THIS TEXT WAS TRANSLATED INDONESIAN TO ENGLISH BY GOOGLE TRANSLATE)
+
+Instructions and rules for use:
+
+	Do not use numbers at the beginning of the name and use characters other than letters, numbers and '_' in the name.
+	This is because the Name entered will be a string name also in the '.slbr' file (found under the "Paths" folder if you have created that file).
+
+	Each path address is always enclosed in double quotes ["..."].
+
+	If you want to use multiple file/folder paths at once, use ["(path)"] in each path address and include a space. For example: ["(path1)" "(path2)"].
+	Warning: If you use this method on a source path, in some cases the destination path must be specified as a folder, not a file, to avoid overwriting and errors.
+
+	Cannot copy selected shortcut files (unless they are under the selected folder) due to the file selection system.
+	This can be overcome by entering the file path manually (remember: lnk = LNK). For example: ["path\cmd.exe.lnk"] ('cmd.exe' is the file name, and '.lnk' is not visible. So be careful when entering it).
+
+Features:
+
+	[...] is used to search for file/folder directories and then delete the previous directory.
+	[+...] is used to search for file/folder directories and add input without deleting the previous directory.
+
+	Since in tkinter you can only select files or folders, we created the options [Select (file)] and [Become (file)] to be able to select files.
+
+Lacks:
+
+	Due to an execution error when converting more than one initial file to one final file, we disabled the [Become(file)] feature if the user entered more than one file/folder path.
+	However, this can still be bypassed because it only makes the file search feature on the [...] and [+...] buttons disabled.
+
+	Due to the complexity of the code (since I'm still a beginner) and bugs, every action the user takes will make the check button unchecked.
+
+	Cannot enter spaces in Name.
+
+	Cannot adjust performance if there are many lists.
+
+	The GUI may seem clunky to some people.
+
+	Haven't tested it on another computer because I only have a laptop (lent by my uncle). The possibility of bugs occurring is very large.
+
+	Very long execution time so it is not suitable for laptops or computers with low processor capabilities
