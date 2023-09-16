@@ -1,0 +1,8 @@
+<p style="text-align: center;">SALBAR v1</p>
+
+With SALBAR, you can copy and move multiple files/folders at once.
+This is the same as creating a batch file in Windows but you can do it easily in SALBAR.
+
+However SALBAR has limitations that I cannot remove. Read Documentation.txt
+
+(ALL OF THIS TEXT WAS TRANSLATED INDONESIAN TO ENGLISH BY GOOGLE TRANSLATE)
