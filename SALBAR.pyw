@@ -465,25 +465,6 @@ calling = nama_{n}_{et}""" #must not to add new line #must 31 lines or contact m
                         teks_compile = my_compile(my_format(teks)) #must in str
                     else:
                         teks_compile = my_format(teks)
-                #for debug
-                    # teks_decompile = my_decompile(teks_compile)
-
-                    #repr help to found difference between teks and teks_decompile
-                    # for n, i, j in zip(enumerate(repr(teks)), repr(teks), repr(teks_decompile)):
-                    #     if i != j:
-                    #         letak_kesalahan = n[0]
-                    #         kesalahan_string1 = i
-                    #         kesalahan_string2 = j
-                    #         print(f"Kesalahan: {letak_kesalahan} \"{kesalahan_string1}\" \"{kesalahan_string2}\"")
-                    # print(teks.lstrip() == teks_decompile.lstrip())
-                    # hi = 0
-                    # for i, j in zip(repr(teks), repr(teks_decompile)): #enumerate() make repr() to not to maks of repr()
-                    #     try:
-                    #         print(f"{hi} {i} , {hi} {j}")
-                    #     except:
-                    #         break
-                    #     else:
-                    #         hi +=1
                 if edit != "edit":
                     if os.path.exists(op):
                         os.remove(op)
