@@ -6,7 +6,7 @@ SALBAR makes it easy for you to copy-paste or move-paste easily.\
 SALBAR can copy or move multiple files/folders at once.
 
 # Requirements:
--Requirements OS: Windows 10 or later.
+-OS: Windows 10 or later.
 
 # Notes:
 -(All this text is translated by Google Translate).\
