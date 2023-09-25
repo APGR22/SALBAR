@@ -9,6 +9,6 @@ However SALBAR has limitations that I cannot remove. Read Documentation.txt
 
 -------------------SALBAR v0.65 Alpha
 
--Update GUI without repeating the process
+-Update GUI without repeating the process (there is a bug generated when compiling by nuitka)
 -Create threads to run multiple processes
 -Added progress bar
