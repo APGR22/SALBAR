@@ -5,9 +5,12 @@ SALBAR is an application to copy or move file/folder with just a few actions.
 SALBAR makes it easy for you to copy-paste or move-paste easily.\
 SALBAR can copy or move multiple files/folders at once.
 
+# Requirements:
+-Requirements OS: Windows 10 or later.
+
 # Notes:
--Requirements OS: Windows 10 or later.\
--(All this text is translated by Google Translate)
+-(All this text is translated by Google Translate).\
+-(For those who want to contribute to writing code) If something still bothers you, it's best not to contribute for a while.\
 \
 \
 \
