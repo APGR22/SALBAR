@@ -15,9 +15,10 @@ limitations under the License."""
 #only for developer
 # from timeit import timeit
 # print(f"Load Time (__start__): {(start_time := timeit())}")
-# from time import time
+from time import time, sleep
 # print(f"Load Time (starttime): {(start_time_time := time())}")
 from tkinter import *
+from tkinter.ttk import Progressbar
 import os
 from pathlib import *
 #import subprocess
@@ -31,6 +32,7 @@ try:
     ada_pekerja = True
 except Exception:
     ada_pekerja = False
+from threading import Thread
 
 if not os.path.isdir("Paths"):
     os.makedirs("Paths")
@@ -53,8 +55,12 @@ warna_teks_tidak_aktif = "#aaaaaa"
 latar_belakang_centang = "#686868"
 latar_belakang_kotak_centang_aktif = "#ffffff"
 latar_belakang_entry = "#565656"
-label_pyi = "#25dafd"
-label_slbr = "#ffea3c"
+label_slbr = "#25dafd"
+label_slbre = "#ffea3c"
+latar_belakang_checkbutton = "#686e61"
+latar_belakang_checkbutton_aktif = "#ffffff"
+teks_checkbutton = "#ffffff"
+teks_checkbutton_aktif = "#000000"
 
 def make_file_icon():
     #bytes python from png file
@@ -92,7 +98,7 @@ jendela_utama.configure(bg=latar_belakang)
 #GUI
 lebar_layar = jendela_utama.winfo_screenwidth()
 tinggi_layar = jendela_utama.winfo_screenheight()
-default_w = 652 #Minimal 552
+default_w = 752 #Minimal 552
 default_h = 480 #Minimal 480
 def if_results_is_else():
     global w, h
@@ -125,6 +131,35 @@ tinggi_centang = 2 #Untuk daftar perintah
 
 ukuran_teks = 10 #hasilnya 9
 font_teks = ("Helvetica", ukuran_teks)
+
+#progress
+jalankan_progress = True
+jendela_progress = Toplevel()
+jendela_progress.resizable(0, 0)
+jendela_progress.grab_set()
+jendela_progress.focus_set()
+progress = Progressbar(jendela_progress, orient=HORIZONTAL, mode='determinate')
+progress.pack(fill=BOTH)
+wp = 250
+hp = 24
+xp = (lebar_layar/2) - (wp/2)
+yp = (tinggi_layar/2) - (hp/2)
+
+jendela_progress.geometry('%dx%d+%d+%d' % (wp, hp, xp, yp))
+
+def kemajuan(n, total_daftar):
+    jendela_progress.deiconify()
+    jendela_progress.grab_set()
+    hitung = (n+1)/total_daftar*100
+    progress["value"] = hitung
+    jendela_progress.update_idletasks()
+    if hitung == 100:
+        global jalankan_progress
+        sleep(0.100)
+        jalankan_progress = False
+        jendela_progress.grab_release()
+        jendela_progress.withdraw()
+
 
 def gaya_tombol(obj, callable, callobj, **pilihan):
     default_fg = '#ffffff'
@@ -185,16 +220,17 @@ def gaya_tombol_cek(obj, var, **pilihan):
     except:
         pass
 
-def gaya_entry(obj, var, *pilihan): #edit == True
+def gaya_entry(obj, var, jendela, *pilihan): #edit == True
     global key
     key = False
     def get_key_backspace(event):
         global key
         key = True
     global pertama_kali
-    if pilihan[1]: #if True (== edit)
+    try:
+        pilihan[1] #if True (== edit)
         pertama_kali = True
-    else:
+    except:
         pertama_kali = False
     daftar_karakter = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
     daftar_angka = "0123456789"
@@ -261,9 +297,12 @@ def gaya_entry(obj, var, *pilihan): #edit == True
         alat.bunyikan_belnya().on()
         key = False
         return False
-    batas_karakter = (jendela_tanya.register(pilihan_karakter), '%S')
-    obj.config(textvariable=var, bg=latar_belakang_entry, fg=warna_teks, font=font_teks, validate="key", validatecommand=batas_karakter)
-    obj.bind("<BackSpace>", get_key_backspace)
+    if pilihan[0] == "password":
+        obj.config(textvariable=var, bg=latar_belakang_entry, fg=warna_teks, font=font_teks)
+    else:
+        batas_karakter = (jendela.register(pilihan_karakter), '%S')
+        obj.config(textvariable=var, bg=latar_belakang_entry, fg=warna_teks, font=font_teks, validate="key", validatecommand=batas_karakter)
+        obj.bind("<BackSpace>", get_key_backspace)
 #
 
 #Get helped from "https://www.youtube.com/watch?v=0WafQCaok6g"
@@ -335,6 +374,7 @@ nama = StringVar()
 direktori = StringVar()
 tujuan = StringVar()
 tipe = StringVar()
+password = StringVar()
 d_f_or_f = IntVar()
 t_f_or_f = IntVar()
 konfirmasi_timpa = IntVar()
@@ -369,19 +409,21 @@ def buat(edit, *argumen_lainnya):
                     e = ".slbre"
                 else:
                     e = ".slbr"
+            et = e.replace(".", "")
             teks = f"""
-global calling, nama_{n}
-def nama_{n}():
+global calling, nama_{n}_{et}
+def nama_{n}_{et}():
+    global fl, cb_{n}_{et}, var{n}_{et}
     def centang():
         fp = r'''{d}'''
         tp = r'''{t}'''
-        if var{n}.get() == 1:
+        if var{n}_{et}.get() == 1:
             fperintah.append(fp)
             tperintah.append(tp)
             snama.append('{n}')
             ntipe.append('{e}')
-            cb_{n}["fg"] = '#000000'
-            cb_{n}["bg"] = '#ffffff'
+            cb_{n}_{et}["fg"] = teks_checkbutton_aktif
+            cb_{n}_{et}["bg"] = latar_belakang_checkbutton_aktif
         else:
             try:
                 fperintah.remove(fp)
@@ -390,17 +432,16 @@ def nama_{n}():
                 ntipe.remove('{e}')
             except:
                 pass
-            cb_{n}["fg"] = '#ffffff'
-            cb_{n}["bg"] = '#686e61'
+            cb_{n}_{et}["fg"] = teks_checkbutton
+            cb_{n}_{et}["bg"] = latar_belakang_checkbutton
 
-    var{n} = IntVar()
+    var{n}_{et} = IntVar()
 
-    global fl
-    cb_{n} = Checkbutton(fl, text='{n}', bg='#686e61', fg='#ffffff', variable=var{n}, onvalue=1, offvalue=0, command=centang, font=font_teks, width=lebar_centang, height=tinggi_centang)
-    global r, c
-    cb_{n}.grid(row=r, sticky='w', pady=1)
+    cb_{n}_{et} = Checkbutton(fl, text='{n}', bg=latar_belakang_checkbutton, fg='#ffffff', variable=var{n}_{et}, onvalue=1, offvalue=0, command=centang, font=font_teks, width=lebar_centang, height=tinggi_centang)
+    global r
+    cb_{n}_{et}.grid(row=r, sticky='w', pady=1)
 
-calling = nama_{n}""" #must not to add new line #must 31 lines or contact me if you want to add or remove rows
+calling = nama_{n}_{et}""" #must not to add new line #must 31 lines or contact me if you want to add or remove rows
             global op, fl, l
             if edit == "edit":
                 op = fr"Paths\{n}{tp}"
@@ -424,6 +465,25 @@ calling = nama_{n}""" #must not to add new line #must 31 lines or contact me if 
                         teks_compile = my_compile(my_format(teks)) #must in str
                     else:
                         teks_compile = my_format(teks)
+                #for debug
+                    # teks_decompile = my_decompile(teks_compile)
+
+                    #repr help to found difference between teks and teks_decompile
+                    # for n, i, j in zip(enumerate(repr(teks)), repr(teks), repr(teks_decompile)):
+                    #     if i != j:
+                    #         letak_kesalahan = n[0]
+                    #         kesalahan_string1 = i
+                    #         kesalahan_string2 = j
+                    #         print(f"Kesalahan: {letak_kesalahan} \"{kesalahan_string1}\" \"{kesalahan_string2}\"")
+                    # print(teks.lstrip() == teks_decompile.lstrip())
+                    # hi = 0
+                    # for i, j in zip(repr(teks), repr(teks_decompile)): #enumerate() make repr() to not to maks of repr()
+                    #     try:
+                    #         print(f"{hi} {i} , {hi} {j}")
+                    #     except:
+                    #         break
+                    #     else:
+                    #         hi +=1
                 if edit != "edit":
                     if os.path.exists(op):
                         os.remove(op)
@@ -442,7 +502,7 @@ calling = nama_{n}""" #must not to add new line #must 31 lines or contact me if 
                 reset_var()
                 jendela_tanya.destroy()
                 if edit == "edit":
-                    perbarui("edit")
+                    perbarui("edit", n, et, argumen_lainnya[0])
             if edit != "edit":
                 if not os.path.exists(op):
                     buat_or_timpa()
@@ -568,7 +628,7 @@ def sbuat(edit): #n == 0, d == 1, t == 2
     tnama = Entry(benama)
     tnama.pack(side="left", fill="both", expand=True)
     tnama.focus_set()
-    gaya_entry(tnama, nama, "name", true_false)
+    gaya_entry(tnama, nama, jendela_tanya, "name", true_false)
     bnama = Label(benama, text="")
     bnama.pack(side="right", fill="y")
     gaya_tombol(bnama, d_file_folder, "n", s_lebar_tombol=0) #Hasilnya 14
@@ -585,7 +645,7 @@ def sbuat(edit): #n == 0, d == 1, t == 2
     bedirektori.pack(padx=10, fill='x', expand=True)
     tdirektori = Entry(bedirektori)
     tdirektori.pack(side="left", fill="both", expand=True)
-    gaya_entry(tdirektori, direktori, "path", true_false)
+    gaya_entry(tdirektori, direktori, jendela_tanya, "path", true_false)
     bdcentang = Checkbutton(bedirektori, text="Select (File)")
     bdcentang.pack(side="right")
     gaya_tombol_cek(bdcentang, d_f_or_f)
@@ -605,7 +665,7 @@ def sbuat(edit): #n == 0, d == 1, t == 2
     betujuan.pack(padx=10, fill='x', expand=True)
     ttujuan = Entry(betujuan)
     ttujuan.pack(side="left", fill="both", expand=True)
-    gaya_entry(ttujuan, tujuan, "path", true_false)
+    gaya_entry(ttujuan, tujuan, jendela_tanya, "path", true_false)
     btcentang = Checkbutton(betujuan, text="Become (File)")
     btcentang.pack(side="right")
     gaya_tombol_cek(btcentang, t_f_or_f)
@@ -655,7 +715,7 @@ def sbuat(edit): #n == 0, d == 1, t == 2
             btcentang["state"] = "normal"
         jendela_tanya.after(200, cek_entry)
     cek_entry()
-    
+
 def sunting_file():
     global jendela_tanya
     if len(fperintah) == 1 or len(tperintah) == 1 or len(snama) == 1:
@@ -723,95 +783,224 @@ def jalankan_perintah(copy_cut):
             message = "You not selected anything"
         )
 
-def utama():
-    bikin_bingkai()
-    global r, c, fl, l, folder_jalur, bingkai, kesalahan, dijalankan
-    r = 0
-    c = 0
+def masukkan_password():
+    jendela_password = Toplevel()
+    jendela_password.grab_set()
+    jendela_password.title("Insert Password")
+    jendela_password.resizable(0,0)
+    jendela_password.configure(bg=latar_belakang)
+    jendela_password.focus_set()
+    #GUI
+    wt = jendela_utama.winfo_width() - 300
+    ht = jendela_utama.winfo_height() - 420
+
+    xt = (lebar_layar/2) - (wt/2)
+    yt = (tinggi_layar/2) - (ht/2)
+
+    jendela_password.geometry('%dx%d+%d+%d' % (wt, ht, xt, yt))
+
+    blpw = Frame(jendela_password, bg=latar_belakang)
+    blpw.pack(padx=10, fill='x', expand=True)
+    tlpw = Label(blpw, text="Password:", bg=latar_belakang, fg=warna_teks)
+    tlpw.pack(fill="x", side="left")
+
+    bepw = Frame(jendela_password, bg=latar_belakang, height=tinggi_tombol)
+    bepw.pack(padx=10, fill='x', expand=True)
+    tpw = Entry(bepw)
+    tpw.pack(side="left", fill="both", expand=True)
+    tpw.focus_set()
+    gaya_entry(tpw, password, jendela_password, "password")
+
+daftar_program = []
+
+def utama(*perbarui: bool):
+    global r, c, fl, l, folder_jalur, bingkai, kesalahan, dijalankan, daftar_program
+    if perbarui:
+        dijalankan = 1
+        jendela_utama.after(500, perbarui_GUI)
+    else:
+        bikin_bingkai()
+        r = 0
+        c = 0
+        kesalahan = []
+        # kesalahan_modifikasi = []
+        folder_jalur = r'Paths'
+        p = sorted(Path(folder_jalur).iterdir(), key=os.path.getctime)
+        l = [] #daftar program yang untuk dijalankan
+        for x in p:
+            p_cache = "".join(str(x))
+            p_cache = p_cache.replace(folder_jalur + "\\", "")
+            l.append(p_cache)
+        fl = Frame(bingkai, bg="#3c4038") #Warna bg harus sama dengan canvas dan bingkai
+        fl.grid()
+        if l != daftar_program:
+            daftar_program.clear()
+            daftar_program = l #perbarui
+
+def perbarui_GUI():
+    global r, c, fl, l, folder_jalur, bingkai, kesalahan, dijalankan, daftar_program, jalankan_progress
     kesalahan = []
-    kesalahan_modifikasi = []
-    folder_jalur = r'Paths'
     p = sorted(Path(folder_jalur).iterdir(), key=os.path.getctime)
-    l = []
+    l = [] #daftar program yang untuk dijalankan
     for x in p:
-        p = "".join(str(x))
-        p = p.replace(folder_jalur + "\\", "")
-        l.append(p)
-    fl = Frame(bingkai, bg="#3c4038") #Warna bg harus sama dengan canvas dan bingkai
-    fl.grid()
-    for p in l:
+        p_cache = "".join(str(x))
+        p_cache = p_cache.replace(folder_jalur + "\\", "")
+        l.append(p_cache)
+    kurangi = False #set as default
+    if dijalankan:
+        daftar_baru = l
+    elif set(daftar_program) > set(l): #perbarui
+        daftar_baru = list(set(daftar_program)-set(l)) #program dikurangi
+        kurangi = True
+    elif set(daftar_program) < set(l): #perbarui
+        daftar_baru = list(set(l)-set(daftar_program)) #program tambahan yang belum dieksekusi
+    else:
+        daftar_baru = []
+    total_daftar = len(daftar_baru)
+    # awal_eksekusi = time()
+    for n, p in enumerate(daftar_baru):
         global calling
         calling = "" #reset to not callable
-        if os.path.isfile(os.path.join(folder_jalur, p)) and ".slbr" in os.path.splitext(p): #.slbr mean SALBAR file
-            try:
-                raw = open(folder_jalur+"\\"+p, "rb").read().decode("utf-8")
-                deformat = my_deformat(raw)
-                exec(compile(deformat, "", "exec")) #lebih mudah untuk berbagi object dibandingkan dengan impor modul
-                calling()
-                Label(fl, text='         SLBR', font=font_teks, bg=latar_belakang_bingkai, fg=label_pyi).grid(column=1,row=r, sticky='nsw', pady=1)
-                r+=1
-            except Exception as error:
-                print(error)
-                kesalahan.append(p)
-        elif os.path.isfile(os.path.join(folder_jalur, p)) and ".slbre" in os.path.splitext(p) and ada_pekerja: #.slbre mean SALBAR file with encrypt
-            try:
-                raw = open(folder_jalur+"\\"+p, "r").read()
-                decompile = my_decompile(raw) #must in str
-                deformat = my_deformat(decompile)
-                exec(compile(deformat, "", "exec")) #lebih mudah untuk berbagi object dibandingkan dengan impor modul
-                calling()
-                Label(fl, text='         SLBRE', font=font_teks, bg=latar_belakang_bingkai, fg=label_slbr).grid(column=1,row=r, sticky='nsw', pady=1)
-                r+=1
-            except Exception as error:
-                kesalahan.append(p)
-                print(error)
-    if dijalankan: #0 == jangan jalankan, 1 == jalankan
-        if kesalahan:
-            kslhn = ""
-            for f in kesalahan:
-                fs = '"'+f+'"'
-                if kslhn:
-                    kslhn += ", "+fs
-                else:
-                    kslhn = fs
-            # print("Error:"+kslhn)
-            if kslhn.find(",") == -1:
-                word = "that"
-                adalah = " is "
-                more_than_one = " "
+        cache_name = os.path.splitext(p)[0]
+        cache_ext = os.path.splitext(p)[1].replace(".", "")
+        if kurangi: #same as bool()
+            # globals()[f"nama_{}"]
+            # globals()[f"cb_{}"]
+            # globals()[f"var{}"]
+            # globals()[f"Label_{}"]
+            globals()[f"cb_{cache_name}_{cache_ext}"].destroy()
+            globals()[f"Label_{cache_name}_{cache_ext}"].destroy()
+            del globals()[f"nama_{cache_name}_{cache_ext}"], globals()[f"cb_{cache_name}_{cache_ext}"], globals()[f"var{cache_name}_{cache_ext}"], globals()[f"Label_{cache_name}_{cache_ext}"]
+        else:
+            if os.path.isfile(os.path.join(folder_jalur, p)) and ".slbr" in os.path.splitext(p): #.slbr mean SALBAR file
+                try:
+                    raw = open(folder_jalur+"\\"+p, "rb").read().decode("utf-8")
+                    deformat = my_deformat(raw)
+                    exec(compile(deformat, "", "exec")) #lebih mudah untuk berbagi object dibandingkan dengan impor modul
+                    calling()
+                    globals()[f"Label_{cache_name}_{cache_ext}"] = Label(fl, text='         SLBR', font=font_teks, bg=latar_belakang_bingkai, fg=label_slbr)
+                    globals()[f"Label_{cache_name}_{cache_ext}"].grid(column=1,row=r, sticky='nsw', pady=1)
+                    r+=1
+                except Exception as error:
+                    print(error)
+                    kesalahan.append(p)
+            elif os.path.isfile(os.path.join(folder_jalur, p)) and ".slbre" in os.path.splitext(p) and ada_pekerja: #.slbre mean SALBAR file with encrypt
+                try:
+                    raw = open(folder_jalur+"\\"+p, "r").read()
+                    decompile = my_decompile(raw) #must in str
+                    deformat = my_deformat(decompile)
+                    exec(compile(deformat, "", "exec")) #lebih mudah untuk berbagi object dibandingkan dengan impor modul
+                    calling()
+                    globals()[f"Label_{cache_name}_{cache_ext}"] = Label(fl, text='         SLBRE', font=font_teks, bg=latar_belakang_bingkai, fg=label_slbre)
+                    globals()[f"Label_{cache_name}_{cache_ext}"].grid(column=1,row=r, sticky='nsw', pady=1)
+                    r+=1
+                except Exception as error:
+                    kesalahan.append(p)
+                    print(error)
+            # if int(time()-awal_eksekusi) > 1:
+            if jalankan_progress:
+                Thread(target=kemajuan, args=(n, total_daftar)).start()
+    if not total_daftar:
+        jendela_progress.grab_release()
+        jendela_progress.withdraw()
+        jalankan_progress = False
+    if kurangi: #must update row
+        for n, i in enumerate(l):
+            cache_name = os.path.splitext(i)[0]
+            cache_ext = os.path.splitext(p)[1].replace(".", "")
+            globals()[f"cb_{cache_name}_{cache_ext}"].grid(row=n)
+            globals()[f"Label_{cache_name}_{cache_ext}"].grid(row=n)
+        r = len(l)
+    if kesalahan:
+        kslhn = ""
+        for f in kesalahan:
+            fs = '"'+f+'"'
+            if kslhn:
+                kslhn += ", "+fs
             else:
-                word = "which"
-                adalah = " are "
-                more_than_one = "s "
-            showerror(
-                title="Error",
-                message="We found the error file"+more_than_one+ word +adalah+ kslhn
-            )
-        if kesalahan_modifikasi:
-            kslhn = ""
-            for f in kesalahan_modifikasi:
-                fs = '"'+f+'"'
-                if kslhn:
-                    kslhn += ", "+fs
-                else:
-                    kslhn = fs
-            # print("Error:"+kslhn)
-            if kslhn.find(",") == -1:
-                word = "that"
-                adalah = " is "
-                more_than_one = " "
-            else:
-                word = "which"
-                adalah = " are "
-                more_than_one = "s "
-            showerror(
-                title="Error",
-                message="We found the modification required file"+more_than_one+ word +adalah+ kslhn
-            )
-    dijalankan = 1
+                kslhn = fs
+        # print("Error:"+kslhn)
+        if kslhn.find(",") == -1:
+            word = "that"
+            adalah = " is "
+            more_than_one = " "
+        else:
+            word = "which"
+            adalah = " are "
+            more_than_one = "s "
+        showerror(
+            title="Error",
+            message="We found the error file"+more_than_one+ word +adalah+ kslhn
+        )
+    if l != daftar_program:
+        daftar_program.clear()
+        daftar_program = l
+    dijalankan = 0
 
-global dijalankan
-dijalankan = 1
+def perbarui_pilihan(obj: list):
+    row_cache = globals()[f"cb_{obj[2]}_{obj[1]}"].grid_info()["row"] #get help from "https://stackoverflow.com/questions/37731654/how-to-retrieve-the-row-and-column-information-of-a-button-and-use-this-to-alter"
+    globals()[f"cb_{obj[2]}_{obj[1]}"].destroy() #hapus yang lama (berupa nama lama)
+    globals()[f"Label_{obj[2]}_{obj[1]}"].destroy() #hapus yang lama (berupa nama lama)
+    del globals()[f"cb_{obj[2]}_{obj[1]}"], globals()[f"Label_{obj[2]}_{obj[1]}"] #menghapus yang lama (berguna jika dalam mode edit dan tidak berguna jika sebaliknya)
+    kesalahan = []
+    p = f"{obj[0]}.{obj[1]}" #buat yang baru (berupa nama baru yang diedit)
+    if obj[1] == "slbr": #.slbr mean SALBAR file
+        try:
+            raw = open(folder_jalur+f"\\"+p, "rb").read().decode("utf-8")
+            deformat = my_deformat(raw)
+            exec(compile(deformat, "", "exec")) #lebih mudah untuk berbagi object dibandingkan dengan impor modul
+            calling()
+            globals()[f"Label_{obj[0]}_{obj[1]}"] = Label(fl, text='         SLBR', font=font_teks, bg=latar_belakang_bingkai, fg=label_slbr)
+            globals()[f"Label_{obj[0]}_{obj[1]}"].grid(column=1,row=row_cache, sticky='nsw', pady=1)
+        except Exception as error:
+            print(error)
+            kesalahan.append(p)
+    elif obj[1] == "slbre": #.slbre mean SALBAR file with encrypt
+        try:
+            raw = open(folder_jalur+f"\\"+p, "r").read()
+            decompile = my_decompile(raw) #must in str
+            deformat = my_deformat(decompile)
+            exec(compile(deformat, "", "exec")) #lebih mudah untuk berbagi object dibandingkan dengan impor modul
+            calling()
+            globals()[f"Label_{obj[0]}_{obj[1]}"] = Label(fl, text='         SLBRE', font=font_teks, bg=latar_belakang_bingkai, fg=label_slbre)
+            globals()[f"Label_{obj[0]}_{obj[1]}"].grid(column=1,row=row_cache, sticky='nsw', pady=1)
+        except Exception as error:
+            kesalahan.append(p)
+            print(error)
+    p = sorted(Path(folder_jalur).iterdir(), key=os.path.getctime)
+    l = [] #daftar program yang untuk dijalankan
+    for x in p:
+        p_cache = "".join(str(x))
+        p_cache = p_cache.replace(folder_jalur + "\\", "")
+        l.append(p_cache)
+    for n, i in enumerate(l): #perbarui baris setiap pilihan untuk seluruh pilihan
+        p = os.path.basename(i)
+        cache_name = os.path.splitext(p)[0]
+        cache_ext = os.path.splitext(p)[1].replace(".", "")
+        globals()[f"cb_{cache_name}_{cache_ext}"].grid(row=n)
+        globals()[f"Label_{cache_name}_{cache_ext}"].grid(row=n)
+    if kesalahan:
+        kslhn = ""
+        for f in kesalahan:
+            fs = '"'+f+'"'
+            if kslhn:
+                kslhn += ", "+fs
+            else:
+                kslhn = fs
+        # print("Error:"+kslhn)
+        if kslhn.find(",") == -1:
+            word = "that"
+            adalah = " is "
+            more_than_one = " "
+        else:
+            word = "which"
+            adalah = " are "
+            more_than_one = "s "
+        showerror(
+            title="Error",
+            message="We found the error file"+more_than_one+ word +adalah+ kslhn
+        )
+
 utama()
 
 option_secure = Checkbutton(bingkai_opsi, text = "New with .slbre (Encrypt) (Too heavy!)")
@@ -831,6 +1020,9 @@ hapus.pack(side=LEFT, fill=Y)
 gaya_tombol(hapus, hapus_file, "tidak perlu")
 
 #Jika SIDE-nya RIGHT, harus didaftarkan secara terbalik
+option_password = Label(jendela_utama, text = "Unlock")
+option_password.pack(side=RIGHT, fill=Y)
+gaya_tombol(option_password, masukkan_password, "tidak perlu")
 salin = Label(jendela_utama, text = "Copy")
 salin.pack(side=RIGHT, fill=Y)
 gaya_tombol(salin, jalankan_perintah, "salin")
@@ -851,7 +1043,7 @@ for i in o:
         pass
     else:
         o.remove(i)
-def perbarui(edit):
+def perbarui(edit, *obj):
     global o
     o_cache = os.listdir(p)
     for i in o_cache:
@@ -863,31 +1055,37 @@ def perbarui(edit):
         else:
             o_cache.remove(i)
     # print(o, o_cache)
-    def perbaruikan():
-        global o, dijalankan
+    def perbaruikan(*user):
+        global o, dijalankan, kanvas, jalankan_progress
         o = o_cache
         status=jendela_utama.state()
         if status != "zoomed":
             wpr = jendela_utama.winfo_width()
             hpr = jendela_utama.winfo_height()
             jendela_utama.geometry('%dx%d' % (wpr, hpr))
-        jendela_utama.withdraw()
-        hancur_semua_bingkai()
-        jendela_utama.deiconify()
-        if edit == "user":
-            dijalankan = 1
+        if user:
+            dijalankan = True
+            jalankan_progress = True
+            hancur_semua_bingkai()
+            utama()
+            reset_var()
+            perbarui_GUI()
         else:
-            dijalankan = 0
-        reset_var()
-        utama()
+            perbarui_GUI()
         jendela_utama.state(status)
-    if not o == o_cache or edit == "edit" or edit == "user" or edit == "cmd":
-        if edit == "cmd":
+    if o != o_cache or edit == "edit" or edit == "user" or edit == "cmd":
+        if len(o_cache) != len(o): #ditambah atau dikurangi
+            perbaruikan()
+        elif edit == "user":
+            Thread(target=perbaruikan, args=(True,)).start()
+        elif edit == "edit":
+            perbarui_pilihan([obj[0], obj[1], obj[2]])
+        elif edit == "cmd":
+            perbaruikan()
+        elif not snama and not fperintah and not tperintah:
+            #Jika tidak ada yang terpilih
             perbaruikan()
         #Punya 3. Masing-masing membandingkan yang lain yaitu hanya 2, jadi 3x2=6
-        elif not snama and not fperintah and not tperintah:
-            #Jika tidak ada
-            perbaruikan()
         elif len(snama) == len(fperintah) and len(snama) == len(tperintah) and len(fperintah) == len(snama) and len(fperintah) == len(tperintah) and len(tperintah) == len(snama) and len(tperintah) == len(fperintah):
             #Jika semua sama dengan lainnya meski tidak ada (mustahil tidak ada karena akan trigger if-else pertama tentang ketiadaan)
             ask = askokcancel(
@@ -914,6 +1112,15 @@ def perbarui(edit):
     jendela_utama.after(1000, lambda:perbarui(""))
 
 perbarui("")
+
+def perbarui_scrollbar():
+    global kanvas
+    #get help from "https://stackoverflow.com/questions/70266334/update-scrollbar-in-tkinter"
+    if kanvas.winfo_exists(): #get help from "https://stackoverflow.com/questions/15311698/how-to-see-if-a-widget-exists-in-tkinter"
+        kanvas.configure(scrollregion=kanvas.bbox("all")) #not work if used event <configure>
+    jendela_utama.after(100, perbarui_scrollbar)
+
+perbarui_scrollbar()
 
 diperbarui = Label(jendela_utama, text = "Refresh")
 diperbarui.pack(side=TOP, fill=Y)
@@ -942,6 +1149,15 @@ h={hcr}{teks_tambahan}"""
         except:
             pass
     jendela_utama.destroy()
+
+def save_from_delete():
+    print("No, you shouldn't do that!")
+
+jendela_progress.protocol("WM_DELETE_WINDOW", save_from_delete)
+
+global dijalankan
+dijalankan = 1
+jendela_utama.after(1000, Thread(target=perbarui_GUI).start) #must Thread in order to show progress at the same time
 
 jendela_utama.protocol("WM_DELETE_WINDOW", save_current_resize)
 #only for developer
