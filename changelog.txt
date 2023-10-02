@@ -10,5 +10,14 @@ However SALBAR has limitations that I cannot remove. Read Documentation.txt
 -------------------SALBAR v0.65 Alpha
 
 -Update GUI without repeating the process (there is a bug generated when compiling by nuitka)
--Create threads to run multiple processes
+-Created threads to run multiple processes
 -Added progress bar
+
+-------------------SALBAR v0.8 Beta
+
+-The code has been tidied up with minimal clutter
+-Removed encryption feature (gives a false sense of security so it is removed)
+-Removed progress bar
+-There is no restriction on entering characters except "Name" entry based on OS rules
+-Added shortcuts
+-Removed "Refresh" button
