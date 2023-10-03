@@ -18,6 +18,7 @@ limitations under the License."""
 #"buat" dan "hapus" hanya sekali eksekusi
 #"edit" dan "timpa" perlu komunikasi dengan dibawahnya
 from tkinter import *
+from tkinter.ttk import Progressbar
 import gui
 from PIL import Image, ImageTk
 import os
@@ -60,6 +61,24 @@ else:
 if not os.path.isdir("Paths"):
     os.makedirs("Paths")
 
+#Progress Bar
+jendela_progress = Toplevel()
+jendela_progress.resizable(0, 0)
+progress = Progressbar(jendela_progress, orient=HORIZONTAL, mode='indeterminate')
+progress.pack(fill=BOTH)
+wp = 250
+hp = 24
+xp = (lebar_layar/2) - (wp/2)
+yp = (tinggi_layar/2) - (hp/2)
+
+jendela_progress.geometry('%dx%d+%d+%d' % (wp, hp, xp, yp))
+jendela_progress.withdraw()
+
+def cegah_exit():
+    pass
+
+jendela_progress.protocol("WM_DELETE_WINDOW", cegah_exit)
+
 fperintah = [] #path
 tperintah = [] #path
 snama = [] #nama
@@ -69,7 +88,7 @@ kanvas_bingkai = gui.bingkai(jendela_utama)
 kanvas = kanvas_bingkai[0]
 bingkai = kanvas_bingkai[1]
 
-gui.tombol(jendela_utama, snama, fperintah, tperintah, nama_edit_timpa)
+gui.tombol(jendela_utama, snama, fperintah, tperintah, nama_edit_timpa, jendela_progress, progress)
 
 deteksi = sorted(pathlib.Path("Paths").iterdir(), key=os.path.getctime)
 daftar_program = [] #daftar program yang untuk dijalankan
