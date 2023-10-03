@@ -13,6 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License."""
 
 from tkinter import *
+from tkinter.ttk import Progressbar
 from tkinter.filedialog import *
 from tkinter.messagebox import *
 from tkinter.messagebox import WARNING
@@ -20,6 +21,7 @@ import os
 import platform
 import command
 import maker
+import threading
 
 latar_belakang = "#737373"
 latar_belakang_bingkai = "#3c4038"
@@ -71,10 +73,16 @@ class gaya:
         def lepas(event):
             obj.config(fg=lepas_fg, bg=lepas_bg)
             if f:
-                if callable and args:
-                    callable(*args)
-                elif callable:
-                    callable()
+                try:
+                    if callable and args:
+                        pilihan["thread"](target = callable, args = args).start()
+                    elif callable:
+                        pilihan["thread"](target = callable).start()
+                except:
+                    if callable and args:
+                        callable(*args)
+                    elif callable:
+                        callable()
         def kursor(event):
             global f
             f = True
@@ -392,10 +400,10 @@ class opsi:
                 message="You not selected anything"
         )
 
-    def jalankan_perintah(copy: bool, snama: list, fperintah: list, tperintah: list):
+    def jalankan_perintah(progress_window: Toplevel, progress: Progressbar, copy: bool, snama: list, fperintah: list, tperintah: list):
         """if copy == False: cut"""
         if snama and fperintah and tperintah:
-            hasil = command.perintah(snama, fperintah, tperintah, copy, konfirmasi_timpa.get())
+            hasil = command.perintah(progress_window, progress, snama, fperintah, tperintah, copy, konfirmasi_timpa.get())
             if hasil.count("SUCCESSFULLY"):
                 showinfo(
                     title = "Info",
@@ -417,7 +425,7 @@ class opsi:
                 message = "You not selected anything"
             )
 
-def tombol(root: Tk, snama: list, fperintah: list, tperintah: list, nama_edit_timpa: dict):
+def tombol(root: Tk, snama: list, fperintah: list, tperintah: list, nama_edit_timpa: dict, progress_window: Toplevel, progress: Progressbar):
     global nama, direktori, tujuan, konfirmasi_timpa
     nama = StringVar()
     direktori = StringVar()
@@ -444,15 +452,15 @@ def tombol(root: Tk, snama: list, fperintah: list, tperintah: list, nama_edit_ti
 
     copy = Label(root, text="Copy")
     copy.pack(side=RIGHT, fill=Y)
-    gaya.gaya_tombol(copy, opsi.jalankan_perintah, True, snama, fperintah, tperintah)
+    gaya.gaya_tombol(copy, opsi.jalankan_perintah, progress_window, progress, True, snama, fperintah, tperintah, thread = threading.Thread)
     def copy_bind(event):
-        opsi.jalankan_perintah(True, snama, fperintah, tperintah)
+        threading.Thread(target = opsi.jalankan_perintah, args = (progress_window, progress, True, snama, fperintah, tperintah)).start()
 
     cut = Label(root, text="Cut")
     cut.pack(side=RIGHT, fill=Y)
-    gaya.gaya_tombol(cut, opsi.jalankan_perintah, False, snama, fperintah, tperintah)
+    gaya.gaya_tombol(cut, opsi.jalankan_perintah, progress_window, progress, False, snama, fperintah, tperintah, thread = threading.Thread)
     def cut_bind(event):
-        opsi.jalankan_perintah(False, snama, fperintah, tperintah)
+        threading.Thread(target = opsi.jalankan_perintah, args=(progress_window, progress, False, snama, fperintah, tperintah)).start()
 
     timpa = Checkbutton(root, text = "Overwrites all") #bg harus sama dengan jendela_utama
     timpa.pack(side=RIGHT, fill=Y)
