@@ -14,10 +14,21 @@ limitations under the License."""
 
 import shutil
 import os
+from tkinter import Toplevel
+from tkinter.ttk import Progressbar
 from tkinter.messagebox import *
 from tkinter.messagebox import WARNING
 
-def perintah(list_name: list, list_source: list, list_destination: list, copy: bool, tanya: int) -> str: #using annotations so that it is clear to me what needs to be included
+def perintah(progress_window: Toplevel, progress: Progressbar, list_name: list, list_source: list, list_destination: list, copy: bool, tanya: int) -> str: #using annotations so that it is clear to me what needs to be included
+    progress_window.grab_set()
+    progress_window.focus_set()
+    progress_window.deiconify()
+    progress.start(25)
+    def hentikan_jendela_progress():
+        progress.stop()
+        progress_window.grab_release()
+        progress_window.withdraw()
+
     user = False
     operasi = True
     keberhasilan = 0
@@ -75,6 +86,7 @@ def perintah(list_name: list, list_source: list, list_destination: list, copy: b
                                 if metode == "file":
                                     shutil.copy(s, d)
                                 else:
+                                    cache_path = fr"{d}\{os.path.basename(s)}"
                                     shutil.copytree(s, cache_path, dirs_exist_ok = True)
                             keberhasilan +=1
                         except Exception as error:
@@ -163,10 +175,14 @@ def perintah(list_name: list, list_source: list, list_destination: list, copy: b
     else:
         tambahan = ""
     if keberhasilan and not kegagalan:
+        hentikan_jendela_progress()
         return f"SUCCESSFULLY {tindakan} FILE(S)"+cache+tambahan
     elif keberhasilan and kegagalan:
+        hentikan_jendela_progress()
         return f"SUCCESSFULLY {tindakan} FILE(S) WITH ERROR(S): "+cache+tambahan
     elif operasi:
+        hentikan_jendela_progress()
         return "ERROR(S): "+cache
     else:
+        hentikan_jendela_progress()
         return "CANCELED"
