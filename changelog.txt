@@ -1,5 +1,10 @@
 (ALL OF THIS TEXT WAS TRANSLATED INDONESIAN TO ENGLISH BY GOOGLE TRANSLATE)
 
+-------------------SALBAR v0.8 Beta 2
+
+-Bug fixed
+-Added progress bar
+
 -------------------SALBAR v0.8 Beta
 
 -The code has been tidied up with minimal clutter
@@ -9,7 +14,7 @@
 -Added shortcuts
 -Removed "Refresh" button
 
--------------------SALBAR v0.65 Alpha (Deleted)
+-------------------SALBAR v0.65 Alpha
 
 -Update GUI without repeating the process (there is a bug generated when compiling by nuitka)
 -Created threads to run multiple processes
