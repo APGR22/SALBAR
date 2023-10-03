@@ -21,6 +21,11 @@
 
 	• Since in tkinter you can only select files or folders, we created the options [Select (file)] and [Become (file)] to be able to select files.
 
+	• Buttons:
+						↑ = Scroll to up
+			← = Scroll to left				→ = Scroll to right
+						↓ = Scroll to down
+
 	• Shortcuts:
 			-New: Ctrl+N
 			-Edit: Alt+D
