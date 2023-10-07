@@ -6,9 +6,9 @@
 • Since in tkinter you can only select files or folders, we created the options [Select (file)] and [Become (file)] to be able to select files.
 
 • Buttons:
-          ↑ = Scroll to up
-    ← = Scroll to left				→ = Scroll to right
-          ↓ = Scroll to down
+                              ↑ = Scroll to up
+          ← = Scroll to left                    → = Scroll to right
+                              ↓ = Scroll to down
 
 • Shortcuts:
     -New: Ctrl+N
@@ -19,3 +19,6 @@
     -Exit the session window: Esc
     -Select All: Ctrl+A
     -Deselect All: Ctrl+Shift+A
+
+• (Only Windows) Filename correction.
+          That means it will give a sign that there is an incorrect placement of a character
