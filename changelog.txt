@@ -1,6 +1,6 @@
 (ALL OF THIS TEXT WAS TRANSLATED INDONESIAN TO ENGLISH BY GOOGLE TRANSLATE)
 
--------------------SALBAR v0.10.1 Beta (optional to download)
+-------------------SALBAR v0.10.1 Beta (not available for download)
 
 -Added a warning that if the check box is more than 744
 -Correction of coding errors (not a problem):
