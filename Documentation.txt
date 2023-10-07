@@ -4,6 +4,8 @@
 
 * INSTRUCTIONS AND RULES FOR USE:
 
+	• (Windows) Dots at the end, spaces at the start and at the end will be removed when created
+
 	• Each path address is always enclosed in double quotes ["..."].
 
 	• If you want to use multiple file/folder paths at once, use ["(path)"] in each path address and include a space. For example: ["(path1)" "(path2)"].
