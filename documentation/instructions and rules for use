@@ -1,0 +1,13 @@
+(ALL OF THIS TEXT WAS TRANSLATED INDONESIAN TO ENGLISH BY GOOGLE TRANSLATE)
+
+• (Windows) Dots at the end, spaces at the start and at the end will be removed when created
+
+• Each path address is always enclosed in double quotes ["..."].
+
+• If you want to use multiple file/folder paths at once, use ["(path)"] in each path address and include a space. For example: ["(path1)" "(path2)"].
+Warning: If you use this method on a source path, in some cases the destination path must be specified as a folder, not a file, to avoid overwriting and errors.
+
+• Cannot copy selected shortcut files (unless they are under the selected folder) due to the file selection system.
+This can be overcome by entering the file path manually (remember: lnk = LNK). For example: ["path\cmd.exe.lnk"] ('cmd.exe' is the file name, and '.lnk' is not visible. So be careful when entering it).
+
+• Changing it to another file only takes effect if it exists. If it doesn't exist then a folder will be created
