@@ -1,4 +1,4 @@
-# Copyright © 2023 APGR22
+# """Copyright © 2023 APGR22
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -10,17 +10,17 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License.
+# limitations under the License."""
 
-import private_module.kacaukan as kacaukan
+import convert
 import os
 bahasa_1 = "insert string di salbar dengan atas nama dir1 = >>"
 bahasa_2 = "insert string di salbar dengan atas nama dir2 = >>"
 
 class ekstensi:
     def make(nama: str, direktori: str, tujuan: str, nama_lama: str = False):
-        d = kacaukan.make(direktori)
-        t = kacaukan.make(tujuan)
+        d = convert.make(direktori)
+        t = convert.make(tujuan)
         teks = f"""{bahasa_1}{d}<<;
 {bahasa_2}{t}<<;"""
         if nama_lama:
@@ -50,6 +50,6 @@ class ekstensi:
             raise Exception("ada modifikasi")
         hasil_d = baris[0].split(bahasa_1)[1]
         hasil_t = baris[1].split(bahasa_2)[1]
-        hasil_d = kacaukan.read(hasil_d)
-        hasil_t = kacaukan.read(hasil_t)
+        hasil_d = convert.read(hasil_d)
+        hasil_t = convert.read(hasil_t)
         return hasil_d, hasil_t #untuk mengirim definisi
