@@ -20,5 +20,9 @@
     -Select All: Ctrl+A
     -Deselect All: Ctrl+Shift+A
 
+• Change the entry focus:
+                          ↑ = To up
+                          ↓ = To down
+
 • (Only Windows) Filename correction.
           That means it will give a sign that there is an incorrect placement of a character
