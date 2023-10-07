@@ -1,0 +1,10 @@
+• Due to an execution error when converting more than one initial file to one final file, we disabled the [Become(file)] feature if the user entered more than one file/folder path.
+However, this can still be bypassed because it only makes the file search feature on the [...] and [+...] buttons disabled.
+
+• The "Edit" action will make the check button unchecked.
+
+• The GUI may seem clunky to some people.
+
+• Haven't tested it on another computer because I only have a laptop (lent by my uncle). The possibility of bugs occurring is very large.
+
+• Long execution time so it is not suitable for laptops or computers with low processor capabilities.
