@@ -47,4 +47,12 @@
 
 	• Haven't tested it on another computer because I only have a laptop (lent by my uncle). The possibility of bugs occurring is very large.
 
-	•Long execution time so it is not suitable for laptops or computers with low processor capabilities.
+	• Long execution time so it is not suitable for laptops or computers with low processor capabilities.
+
+
+
+Bugs that are better left alone:
+	-Can scroll in any direction when the scrollbar is inactive
+	-Scrollbar does not disappear if there is no checkbutton
+Bugs that aren't too much of a problem:
+	-In an Edit session or certain moments in a New session, both the source path and the destination path can be saved as empty
