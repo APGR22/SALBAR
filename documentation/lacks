@@ -1,3 +1,5 @@
+(ALL OF THIS TEXT WAS TRANSLATED INDONESIAN TO ENGLISH BY GOOGLE TRANSLATE)
+
 • Due to an execution error when converting more than one initial file to one final file, we disabled the [Become(file)] feature if the user entered more than one file/folder path.
 However, this can still be bypassed because it only makes the file search feature on the [...] and [+...] buttons disabled.
 
