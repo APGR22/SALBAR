@@ -1,4 +1,4 @@
-# Copyright © 2023 APGR22
+# """Copyright © 2023 APGR22
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -10,15 +10,17 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License.
+# limitations under the License."""
 
 #utama
 #icon
 #yang mengerjakan
 #"buat" dan "hapus" hanya sekali eksekusi
 #"edit" dan "timpa" perlu komunikasi dengan dibawahnya
+
 from tkinter import *
 from tkinter.ttk import Progressbar
+from tkinter.messagebox import *
 import gui
 from PIL import Image, ImageTk
 import os
@@ -125,10 +127,28 @@ def baca(nama: str, r: int | None = None, tambahkan: bool = False):
     globals()[f"{nama}_centang"] = hasil[2]
 
 def mulai():
+    nama_kesalahan = []
+    kesalahan = []
     for r, i in enumerate(daftar_program):
-        baca(os.path.splitext(i)[0], r)
+        try:
+            baca(os.path.splitext(i)[0], r)
+        except Exception as error:
+            nama_kesalahan.append(i)
+            kesalahan.append(error)
+    if nama_kesalahan:
+        for i, j in zip(nama_kesalahan, kesalahan):
+            showerror(
+                title="Error",
+                message=f"{i}: {j}"
+            )
 
 daftar_pembaruan = os.listdir("Paths")
+
+if len(daftar_pembaruan) > 744:
+    showwarning(
+        title="Warning",
+        message="Check button exceeds 744.\nPossible rendering will be broken at the very bottom"
+    )
 
 def perbarui():
     global daftar_pembaruan, daftar_program
@@ -184,7 +204,9 @@ def perbarui():
 perbarui()
 
 #tidak bisa untuk threading semua kode
-jendela_utama.after(100, threading.Thread(target = mulai).start())
+def thread_mulai():
+    threading.Thread(target = mulai).start()
+jendela_utama.after(100, thread_mulai) #jangan pakai () agar tidak terpanggil
 
 def pilih(event):
     for i in daftar_program: #kalau kosong maka for loop-nya tidak berjalan dan dikira selesai
