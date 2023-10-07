@@ -1,0 +1,21 @@
+(ALL OF THIS TEXT WAS TRANSLATED INDONESIAN TO ENGLISH BY GOOGLE TRANSLATE)
+
+• [...] is used to search for file/folder directories and then delete the previous directory.
+• [+...] is used to search for file/folder directories and add input without deleting the previous directory.
+
+• Since in tkinter you can only select files or folders, we created the options [Select (file)] and [Become (file)] to be able to select files.
+
+• Buttons:
+          ↑ = Scroll to up
+    ← = Scroll to left				→ = Scroll to right
+          ↓ = Scroll to down
+
+• Shortcuts:
+    -New: Ctrl+N
+    -Edit: Alt+D
+    -Delete: Ctrl+D
+    -Copy: Ctrl+C
+    -Cut: Ctrl+X
+    -Exit the session window: Esc
+    -Select All: Ctrl+A
+    -Deselect All: Ctrl+Shift+A
