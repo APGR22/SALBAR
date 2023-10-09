@@ -218,26 +218,6 @@ def tidak_pilih(event):
         globals()[f"{os.path.splitext(i)[0]}_cb"].deselect()
         globals()[f"{os.path.splitext(i)[0]}_centang"]()
 
-#for future plans
-
-# shift_pilih_mulai = False
-# shift_pilih = 0
-# shift_pilih_mulai_dari = 0
-
-# def pilih_atas(event): #positif
-#     global shift_pilih, shift_pilih_mulai, shift_pilih_mulai_dari
-#     if snama:
-#         if daftar_program.index(snama[0]+".slbr") > 0: 
-#             if not shift_pilih_mulai:
-#                 shift_pilih_mulai = True
-#                 shift_pilih_mulai_dari = daftar_program.index(snama[0]+".slbr") #catat ke baris berapa dimulainya
-#                 shift_pilih = shift_pilih_mulai_dari
-#             shift_pilih -= 1 #setiap naik ke atas maka dikurangi
-#             if shift_pilih > 0:
-#                 globals()[f"{os.path.splitext(daftar_program[shift_pilih])[0]}_cb"].select()
-#                 if shift_pilih_mulai_dari:
-# kanvas.bind("<Shift-Up>",  pilih_atas)
-
 kanvas.bind("<Control-a>",  pilih)
 kanvas.bind("<Control-A>",  pilih)
 kanvas.bind("<Control-Shift-a>",  tidak_pilih)
