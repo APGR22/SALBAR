@@ -168,7 +168,7 @@ def perbarui():
         return jendela_utama.after(100, perbarui)
 
     elif len(nama_edit_timpa) == 1:
-        del globals()[f"{nama_edit_timpa['nama_timpa']}_var"], globals()[f"{nama_edit_timpa['nama_lama']}_centang"]
+        del globals()[f"{nama_edit_timpa['nama_timpa']}_var"], globals()[f"{nama_edit_timpa['nama_timpa']}_centang"]
         globals()[f"{nama_edit_timpa['nama_timpa']}_cb"].destroy()
         baca(nama_edit_timpa["nama_timpa"], tambahkan = True)
         perbarui_daftar_program()
