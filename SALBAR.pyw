@@ -165,7 +165,6 @@ def perbarui():
         tperintah.clear()
         snama.clear()
         perbarui_daftar_program()
-        return jendela_utama.after(100, perbarui)
 
     elif len(nama_edit_timpa) == 1:
         del globals()[f"{nama_edit_timpa['nama_timpa']}_var"], globals()[f"{nama_edit_timpa['nama_timpa']}_centang"]
@@ -178,9 +177,8 @@ def perbarui():
         fperintah.clear()
         tperintah.clear()
         snama.clear()
-        return jendela_utama.after(100, perbarui)
 
-    if daftar_pembaruan != daftar_pembaruan_2:
+    elif daftar_pembaruan != daftar_pembaruan_2:
         if len(daftar_pembaruan_2) > len(daftar_pembaruan): #tambah
             jumlah = set(daftar_pembaruan_2) - set(daftar_pembaruan)
             for i in jumlah:
