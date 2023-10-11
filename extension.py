@@ -37,14 +37,17 @@ class ekstensi:
         baris = open("Paths\\"+nama+".slbr", "r").readlines()
         if not (
             teks.count(bahasa_1) == 1 and
-            teks.count(";") == 2 and
+            teks.count(bahasa_2) == 1 and
+            baris[0].startswith(bahasa_1) and
+            baris[1].startswith(bahasa_2) and
             baris[0].endswith("<<;\n") and
             baris[1].endswith("<<;") and
+            baris[0].count(";") == 1 and
+            baris[1].count(";") == 1 and
             baris[0].count(">>") == 1 and
             baris[1].count(">>") == 1 and
             baris[0].count("<<") == 1 and
             baris[1].count("<<") == 1 and
-            teks.count(bahasa_2) == 1 and
             len(baris) == 2
             ):
             raise Exception("ada modifikasi")
