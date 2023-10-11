@@ -29,6 +29,8 @@ import extension
 import execute
 import threading
 
+os.chdir(os.path.dirname(__file__)) #configuration for all to apply
+
 jendela_utama = Tk()
 jendela_utama.title("SALBAR")
 jendela_utama.minsize(width=532, height=440)
