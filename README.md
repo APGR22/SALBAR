@@ -1,6 +1,7 @@
 # Notes:
 -All this text is translated by Google Translate.\
 -This project still requires further development.\
+-There will be no new releases for a while until nuitka supports python 3.12.\
 -Because the computer I have is old, multiplatform development is hampered.
 
 # SALBAR
