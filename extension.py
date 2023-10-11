@@ -50,7 +50,7 @@ class ekstensi:
             baris[1].count("<<") == 1 and
             len(baris) == 2
             ):
-            raise Exception("ada modifikasi")
+            raise Exception("there is modification")
         hasil_d = baris[0].split(bahasa_1)[1]
         hasil_t = baris[1].split(bahasa_2)[1]
         hasil_d = convert.read(hasil_d)
