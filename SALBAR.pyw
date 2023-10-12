@@ -189,12 +189,19 @@ def perbarui():
             jumlah = set(daftar_pembaruan) - set(daftar_pembaruan_2)
 
             for i in jumlah:
+                globals()[f"{os.path.splitext(i)[0]}_cb"].deselect() #pastikan untuk membatalkan centangnya
+                globals()[f"{os.path.splitext(i)[0]}_centang"]() #pastikan fungsinya berjalan tanpa checkbutton
                 del globals()[f"{os.path.splitext(i)[0]}_var"], globals()[f"{os.path.splitext(i)[0]}_centang"]
                 globals()[f"{os.path.splitext(i)[0]}_cb"].destroy()
 
             perbarui_daftar_program()
             for r, i in enumerate(daftar_program):
-                globals()[f"{os.path.splitext(i)[0]}_cb"].grid(row=r) #config ulang
+                #config ulang
+                try:
+                    globals()[f"{os.path.splitext(i)[0]}_cb"].grid(row=r)
+                except KeyError: #seandainya kesalahannya berasal dari tindakan pengguna yang rename file .slbr secara manual
+                    baca(os.path.splitext(i)[0])
+                    globals()[f"{os.path.splitext(i)[0]}_cb"].grid(row=r)
 
         daftar_pembaruan = daftar_pembaruan_2
         perbarui_daftar_program()
