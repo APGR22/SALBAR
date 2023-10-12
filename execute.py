@@ -25,7 +25,7 @@ def eksekusi(
         tambahkan: bool = False
 ):
     """pilihan = tempat checkbutton diletakkan\n
-    r = baris\n
+    r = baris\n #jika r = None, maka termasuk tambahakan
     n = nama\n
     d = direktori sumber\n
     t = direktori tujuan\n
