@@ -1,4 +1,4 @@
-# Copyright © 2023 APGR22
+# """Copyright © 2023 APGR22
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -10,7 +10,7 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License.
+# limitations under the License."""
 
 from tkinter import *
 from tkinter.ttk import Progressbar
@@ -21,6 +21,7 @@ import os
 import platform
 import command
 import maker
+import paths
 import threading
 
 latar_belakang = "#737373"
@@ -50,6 +51,15 @@ tinggi_centang = 2
 
 ukuran_teks = 10
 font_teks = ("Helvetica", ukuran_teks)
+
+#for test
+# def tes_linux():
+#     return "Linux"
+
+# def tes_darwin():
+#     return "Darwin"
+
+# platform.system = tes_darwin
 
 class gaya:
     def gaya_tombol(obj: Label, callable: object | bool, *args: tuple, **pilihan):
@@ -97,30 +107,21 @@ class gaya:
     def gaya_tombol_cek(obj: Checkbutton, var: IntVar):
         obj.config(variable=var, onvalue=1, offvalue=0, bg=latar_belakang, activebackground=latar_belakang_kotak_centang_aktif, fg=warna_teks, disabledforeground=warna_teks_tidak_aktif, selectcolor=latar_belakang_centang)
 
-    def gaya_entry(obj: Entry, var: StringVar, nama: bool = False, jendela: Toplevel = False):
+    def gaya_entry(obj: Entry, var: StringVar, nama: bool = False, jendela: Toplevel = False, **more_obj):
         obj.config(textvariable=var, bg=latar_belakang_entry, fg=warna_teks, font=font_teks)
 
         if nama and jendela:
             if platform.system() == "Windows":
-                karakter = '\/:*?"<>|'
+                karakter = '\\/:*?"<>|'
 
-                def hapus():
-                    if obj.get().startswith(" "):
-                        posisi_kursor = obj.index(INSERT)
-                        teks = obj.get()[1:]
-                        obj.delete(0, END)
-                        obj.insert(0, teks)
-                        obj.icursor(posisi_kursor) #meski kursornya malah ke 1, gapapa lah lagipula kurang disadari atau tidak penting
-                    elif obj.get().endswith(" "):
-                        teks = obj.get()[:-1]
-                        obj.delete(0, END)
-                        obj.insert(0, teks)
-                    elif obj.get().endswith("."):
-                        teks = obj.get()[:-1]
-                        obj.delete(0, END)
-                        obj.insert(0, teks)
-                    jendela.after(1, hapus)
-                hapus()
+                def tandai():
+                    if obj.get().startswith(" ") or obj.get().endswith(" ") or obj.get().endswith("."):
+                        more_obj["label_name"].config(bg="#ff0000")
+                    else:
+                        more_obj["label_name"].config(bg="#4b4b4b")
+                    jendela.after(10, tandai)
+                
+                tandai()
 
             elif platform.system() == "Linux":
                 karakter = "/"
@@ -139,6 +140,10 @@ class gaya:
                 return True
             batas_karakter = (jendela.register(pilihan_karakter), '%S')
             obj.config(validate="key", validatecommand=batas_karakter)
+
+        def select_all(event):
+            obj.selection_range(0, END)
+        obj.bind("<FocusIn>", select_all)
 
 def bingkai(root: Tk):
     bingkai_utama = Frame(root)
@@ -240,12 +245,12 @@ class opsi:
                     if d1:
                         d1 = '" "'.join(str(x) for x in d1)
                         d1 = '"'+d1+'"'
-                        d1 = d1.replace("/", "\\")
+                        d1 = d1.replace(paths.before_symbol, paths.after_symbol)
                     config_entry(direktori, entry_direktori, d1)
                 else:
                     d0 = askdirectory(parent=jendela_tanya, title="Directory")
                     if d0:
-                        d0 = d0.replace("/", "\\")
+                        d0 = d0.replace(paths.before_symbol, paths.after_symbol)
                         d0 = '"'+d0+'"'
                     config_entry(direktori, entry_direktori, d0)
             elif dr_or_tj == "tj":
@@ -254,12 +259,12 @@ class opsi:
                     if t1:
                         t1 = '" "'.join(str(x) for x in t1)
                         t1 = '"'+t1+'"'
-                        t1 = t1.replace("/", "\\")
+                        t1 = t1.replace(paths.before_symbol, paths.after_symbol)
                     config_entry(tujuan, entry_tujuan, t1)
                 else:
                     t0 = askdirectory(parent=jendela_tanya, title="Directory")
                     if t0:
-                        t0 = t0.replace("/", "\\")
+                        t0 = t0.replace(paths.before_symbol, paths.after_symbol)
                         t0 = '"'+t0+'"'
                     config_entry(tujuan, entry_tujuan, t0)
 
@@ -288,9 +293,12 @@ class opsi:
         entry_nama = Entry(f_entry_nama)
         pack_entry(entry_nama)
         entry_nama.focus_set()
-        gaya.gaya_entry(entry_nama, nama, True, jendela_tanya)
+
         label_nama = Label(f_entry_nama, text="")
         pack_label_2(label_nama)
+
+        gaya.gaya_entry(entry_nama, nama, True, jendela_tanya, label_name = label_nama)
+
         gaya.gaya_tombol(label_nama, d_file_folder, "n", s_lebar_tombol=0) #Hasilnya 14
 
         nama_lama = entry_nama.get()
@@ -389,7 +397,7 @@ class opsi:
             )
             if ask: #Jika "Ok"
                 for f in snama:
-                    os.remove("Paths\\"+f+".slbr")
+                    os.remove(paths.path+f+".slbr")
 
                 snama.clear()
                 fperintah.clear()
