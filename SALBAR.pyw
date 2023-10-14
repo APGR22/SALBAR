@@ -27,6 +27,7 @@ import os
 import pathlib
 import extension
 import execute
+import paths
 import threading
 
 os.chdir(os.path.dirname(__file__)) #configuration for all to apply
@@ -98,7 +99,7 @@ deteksi = sorted(pathlib.Path("Paths").iterdir(), key=os.path.getctime)
 daftar_program = [] #daftar program yang untuk dijalankan
 for x in deteksi:
     p_cache = "".join(str(x))
-    p_cache = p_cache.replace("Paths" + "\\", "")
+    p_cache = p_cache.replace("Paths" + paths.after_symbol, "")
     if os.path.splitext(p_cache)[1] == ".slbr":
         daftar_program.append(p_cache)
 
@@ -108,7 +109,7 @@ def perbarui_daftar_program():
     daftar_program.clear()
     for x in deteksi:
         p_cache = "".join(str(x))
-        p_cache = p_cache.replace("Paths" + "\\", "")
+        p_cache = p_cache.replace("Paths" + paths.after_symbol, "")
         if os.path.splitext(p_cache)[1] == ".slbr":
             daftar_program.append(p_cache)
 
@@ -156,7 +157,7 @@ def perbarui():
     global daftar_pembaruan, daftar_program
     daftar_pembaruan_2 = os.listdir("Paths")
 
-    if len(nama_edit_timpa) == 2:
+    if len(nama_edit_timpa) == 2: #edit
         cache_row = globals()[f"{nama_edit_timpa['nama_lama']}_cb"].grid_info()["row"]
         del globals()[f"{nama_edit_timpa['nama_lama']}_var"], globals()[f"{nama_edit_timpa['nama_lama']}_centang"]
         globals()[f"{nama_edit_timpa['nama_lama']}_cb"].destroy()
@@ -168,7 +169,7 @@ def perbarui():
         snama.clear()
         perbarui_daftar_program()
 
-    elif len(nama_edit_timpa) == 1:
+    elif len(nama_edit_timpa) == 1: #timpa
         del globals()[f"{nama_edit_timpa['nama_timpa']}_var"], globals()[f"{nama_edit_timpa['nama_timpa']}_centang"]
         globals()[f"{nama_edit_timpa['nama_timpa']}_cb"].destroy()
         baca(nama_edit_timpa["nama_timpa"], tambahkan = True)
