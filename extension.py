@@ -14,6 +14,7 @@
 
 import convert
 import os
+import paths
 bahasa_1 = "insert string di salbar dengan atas nama dir1 = >>"
 bahasa_2 = "insert string di salbar dengan atas nama dir2 = >>"
 
@@ -24,17 +25,17 @@ class ekstensi:
         teks = f"""{bahasa_1}{d}<<;
 {bahasa_2}{t}<<;"""
         if nama_lama:
-            if os.path.isfile("Paths\\"+nama_lama+".slbr"):
-                os.rename("Paths\\"+nama_lama+".slbr", "Paths\\"+nama+".slbr")
-        o = open("Paths\\"+nama+".slbr", "w")
+            if os.path.isfile(paths.path+nama_lama+".slbr"):
+                os.rename(paths.path+nama_lama+".slbr", paths.path+nama+".slbr")
+        o = open(paths.path+nama+".slbr", "w")
         o.write(teks)
         o.close()
 
     def read(nama: str):
-        o = open("Paths\\"+nama+".slbr", "r")
+        o = open(paths.path+nama+".slbr", "r")
         teks = o.read()
         o.close()
-        baris = open("Paths\\"+nama+".slbr", "r").readlines()
+        baris = open(paths.path+nama+".slbr", "r").readlines()
         if not (
             teks.count(bahasa_1) == 1 and
             teks.count(bahasa_2) == 1 and
