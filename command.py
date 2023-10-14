@@ -18,6 +18,18 @@ from tkinter import Toplevel
 from tkinter.ttk import Progressbar
 from tkinter.messagebox import *
 from tkinter.messagebox import WARNING
+import paths
+
+def run_command(s: str, d: str, method: int):
+    """1 = copy (file)\n
+    2 = copytree (folder)\n
+    3 = move (file/folder)"""
+    if method == 1:
+        shutil.copy(s, d)
+    elif method == 2:
+        shutil.copytree(s, d, dirs_exist_ok = True)
+    else:
+        shutil.move(s, d)
 
 def perintah(progress_window: Toplevel, progress: Progressbar, list_name: list, list_source: list, list_destination: list, copy: bool, tanya: int) -> str: #using annotations so that it is clear to me what needs to be included
     progress_window.grab_set()
@@ -59,7 +71,7 @@ def perintah(progress_window: Toplevel, progress: Progressbar, list_name: list, 
                                 metode = "file"
                             else:
                                 metode = "folder"
-                            if os.path.isfile(d) and d.count("\\") and not os.path.isdir(os.path.dirname(d)) and os.path.exists(s): #file in destination if doesn't exists
+                            if os.path.isfile(d) and d.count(paths.after_symbol) and not os.path.isdir(os.path.dirname(d)) and os.path.exists(s): #file in destination if doesn't exists
                                 os.makedirs(os.path.dirname(d))
                             elif not os.path.exists(d) and os.path.exists(s): #folder in destination if doesn't exists
                                 os.makedirs(d)
@@ -72,9 +84,9 @@ def perintah(progress_window: Toplevel, progress: Progressbar, list_name: list, 
                                 )
                                 if ask == True: #Yes
                                     if metode == "file":
-                                        shutil.copy(s, d)
+                                        run_command(s, d, 1)
                                     else:
-                                        shutil.copytree(s, cache_path, dirs_exist_ok = True)
+                                        run_command(s, cache_path, 2)
                                 elif ask == False: #No
                                     keberhasilan += 1
                                     user = True
@@ -84,10 +96,10 @@ def perintah(progress_window: Toplevel, progress: Progressbar, list_name: list, 
                                     break
                             else:
                                 if metode == "file":
-                                    shutil.copy(s, d)
+                                    run_command(s, d, 1)
                                 else:
                                     cache_path = fr"{d}\{os.path.basename(s)}"
-                                    shutil.copytree(s, cache_path, dirs_exist_ok = True)
+                                    run_command(s, cache_path, 2)
                             keberhasilan +=1
                         except Exception as error:
                             if cache and not cache.count(f'({ln}: "{error}")'):
@@ -109,7 +121,7 @@ def perintah(progress_window: Toplevel, progress: Progressbar, list_name: list, 
                                 metode = "folder"
                             else:
                                 metode = False
-                            if os.path.isfile(d) and d.count("\\") and not os.path.isdir(os.path.dirname(d)) and os.path.exists(s): #file in destination
+                            if os.path.isfile(d) and d.count(paths.after_symbol) and not os.path.isdir(os.path.dirname(d)) and os.path.exists(s): #file in destination
                                 os.makedirs(os.path.dirname(d))
                             elif not os.path.exists(d) and os.path.exists(s): #folder in destination
                                 os.makedirs(d)
@@ -124,7 +136,7 @@ def perintah(progress_window: Toplevel, progress: Progressbar, list_name: list, 
                                     if metode == "file":
                                         if os.path.exists(s):
                                             os.remove(cache_path)
-                                        shutil.move(s, d)
+                                        run_command(s, d, 3)
                                     elif metode == "folder":
                                         ask2 = askyesno(
                                             title = "Warning 2",
@@ -134,7 +146,7 @@ def perintah(progress_window: Toplevel, progress: Progressbar, list_name: list, 
                                         if ask2:
                                             if os.path.exists(s):
                                                 shutil.rmtree(cache_path)
-                                            shutil.move(s, d)
+                                            run_command(s, d, 3)
                                         else:
                                             keberhasilan += 1
                                             user = True
@@ -156,7 +168,7 @@ def perintah(progress_window: Toplevel, progress: Progressbar, list_name: list, 
                                             os.remove(cache_path)
                                         else:
                                             shutil.rmtree(cache_path)
-                                shutil.move(s, d)
+                                run_command(s, d, 3)
                             keberhasilan += 1
                         except Exception as error:
                             if cache:
