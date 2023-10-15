@@ -12,26 +12,48 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import shutil
-import os
-from tkinter import Toplevel
+from tkinter import Toplevel, IntVar
 from tkinter.ttk import Progressbar
 from tkinter.messagebox import *
 from tkinter.messagebox import WARNING
+import os
+import copycut
 import paths
 
-def run_command(s: str, d: str, method: int):
-    """1 = copy (file)\n
-    2 = copytree (folder)\n
-    3 = move (file/folder)"""
-    if method == 1:
-        shutil.copy(s, d)
-    elif method == 2:
-        shutil.copytree(s, d, dirs_exist_ok = True)
+def make_dir(metode_file: bool, s: str, d: str):
+    if metode_file and d.count(paths.symbol): #jika destinasinya file (ada) dan ada simbol jalur
+        try:
+            os.makedirs(os.path.dirname(d))
+        except Exception as error: #jika sudah ada
+            pass
     else:
-        shutil.move(s, d)
+        try:
+            os.makedirs(d)
+        except Exception as error: #jika sudah ada
+            pass
 
-def perintah(progress_window: Toplevel, progress: Progressbar, list_name: list, list_source: list, list_destination: list, copy: bool, tanya: int) -> str: #using annotations so that it is clear to me what needs to be included
+def cek_ada(path, skip: IntVar):
+    if os.path.exists(path):
+        if skip.get() == 1:
+            return "skip"
+        ask = askyesnocancel(
+            title = "Warning",
+            message = f'We found the same file/folder name in "{path}", overwrite it?\nOr "Cancel" to stop the process even though the previous action has already been processed',
+            icon = WARNING
+        )
+        return ask
+    return "tidak ada"
+
+def perintah(progress_window: Toplevel,
+            progress: Progressbar,
+            list_name: list,
+            list_source: list,
+            list_destination: list,
+            copy: bool,
+            timpa: IntVar,
+            skip: IntVar):
+    """tanya: Overwrites for all\n
+    skip: Skip overwrites"""
     progress_window.grab_set()
     progress_window.focus_set()
     progress_window.deiconify()
@@ -41,12 +63,17 @@ def perintah(progress_window: Toplevel, progress: Progressbar, list_name: list, 
         progress_window.grab_release()
         progress_window.withdraw()
 
+    list_path = [] #0 = name, 1 = list source, 2 = list destination
+    berhasil = 0
+    kesalahan = []
+    operasi_cancel = False
     user = False
-    operasi = True
-    keberhasilan = 0
-    kegagalan = 0
-    cache = ""
-    for ln, ls, ld in zip(list_name, list_source, list_destination): #setiap perintah
+    if skip.get() == 1:
+        tindakan_skip = True
+    else:
+        tindakan_skip = False
+
+    for ln, ls, ld in zip(list_name, list_source, list_destination):
         source = ls.replace('" "', '"')
         source = source.split('"')
         while True:
@@ -61,140 +88,121 @@ def perintah(progress_window: Toplevel, progress: Progressbar, list_name: list, 
                 destination.remove("")
             except:
                 break #buat daftar untuk setiap jalur
-        if copy:
-            for s in source: #setiap jalur sumber
-                if operasi:
-                    for d in destination: #setiap jalur tujuan
-                        try:
-                            metode = None
-                            if os.path.isfile(s):
-                                metode = "file"
-                            else:
-                                metode = "folder"
-                            if os.path.isfile(d) and d.count(paths.after_symbol) and not os.path.isdir(os.path.dirname(d)) and os.path.exists(s): #file in destination if doesn't exists
-                                os.makedirs(os.path.dirname(d))
-                            elif not os.path.exists(d) and os.path.exists(s): #folder in destination if doesn't exists
-                                os.makedirs(d)
-                            if os.path.exists(fr"{d}\{os.path.basename(s)}") and tanya == 0:
-                                cache_path = fr"{d}\{os.path.basename(s)}" #file or folder in destination folder
-                                ask = askyesnocancel(
-                                    title = "Warning",
-                                    message = f'We found the same file/folder name in "{cache_path}", overwrite it?\nOr "Cancel" to stop the process even though the previous action has already been processed',
-                                    icon = WARNING
-                                )
-                                if ask == True: #Yes
-                                    if metode == "file":
-                                        run_command(s, d, 1)
-                                    else:
-                                        run_command(s, cache_path, 2)
-                                elif ask == False: #No
-                                    keberhasilan += 1
-                                    user = True
-                                    continue
-                                else: #Cancel
-                                    operasi = False
-                                    break
-                            else:
-                                if metode == "file":
-                                    run_command(s, d, 1)
-                                else:
-                                    cache_path = fr"{d}\{os.path.basename(s)}"
-                                    run_command(s, cache_path, 2)
-                            keberhasilan +=1
-                        except Exception as error:
-                            if cache and not cache.count(f'({ln}: "{error}")'):
-                                cache += f', ({ln}: "{error}")'
-                            else:
-                                cache = f'({ln}: "{error}")'
-                            kegagalan +=1
-                else:
-                    break
+        list_path.append((ln, source, destination))
+
+    try:
+        if copy: #sekali dijalankan
+            for p in list_path: #perulangan
+                for s in p[1]: #perulangan dalam perulangan
+                    if operasi_cancel: #perulangan dalam perulangan dalam perulangan
+                        break
+
+                    for d in p[2]:
+                        if os.path.isfile(s):
+                            metode_file = True
+                        elif os.path.isdir(s):
+                            metode_file = False
+                        else:
+                            kesalahan.append(f'{p[1]}: "{s}" does not exist')
+                            continue
+
+                        make_dir(metode_file, s, d)
+
+                        path = os.path.join(d, os.path.basename(s))
+
+                        if timpa.get() == 0:
+                            dicek = cek_ada(path, skip)
+
+                            if dicek == "skip": #jika ada
+                                continue
+                            if dicek == True: #Yes
+                                pass
+                            elif dicek == False: #No
+                                user = True
+                                continue
+                            elif dicek == None: #Cancel
+                                operasi_cancel = True
+                                break
+
+                        hasil = copycut.salin(p[0], s, d, metode_file)
+
+                        if hasil:
+                            kesalahan.append(hasil)
+
+                        berhasil += 1
         else:
-            for s in source:
-                if operasi:
-                    for d in destination:
-                        try:
-                            metode = None
-                            if os.path.isfile(s):
-                                metode = "file"
-                            elif os.path.isdir(s):
-                                metode = "folder"
-                            else:
-                                metode = False
-                            if os.path.isfile(d) and d.count(paths.after_symbol) and not os.path.isdir(os.path.dirname(d)) and os.path.exists(s): #file in destination
-                                os.makedirs(os.path.dirname(d))
-                            elif not os.path.exists(d) and os.path.exists(s): #folder in destination
-                                os.makedirs(d)
-                            if os.path.exists(fr"{d}\{os.path.basename(s)}") and tanya == 0:
-                                cache_path = fr"{d}\{os.path.basename(s)}" #file or folder in destination folder
-                                ask = askyesnocancel(
-                                    title = "Warning",
-                                    message = f'We found the same file/folder name in "{cache_path}", overwrite it?\nOr "Cancel" to stop the process even though the previous action has already been processed',
-                                    icon = WARNING
-                                )
-                                if ask == True: #Yes
-                                    if metode == "file":
-                                        if os.path.exists(s):
-                                            os.remove(cache_path)
-                                        run_command(s, d, 3)
-                                    elif metode == "folder":
-                                        ask2 = askyesno(
-                                            title = "Warning 2",
-                                            message = "Are you sure you want to overwrite it even if there are files and/or folders in it?\nThis action will delete all files and folders inside! Unless the action of moving the folder states an error",
-                                            icon = WARNING
-                                        )
-                                        if ask2:
-                                            if os.path.exists(s):
-                                                shutil.rmtree(cache_path)
-                                            run_command(s, d, 3)
-                                        else:
-                                            keberhasilan += 1
-                                            user = True
-                                            continue
-                                    else:
-                                        raise Exception("Can't find path: "+cache_path)
-                                elif ask == False: #No
-                                    keberhasilan += 1
-                                    user = True
-                                    continue
-                                else: #Cancel
-                                    operasi = False
-                                    break
-                            else:
-                                if os.path.exists(s): #Mengamankan file/folder dari tindakan penghapusan kalau shutil.move() akan memberikan kesalahan
-                                    if os.path.exists(fr"{d}\{os.path.basename(s)}"):
-                                        cache_path = fr"{d}\{os.path.basename(s)}"
-                                        if metode == "file":
-                                            os.remove(cache_path)
-                                        else:
-                                            shutil.rmtree(cache_path)
-                                run_command(s, d, 3)
-                            keberhasilan += 1
-                        except Exception as error:
-                            if cache:
-                                cache += f', ({ln}: "{error}")'
-                            else:
-                                cache = f'({ln}: "{error}")'
-                            kegagalan += 1
-                else:
-                    break
+            for p in list_path: #perulangan
+                for s in p[1]: #perulangan dalam perulangan
+                    if operasi_cancel: #perulangan dalam perulangan dalam perulangan
+                        break
+
+                    for d in p[2]:
+                        if os.path.isfile(s):
+                            metode_file = True
+                        elif os.path.isdir(s):
+                            metode_file = False
+                        else:
+                            kesalahan.append(f'{p[1]}: "{s}" does not exist')
+                            continue
+
+                        make_dir(metode_file, s, d)
+
+                        path = os.path.join(d, os.path.basename(s))
+
+                        if timpa.get() == 0:
+                            dicek = cek_ada(path, skip)
+
+                            if dicek == "skip": #jika ada
+                                continue
+                            elif dicek == True: #Yes
+                                pass
+                            elif dicek == False: #No
+                                user = True
+                                continue
+                            elif dicek == None: #Cancel
+                                operasi_cancel = True
+                                break
+
+                        hasil = copycut.pindah(p[0], s, d, metode_file)
+
+                        if hasil:
+                            kesalahan.append(hasil)
+                        
+                        berhasil += 1
+    except Exception as error:
+        kesalahan.append(str(error))
+
+    hentikan_jendela_progress()
+
     if copy:
         tindakan = "COPIED"
     else:
         tindakan = "MOVED"
+
     if user:
         tambahan = " AND SOME CANCELLATIONS"
+    elif tindakan_skip:
+        tambahan = " AND SOME SKIP"
     else:
         tambahan = ""
-    if keberhasilan and not kegagalan:
-        hentikan_jendela_progress()
-        return f"SUCCESSFULLY {tindakan} FILE(S)"+cache+tambahan
-    elif keberhasilan and kegagalan:
-        hentikan_jendela_progress()
-        return f"SUCCESSFULLY {tindakan} FILE(S) WITH ERROR(S): "+cache+tambahan
-    elif operasi:
-        hentikan_jendela_progress()
-        return "ERROR(S): "+cache
+
+    salah = ", ".join(kesalahan)
+    if len(salah) > 160:
+        with open("errors.txt", "w") as o:
+            o.write("This file will be deleted and overwritten if a very long error occurs again in the future!\n\n")
+            for error in kesalahan:
+                o.write(error.replace("\\\\", chr(92))+"\n") #.replace() only applied when in Windows
+        salah = f'(SEE "{os.path.join(os.getcwd(), "errors.txt")}")'
+    if berhasil and kesalahan:
+        teks = f"SUCCESSFULLY {tindakan} FILE(S) WITH ERROR(S): "+salah+tambahan
+    elif berhasil and tambahan:
+        teks = f"SUCCESSFULLY {tindakan} FILE(S)"+tambahan
+    elif berhasil:
+        teks = f"SUCCESSFULLY {tindakan} FILE(S)"
+    elif tindakan_skip:
+        teks = "SKIP"
+    elif operasi_cancel or user:
+        teks = "CANCELED"
     else:
-        hentikan_jendela_progress()
-        return "CANCELED"
+        teks = "ERROR(S): "+salah
+    return teks
