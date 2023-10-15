@@ -1,4 +1,4 @@
-# """Copyright © 2023 APGR22
+# Copyright © 2023 APGR22
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -10,7 +10,7 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License."""
+# limitations under the License.
 
 from tkinter import *
 from tkinter.ttk import Progressbar
@@ -33,8 +33,6 @@ warna_teks_tidak_aktif = "#aaaaaa"
 latar_belakang_centang = "#686868"
 latar_belakang_kotak_centang_aktif = "#ffffff"
 latar_belakang_entry = "#565656"
-label_slbr = "#25dafd"
-label_slbre = "#ffea3c"
 latar_belakang_checkbutton = "#686e61"
 latar_belakang_checkbutton_aktif = "#ffffff"
 teks_checkbutton = "#ffffff"
@@ -62,6 +60,9 @@ font_teks = ("Helvetica", ukuran_teks)
 # platform.system = tes_darwin
 
 class gaya:
+    def gaya_label(obj: Label):
+        obj.config(bg=latar_belakang, fg=warna_teks)
+
     def gaya_tombol(obj: Label, callable: object | bool, *args: tuple, **pilihan):
         """jika sudah berada di *args, maka bebas menambahkan apa saja, kecuali **pilihan"""
         default_fg = '#ffffff'
@@ -111,11 +112,12 @@ class gaya:
         obj.config(textvariable=var, bg=latar_belakang_entry, fg=warna_teks, font=font_teks)
 
         if nama and jendela:
+            #"https://stackoverflow.com/questions/1976007/what-characters-are-forbidden-in-windows-and-linux-directory-names"
             if platform.system() == "Windows":
                 karakter = '\\/:*?"<>|'
 
                 def tandai():
-                    if obj.get().startswith(" ") or obj.get().endswith(" ") or obj.get().endswith("."):
+                    if obj.get().startswith(" "):
                         more_obj["label_name"].config(bg="#ff0000")
                     else:
                         more_obj["label_name"].config(bg="#4b4b4b")
@@ -126,7 +128,7 @@ class gaya:
             elif platform.system() == "Linux":
                 karakter = "/"
             else: #Darwin
-                karakter = ":" #Based on Finder
+                karakter = ":" #only for filename
             def pilihan_karakter(S):
                 if len(S) == 1:
                     if S in karakter: #kalau mengetikkan karakter yang dilarang
@@ -245,12 +247,12 @@ class opsi:
                     if d1:
                         d1 = '" "'.join(str(x) for x in d1)
                         d1 = '"'+d1+'"'
-                        d1 = d1.replace(paths.before_symbol, paths.after_symbol)
+                        d1 = paths.ganti_simbol(d1)
                     config_entry(direktori, entry_direktori, d1)
                 else:
                     d0 = askdirectory(parent=jendela_tanya, title="Directory")
                     if d0:
-                        d0 = d0.replace(paths.before_symbol, paths.after_symbol)
+                        d0 = paths.ganti_simbol(d0)
                         d0 = '"'+d0+'"'
                     config_entry(direktori, entry_direktori, d0)
             elif dr_or_tj == "tj":
@@ -259,12 +261,12 @@ class opsi:
                     if t1:
                         t1 = '" "'.join(str(x) for x in t1)
                         t1 = '"'+t1+'"'
-                        t1 = t1.replace(paths.before_symbol, paths.after_symbol)
+                        t1 = paths.ganti_simbol(t1)
                     config_entry(tujuan, entry_tujuan, t1)
                 else:
                     t0 = askdirectory(parent=jendela_tanya, title="Directory")
                     if t0:
-                        t0 = t0.replace(paths.before_symbol, paths.after_symbol)
+                        t0 = paths.ganti_simbol(t0)
                         t0 = '"'+t0+'"'
                     config_entry(tujuan, entry_tujuan, t0)
 
@@ -411,7 +413,7 @@ class opsi:
     def jalankan_perintah(progress_window: Toplevel, progress: Progressbar, copy: bool, snama: list, fperintah: list, tperintah: list):
         """if copy == False: cut"""
         if snama and fperintah and tperintah:
-            hasil = command.perintah(progress_window, progress, snama, fperintah, tperintah, copy, konfirmasi_timpa.get())
+            hasil = command.perintah(progress_window, progress, snama, fperintah, tperintah, copy, konfirmasi_timpa, konfirmasi_lewati)
             if hasil.count("SUCCESSFULLY"):
                 showinfo(
                     title = "Info",
@@ -421,6 +423,11 @@ class opsi:
                 showinfo(
                     title = "Info",
                     message = "CANCELED BY USER"
+                )
+            elif hasil == "SKIP":
+                showinfo(
+                    title = "Info",
+                    message = "SKIPPED BY USER"
                 )
             else:
                 showerror(
@@ -434,11 +441,12 @@ class opsi:
             )
 
 def tombol(root: Tk, snama: list, fperintah: list, tperintah: list, nama_edit_timpa: dict, progress_window: Toplevel, progress: Progressbar):
-    global nama, direktori, tujuan, konfirmasi_timpa
+    global nama, direktori, tujuan, konfirmasi_timpa, konfirmasi_lewati
     nama = StringVar()
     direktori = StringVar()
     tujuan = StringVar()
     konfirmasi_timpa = IntVar()
+    konfirmasi_lewati = IntVar()
 
     new = Label(root, text="New")
     new.pack(side=LEFT, fill=Y)
@@ -470,17 +478,39 @@ def tombol(root: Tk, snama: list, fperintah: list, tperintah: list, nama_edit_ti
     def cut_bind(event):
         threading.Thread(target = opsi.jalankan_perintah, args=(progress_window, progress, False, snama, fperintah, tperintah)).start()
 
-    timpa = Checkbutton(root, text = "Overwrites all") #bg harus sama dengan jendela_utama
+    def timpa_dicentang():
+        if konfirmasi_timpa.get() == 1:
+            timpa.select()
+            lewati.deselect()
+    def lewati_dicentang():
+        if konfirmasi_lewati.get() == 1:
+            timpa.deselect()
+            lewati.select()
+
+    timpa = Checkbutton(root, text = "Overwrites all", command = timpa_dicentang) #bg harus sama dengan jendela_utama
     timpa.pack(side=RIGHT, fill=Y)
     gaya.gaya_tombol_cek(timpa, konfirmasi_timpa)
 
+    atau = Label(root, text="or")
+    atau.pack(side=RIGHT, fill=Y)
+    gaya.gaya_label(atau)
+
+    lewati = Checkbutton(root, text = "Skip", command = lewati_dicentang) #bg harus sama dengan jendela_utama
+    lewati.pack(side=RIGHT, fill=Y)
+    gaya.gaya_tombol_cek(lewati, konfirmasi_lewati)
+
     root.bind("<Control-n>", new_bind)
-    root.bind("<Control-N>", new_bind)
-    root.bind("<Alt-d>", edit_bind)
-    root.bind("<Alt-D>", edit_bind)
+    root.bind("<Control-N>", new_bind)              #(if Caps lock on)
+    root.bind("<Alt-d>", edit_bind)                 #based on Chrome
+    root.bind("<Alt-D>", edit_bind)                 #based on Chrome (if Caps lock on)
     root.bind("<Control-d>", delete_bind)
-    root.bind("<Control-D>", delete_bind)
+    root.bind("<Control-D>", delete_bind)           #(if Caps lock on)
+    root.bind("<Delete>", delete_bind)              #based on Ubuntu
     root.bind("<Control-c>", copy_bind)
-    root.bind("<Control-C>", copy_bind)
+    root.bind("<Control-C>", copy_bind)             #(if Caps lock on)
+    root.bind("<Control-Shift-c>", copy_bind)       #based on Linux terminal
+    root.bind("<Control-Shift-C>", copy_bind)       #based on Linux terminal (if Caps lock on)
     root.bind("<Control-x>", cut_bind)
-    root.bind("<Control-X>", cut_bind)
+    root.bind("<Control-X>", cut_bind)              #(if Caps lock on)
+    root.bind("<Control-Shift-x>", cut_bind)        #based on Linux terminal
+    root.bind("<Control-Shift-X>", cut_bind)        #based on Linux terminal (if Caps lock on)
