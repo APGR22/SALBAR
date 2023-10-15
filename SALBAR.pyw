@@ -1,4 +1,4 @@
-# """Copyright © 2023 APGR22
+# Copyright © 2023 APGR22
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -10,13 +10,17 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License."""
+# limitations under the License.
 
 #utama
 #icon
 #yang mengerjakan
 #"buat" dan "hapus" hanya sekali eksekusi
 #"edit" dan "timpa" perlu komunikasi dengan dibawahnya
+
+if __name__ != "__main__":
+    import sys
+    sys.exit()
 
 from tkinter import *
 from tkinter.ttk import Progressbar
@@ -95,11 +99,11 @@ bingkai = kanvas_bingkai[1]
 
 gui.tombol(jendela_utama, snama, fperintah, tperintah, nama_edit_timpa, jendela_progress, progress)
 
-deteksi = sorted(pathlib.Path("Paths").iterdir(), key=os.path.getctime)
+deteksi = sorted(pathlib.Path("Paths").iterdir(), key=os.path.getctime) #can't do this on Linux but get modified time
 daftar_program = [] #daftar program yang untuk dijalankan
 for x in deteksi:
     p_cache = "".join(str(x))
-    p_cache = p_cache.replace("Paths" + paths.after_symbol, "")
+    p_cache = p_cache.replace("Paths" + paths.symbol, "")
     if os.path.splitext(p_cache)[1] == ".slbr":
         daftar_program.append(p_cache)
 
@@ -109,7 +113,7 @@ def perbarui_daftar_program():
     daftar_program.clear()
     for x in deteksi:
         p_cache = "".join(str(x))
-        p_cache = p_cache.replace("Paths" + paths.after_symbol, "")
+        p_cache = p_cache.replace("Paths" + paths.symbol, "")
         if os.path.splitext(p_cache)[1] == ".slbr":
             daftar_program.append(p_cache)
 
