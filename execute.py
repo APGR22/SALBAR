@@ -35,19 +35,17 @@ def eksekusi(
     tambahkan = menambah tanpa bergantung row
     """
     def centang():
-        fp = d
-        tp = t
         if globals()[f"{n}_var"].get() == 1:
-            if fp not in fperintah or tp not in tperintah or n not in snama:
-                fperintah.append(fp)
-                tperintah.append(tp)
+            if d not in fperintah or t not in tperintah or n not in snama:
+                fperintah.append(d)
+                tperintah.append(t)
                 snama.append(n)
             globals()[f"{n}_cb"]["fg"] = "#000000"
             globals()[f"{n}_cb"]["bg"] = "#ffffff"
         else:
             try:
-                fperintah.remove(fp)
-                tperintah.remove(tp)
+                fperintah.remove(d)
+                tperintah.remove(t)
                 snama.remove(n)
             except:
                 pass
