@@ -13,6 +13,8 @@
 # limitations under the License.
 
 from tkinter import *
+import identify_path
+
 def eksekusi(
         pilihan: Frame,
         r: int | None,
@@ -54,12 +56,36 @@ def eksekusi(
 
     globals()[f"{n}_var"] = IntVar()
 
-    globals()[f"{n}_cb"] = Checkbutton(pilihan, text=n, bg="#686e61", fg='#ffffff', variable=globals()[f"{n}_var"], onvalue=1, offvalue=0, command=centang, font=("Helvetica", 10), height=2)
+    globals()[f"{n}_cb"] = Checkbutton(pilihan,
+                                       text=n,
+                                       bg="#686e61",
+                                       fg='#ffffff',
+                                       variable=globals()[f"{n}_var"],
+                                       onvalue=1, offvalue=0,
+                                       command=centang,
+                                       font=("Helvetica", 10),
+                                       height=2)
     if tambahkan:
         globals()[f"{n}_cb"].grid(sticky='w', pady=1)
     else:
         globals()[f"{n}_cb"].grid(row=r, sticky='w', pady=1)
 
+    if identify_path.separate(d, True) or identify_path.separate(t, True):
+        label_text="Has absolute path"
+        label_fg="#25dafd"
+    else:
+        label_text="Has relative path"
+        label_fg="#ffea3c"
+    globals()[f"{n}_label"] = Label(pilihan,
+                                    text=label_text,
+                                    bg=pilihan["bg"],
+                                    fg=label_fg,
+                                    height=2)
+    globals()[f"{n}_label"].grid(row=globals()[f"{n}_cb"].grid_info()["row"], #bila gunakan r yang kadang-kadang tidak ada, lebih baik dari grid_info dari cb
+                                    column=1,
+                                    sticky="w",
+                                    pady=1)
+
     globals()[f"{n}_centang"] = centang
 
-    return globals()[f"{n}_var"], globals()[f"{n}_cb"], globals()[f"{n}_centang"]
+    return globals()[f"{n}_var"], globals()[f"{n}_cb"], globals()[f"{n}_centang"], globals()[f"{n}_label"]

@@ -132,6 +132,7 @@ def baca(nama: str, r: int | None = None, tambahkan: bool = False):
     globals()[f"{nama}_var"] = hasil[0]
     globals()[f"{nama}_cb"] = hasil[1]
     globals()[f"{nama}_centang"] = hasil[2]
+    globals()[f"{nama}_label"] = hasil[3]
 
 def mulai():
     nama_kesalahan = []
@@ -165,6 +166,7 @@ def perbarui():
         cache_row = globals()[f"{nama_edit_timpa['nama_lama']}_cb"].grid_info()["row"]
         del globals()[f"{nama_edit_timpa['nama_lama']}_var"], globals()[f"{nama_edit_timpa['nama_lama']}_centang"]
         globals()[f"{nama_edit_timpa['nama_lama']}_cb"].destroy()
+        globals()[f"{nama_edit_timpa['nama_lama']}_label"].destroy()
         baca(nama_edit_timpa["nama"], cache_row)
         nama_edit_timpa.clear()
         daftar_pembaruan = os.listdir("Paths")
@@ -176,10 +178,12 @@ def perbarui():
     elif len(nama_edit_timpa) == 1: #timpa
         del globals()[f"{nama_edit_timpa['nama_timpa']}_var"], globals()[f"{nama_edit_timpa['nama_timpa']}_centang"]
         globals()[f"{nama_edit_timpa['nama_timpa']}_cb"].destroy()
+        globals()[f"{nama_edit_timpa['nama_timpa']}_label"].destroy()
         baca(nama_edit_timpa["nama_timpa"], tambahkan = True)
         perbarui_daftar_program()
         for r, i in enumerate(daftar_program):
             globals()[f"{os.path.splitext(i)[0]}_cb"].grid(row=r) #config ulang
+            globals()[f"{os.path.splitext(i)[0]}_label"].grid(row=r) #config ulang
         nama_edit_timpa.clear()
         fperintah.clear()
         tperintah.clear()
@@ -198,15 +202,18 @@ def perbarui():
                 globals()[f"{os.path.splitext(i)[0]}_centang"]() #pastikan fungsinya berjalan tanpa checkbutton
                 del globals()[f"{os.path.splitext(i)[0]}_var"], globals()[f"{os.path.splitext(i)[0]}_centang"]
                 globals()[f"{os.path.splitext(i)[0]}_cb"].destroy()
+                globals()[f"{os.path.splitext(i)[0]}_label"].destroy()
 
             perbarui_daftar_program()
             for r, i in enumerate(daftar_program):
                 #config ulang
                 try:
                     globals()[f"{os.path.splitext(i)[0]}_cb"].grid(row=r)
+                    globals()[f"{os.path.splitext(i)[0]}_label"].grid(row=r)
                 except KeyError: #seandainya kesalahannya berasal dari tindakan pengguna yang rename file .slbr secara manual
                     baca(os.path.splitext(i)[0])
                     globals()[f"{os.path.splitext(i)[0]}_cb"].grid(row=r)
+                    globals()[f"{os.path.splitext(i)[0]}_label"].grid(row=r)
 
         daftar_pembaruan = daftar_pembaruan_2
         perbarui_daftar_program()

@@ -19,6 +19,7 @@ from tkinter.messagebox import WARNING
 import os
 import copycut
 import paths
+import identify_path
 
 def make_dir(metode_file: bool, s: str, d: str):
     if metode_file and d.count(paths.symbol): #jika destinasinya file (ada) dan ada simbol jalur
@@ -74,20 +75,8 @@ def perintah(progress_window: Toplevel,
         tindakan_skip = False
 
     for ln, ls, ld in zip(list_name, list_source, list_destination):
-        source = ls.replace('" "', '"')
-        source = source.split('"')
-        while True:
-            try:
-                source.remove("")
-            except:
-                break #buat daftar untuk setiap jalur
-        destination = ld.replace('" "', '"')
-        destination = destination.split('"')
-        while True:
-            try:
-                destination.remove("")
-            except:
-                break #buat daftar untuk setiap jalur
+        source = identify_path.separate(ls)
+        destination = identify_path.separate(ld)
         list_path.append((ln, source, destination))
 
     try:
