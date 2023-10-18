@@ -51,7 +51,7 @@ def buat(root: Tk | Toplevel, nama: StringVar, direktori: StringVar, tujuan: Str
     if len(n) > 250:
         return showwarning(
             title="Warning",
-            message="Sorry, you can't insert over 250 words!",
+            message="Sorry, you can't insert over 250 characters!",
             parent=root
         )
     if nama_lama: #mustahil akan dikirim "" alias kosong
