@@ -74,7 +74,7 @@ def eksekusi(
         label_text="Has absolute path"
         label_fg="#25dafd"
     else:
-        label_text="Has relative path"
+        label_text="Hasn't absolute path"
         label_fg="#ffea3c"
     globals()[f"{n}_label"] = Label(pilihan,
                                     text=label_text,
