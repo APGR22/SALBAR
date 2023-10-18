@@ -71,10 +71,10 @@ def eksekusi(
         globals()[f"{n}_cb"].grid(row=r, sticky='w', pady=1)
 
     if identify_path.separate(d, True) or identify_path.separate(t, True):
-        label_text="Has absolute path"
+        label_text="     Has absolute path"
         label_fg="#25dafd"
     else:
-        label_text="Has no absolute path"
+        label_text="     Has no absolute path"
         label_fg="#ffea3c"
     globals()[f"{n}_label"] = Label(pilihan,
                                     text=label_text,
