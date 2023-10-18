@@ -18,8 +18,9 @@
 #"buat" dan "hapus" hanya sekali eksekusi
 #"edit" dan "timpa" perlu komunikasi dengan dibawahnya
 
+import sys
+
 if __name__ != "__main__":
-    import sys
     sys.exit()
 
 from tkinter import *
@@ -34,7 +35,16 @@ import execute
 import paths
 import threading
 
-os.chdir(os.path.dirname(__file__)) #configuration for all to apply
+pesan_error_menanti = ""
+
+if len(sys.argv) > 1: #jika ada argumen lainnya tidak peduli dengan argumen lainnya setelah kedua
+    if sys.argv[1] == "main-path": #jika itu adalah perintah
+        os.chdir(os.path.dirname(__file__)) #configuration for all to apply
+    elif sys.argv[1].startswith("directory="): #jika itu adalah perintah
+        try:
+            os.chdir(sys.argv[1].replace("directory=", ""))
+        except Exception as error:
+            pesan_error_menanti = error #if it calls showerror() too early then the icon implementation won't work
 
 jendela_utama = Tk()
 jendela_utama.title("SALBAR")
@@ -241,5 +251,16 @@ kanvas.bind("<Control-a>",  pilih)
 kanvas.bind("<Control-A>",  pilih)
 kanvas.bind("<Control-Shift-a>",  tidak_pilih)
 kanvas.bind("<Control-Shift-A>",  tidak_pilih)
+
+if len(sys.argv) > 2:
+    showinfo(
+        title="Info",
+        message="Requires only one argument"
+    )
+elif pesan_error_menanti:
+    showerror(
+        title="Error",
+        message=f'Failed to set path: {pesan_error_menanti}\nSo set the path to: "{os.getcwd()}"'
+        )
 
 jendela_utama.mainloop()
