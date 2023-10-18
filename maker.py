@@ -48,10 +48,10 @@ def buat(root: Tk | Toplevel, nama: StringVar, direktori: StringVar, tujuan: Str
                 message = "You entered a prohibited filename. Try again",
                 parent=root
             )
-    if len(n) > 251:
+    if len(n) > 250:
         return showwarning(
             title="Warning",
-            message="Sorry, you can't insert over 251 words!",
+            message="Sorry, you can't insert over 250 words!",
             parent=root
         )
     if nama_lama: #mustahil akan dikirim "" alias kosong
