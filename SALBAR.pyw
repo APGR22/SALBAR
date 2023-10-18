@@ -263,4 +263,17 @@ if pesan_error_menanti:
         message=f'Failed to set path: {pesan_error_menanti}\nSo set the path to: "{os.getcwd()}"'
         )
 
+
+def check_deletion():
+    if not os.path.isdir("Paths"):
+        showwarning(
+            title="Warning!!!",
+            message='The “Paths” folder has been deleted, SALBAR will be close'
+        )
+        sys.exit()
+    jendela_utama.after(10, check_deletion)
+
+check_deletion()
+
+
 jendela_utama.mainloop()
