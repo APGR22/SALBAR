@@ -16,7 +16,7 @@ import os
 import shutil
 import paths
 
-def pindah_folder(s: str, d: str): #If it proves to be very slow compared to copytree+rmtree then you can give me criticism as well as a solution if any
+def pindah_folder(s: str, d: str): #If it proves to be very slow and inefficient compared to copytree+rmtree then you can give me criticism as well as a solution if any
     path_s = []
     only_path_s = []
     path_d = []
