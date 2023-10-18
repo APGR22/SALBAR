@@ -257,7 +257,7 @@ if len(sys.argv) > 2:
         title="Info",
         message="Requires only one argument"
     )
-elif pesan_error_menanti:
+if pesan_error_menanti:
     showerror(
         title="Error",
         message=f'Failed to set path: {pesan_error_menanti}\nSo set the path to: "{os.getcwd()}"'
