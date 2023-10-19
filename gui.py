@@ -379,7 +379,7 @@ class opsi:
             )
             if ask: #Jika "Ok"
                 for f in snama:
-                    os.remove(paths.path+f+".slbr")
+                    os.remove(paths.PATH+f+".slbr")
 
                 snama.clear()
                 fperintah.clear()
