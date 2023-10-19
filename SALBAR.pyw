@@ -113,7 +113,7 @@ deteksi = sorted(pathlib.Path("Paths").iterdir(), key=os.path.getctime) #can't d
 daftar_program = [] #daftar program yang untuk dijalankan
 for x in deteksi:
     p_cache = "".join(str(x))
-    p_cache = p_cache.replace("Paths" + paths.symbol, "")
+    p_cache = p_cache.replace("Paths" + paths.PATH_SYMBOL, "")
     if os.path.splitext(p_cache)[1] == ".slbr":
         daftar_program.append(p_cache)
 
@@ -123,7 +123,7 @@ def perbarui_daftar_program():
     daftar_program.clear()
     for x in deteksi:
         p_cache = "".join(str(x))
-        p_cache = p_cache.replace("Paths" + paths.symbol, "")
+        p_cache = p_cache.replace("Paths" + paths.PATH_SYMBOL, "")
         if os.path.splitext(p_cache)[1] == ".slbr":
             daftar_program.append(p_cache)
 

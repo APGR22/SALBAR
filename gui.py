@@ -44,25 +44,23 @@ class gaya:
 
     def gaya_tombol(obj: Label, callable: object | bool, *args: tuple, **pilihan):
         """jika sudah berada di *args, maka bebas menambahkan apa saja, kecuali **pilihan"""
-        default_fg = '#ffffff'
-        default_bg = '#4b4b4b'
-        klik_fg = '#ffffff'
-        klik_bg = '#1f1f1f'
-        lepas_fg = default_fg
-        lepas_bg = default_bg
-        border_bg = "#929292"
-        global f
-        f = False
-        obj.config(fg=default_fg, bg=default_bg, highlightthickness=1, highlightbackground=border_bg, height=BUTTON_HEIGHT, font=FONT)
+        DEFAULT_FOREGROUND = '#ffffff'
+        DEFAULT_BACKGROUND = '#4b4b4b'
+        EVENT_CLICK_FOREGROUND = '#ffffff'
+        EVENT_CLICK_BACKGROUND = '#1f1f1f'
+        HIGHLIGHT_BACKGROUND = "#929292"
+        global clicked
+        clicked = False
+        obj.config(fg=DEFAULT_FOREGROUND, bg=DEFAULT_BACKGROUND, highlightthickness=1, highlightbackground=HIGHLIGHT_BACKGROUND, height=BUTTON_HEIGHT, font=FONT)
         try:
             obj.config(width=pilihan["my_width"])
         except:
             obj.config(width=BUTTON_WIDTH)
         def klik(event):
-            obj.config(fg=klik_fg, bg=klik_bg)
+            obj.config(fg=EVENT_CLICK_FOREGROUND, bg=EVENT_CLICK_BACKGROUND)
         def lepas(event):
-            obj.config(fg=lepas_fg, bg=lepas_bg)
-            if f:
+            obj.config(fg=DEFAULT_FOREGROUND, bg=DEFAULT_BACKGROUND)
+            if clicked:
                 try:
                     if callable and args:
                         pilihan["thread"](target = callable, args = args).start()
@@ -74,11 +72,11 @@ class gaya:
                     elif callable:
                         callable()
         def kursor(event):
-            global f
-            f = True
+            global clicked
+            clicked = True
         def tinggal(event):
-            global f
-            f = False
+            global clicked
+            clicked = False
         obj.bind("<Enter>", kursor) #kursor mengenainya
         obj.bind("<Leave>", tinggal) #kursor meninggalkannya
         obj.bind("<ButtonPress-1>", klik) #Button-1==tombol berubah tapi ketika kursor meninggalkannya
