@@ -16,4 +16,4 @@ def separate(path: str, return_bool: bool = False) -> (list | bool):
                 break
         return abs_path
     else:
-        return path
+        return paths
