@@ -42,45 +42,48 @@ class gaya:
     def gaya_label(obj: Label):
         obj.config(bg=BACKGROUND, fg=TEXT_COLOR)
 
-    def gaya_tombol(obj: Label, callable: object | bool, *args: tuple, **pilihan):
+    def gaya_tombol(obj: Label, callable: object | bool, *args: tuple, **option):
         """jika sudah berada di *args, maka bebas menambahkan apa saja, kecuali **pilihan"""
+
         DEFAULT_FOREGROUND = '#ffffff'
         DEFAULT_BACKGROUND = '#4b4b4b'
         EVENT_CLICK_FOREGROUND = '#ffffff'
         EVENT_CLICK_BACKGROUND = '#1f1f1f'
         HIGHLIGHT_BACKGROUND = "#929292"
+
         global clicked
         clicked = False
+
         obj.config(fg=DEFAULT_FOREGROUND, bg=DEFAULT_BACKGROUND, highlightthickness=1, highlightbackground=HIGHLIGHT_BACKGROUND, height=BUTTON_HEIGHT, font=FONT)
         try:
-            obj.config(width=pilihan["my_width"])
+            obj.config(width=option["my_width"])
         except:
             obj.config(width=BUTTON_WIDTH)
-        def klik(event):
+        def click(event):
             obj.config(fg=EVENT_CLICK_FOREGROUND, bg=EVENT_CLICK_BACKGROUND)
-        def lepas(event):
+        def release(event):
             obj.config(fg=DEFAULT_FOREGROUND, bg=DEFAULT_BACKGROUND)
             if clicked:
                 try:
                     if callable and args:
-                        pilihan["thread"](target = callable, args = args).start()
+                        option["thread"](target = callable, args = args).start()
                     elif callable:
-                        pilihan["thread"](target = callable).start()
+                        option["thread"](target = callable).start()
                 except:
                     if callable and args:
                         callable(*args)
                     elif callable:
                         callable()
-        def kursor(event):
+        def cursor_enter(event):
             global clicked
             clicked = True
-        def tinggal(event):
+        def cursor_exit(event):
             global clicked
             clicked = False
-        obj.bind("<Enter>", kursor) #kursor mengenainya
-        obj.bind("<Leave>", tinggal) #kursor meninggalkannya
-        obj.bind("<ButtonPress-1>", klik) #Button-1==tombol berubah tapi ketika kursor meninggalkannya
-        obj.bind("<ButtonRelease-1>", lepas) #ButtonRelease-1==tombol semula setelah ditekan
+        obj.bind("<Enter>", cursor_enter) #kursor mengenainya
+        obj.bind("<Leave>", cursor_exit) #kursor meninggalkannya
+        obj.bind("<ButtonPress-1>", click) #Button-1==tombol berubah tapi ketika kursor meninggalkannya
+        obj.bind("<ButtonRelease-1>", release) #ButtonRelease-1==tombol semula setelah ditekan
 
     def gaya_tombol_cek(obj: Checkbutton, var: IntVar):
         obj.config(variable=var, onvalue=1, offvalue=0, bg=BACKGROUND, activebackground=CHECKBUTTON_ACTIVE_BACKGROUND, fg=TEXT_COLOR, selectcolor=CHECKBUTTON_BOX_BACKGROUND)
