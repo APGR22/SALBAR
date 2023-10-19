@@ -224,12 +224,12 @@ class opsi:
                     if d1:
                         d1 = '" "'.join(str(x) for x in d1)
                         d1 = '"'+d1+'"'
-                        d1 = paths.ganti_simbol(d1)
+                        d1 = paths.replace_path_symbol(d1)
                     config_entry(direktori, entry_direktori, d1)
                 else:
                     d0 = askdirectory(parent=jendela_tanya, title="Directory")
                     if d0:
-                        d0 = paths.ganti_simbol(d0)
+                        d0 = paths.replace_path_symbol(d0)
                         d0 = '"'+d0+'"'
                     config_entry(direktori, entry_direktori, d0)
             elif dr_or_tj == "tj":
@@ -238,12 +238,12 @@ class opsi:
                     if t1:
                         t1 = '" "'.join(str(x) for x in t1)
                         t1 = '"'+t1+'"'
-                        t1 = paths.ganti_simbol(t1)
+                        t1 = paths.replace_path_symbol(t1)
                     config_entry(tujuan, entry_tujuan, t1)
                 else:
                     t0 = askdirectory(parent=jendela_tanya, title="Directory")
                     if t0:
-                        t0 = paths.ganti_simbol(t0)
+                        t0 = paths.replace_path_symbol(t0)
                         t0 = '"'+t0+'"'
                     config_entry(tujuan, entry_tujuan, t0)
 

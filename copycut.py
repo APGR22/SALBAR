@@ -51,14 +51,14 @@ def pindah_folder(s: str, d: str): #If it proves to be very slow and inefficient
 def salin(n, s: str, d: str, method_file: bool):
     if method_file: #file
         try:
-            shutil.copy(paths.ganti_simbol(s),
-                        paths.ganti_simbol(d))
+            shutil.copy(paths.replace_path_symbol(s),
+                        paths.replace_path_symbol(d))
         except Exception as error:
             return f"{n}: {error}"
     else: #folder
         try:
-            shutil.copytree(paths.ganti_simbol(s),
-                            paths.ganti_simbol(os.path.join(d, os.path.basename(s))), #harus pakai penggantian karena membiarkan d dan s masih dalam simbol yang belum diubah
+            shutil.copytree(paths.replace_path_symbol(s),
+                            paths.replace_path_symbol(os.path.join(d, os.path.basename(s))), #harus pakai penggantian karena membiarkan d dan s masih dalam simbol yang belum diubah
                             dirs_exist_ok = True)
         except Exception as error:
             return f"{n}: {error}"
@@ -66,8 +66,8 @@ def salin(n, s: str, d: str, method_file: bool):
 def pindah(n, s: str, d: str, method_file: bool):
     if method_file: #file
         try:
-            shutil.move(paths.ganti_simbol(s),
-                        paths.ganti_simbol(d))
+            shutil.move(paths.replace_path_symbol(s),
+                        paths.replace_path_symbol(d))
         except Exception as error:
             return f"{n}: {error}"
     else: #folder
@@ -75,7 +75,7 @@ def pindah(n, s: str, d: str, method_file: bool):
             #bertindak seperti move padahal copy
             # salin(n, s, d, method_file)
             # shutil.rmtree(s)
-            pindah_folder(paths.ganti_simbol(s),
-                        paths.ganti_simbol(d))
+            pindah_folder(paths.replace_path_symbol(s),
+                        paths.replace_path_symbol(d))
         except Exception as error:
             return f"{n}: {error}"

@@ -19,7 +19,7 @@ if platform.system() == "Windows":
 else: #Linux and Darwin
     PATH_SYMBOL = "/"
 
-def ganti_simbol(path: str) -> str:
+def replace_path_symbol(path: str) -> str:
     path = path.replace("\\", PATH_SYMBOL)
     path = path.replace("/", PATH_SYMBOL)
         
