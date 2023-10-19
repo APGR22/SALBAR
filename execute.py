@@ -62,7 +62,8 @@ def eksekusi(
 
     globals()[f"{n}_var"] = IntVar()
 
-    globals()[f"{n}_cb"] = Checkbutton(pilihan,
+    globals()[f"{n}_cb"] = Checkbutton(
+                                       pilihan,
                                        text=n,
                                        bg=CHECKBUTTON_DESELECTED_BACKGROUND,
                                        fg=CHECKBUTTON_DESELECTED_FOREGROUND,
@@ -70,7 +71,9 @@ def eksekusi(
                                        onvalue=1, offvalue=0,
                                        command=centang,
                                        font=FONT,
-                                       height=2)
+                                       height=2,
+                                       highlightthickness=0
+                                       )
     if tambahkan:
         globals()[f"{n}_cb"].grid(sticky='w', pady=1)
     else:
@@ -82,15 +85,19 @@ def eksekusi(
     else:
         label_text="     Has no absolute path"
         label_fg="#ffea3c"
-    globals()[f"{n}_label"] = Label(pilihan,
+    globals()[f"{n}_label"] = Label(
+                                    pilihan,
                                     text=label_text,
                                     bg=pilihan["bg"],
                                     fg=label_fg,
-                                    height=2)
-    globals()[f"{n}_label"].grid(row=globals()[f"{n}_cb"].grid_info()["row"], #bila gunakan r yang kadang-kadang tidak ada, lebih baik dari grid_info dari cb
+                                    height=2
+                                    )
+    globals()[f"{n}_label"].grid(
+                                    row=globals()[f"{n}_cb"].grid_info()["row"], #bila gunakan r yang kadang-kadang tidak ada, lebih baik dari grid_info dari cb
                                     column=1,
                                     sticky="w",
-                                    pady=1)
+                                    pady=1
+                                )
 
     globals()[f"{n}_centang"] = centang
 

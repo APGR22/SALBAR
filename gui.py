@@ -86,10 +86,10 @@ class gaya:
         obj.bind("<ButtonRelease-1>", release) #ButtonRelease-1==tombol semula setelah ditekan
 
     def gaya_tombol_cek(obj: Checkbutton, var: IntVar):
-        obj.config(variable=var, onvalue=1, offvalue=0, bg=BACKGROUND, activebackground=CHECKBUTTON_ACTIVE_BACKGROUND, fg=TEXT_COLOR, selectcolor=CHECKBUTTON_BOX_BACKGROUND)
+        obj.config(variable=var, onvalue=1, offvalue=0, bg=BACKGROUND, activebackground=CHECKBUTTON_ACTIVE_BACKGROUND, fg=TEXT_COLOR, selectcolor=CHECKBUTTON_BOX_BACKGROUND, highlightthickness=0)
 
     def gaya_entry(obj: Entry, var: StringVar, nama: bool = False, jendela: Toplevel = False, **more_obj):
-        obj.config(textvariable=var, bg=ENTRY_BACKGROUND, fg=TEXT_COLOR, font=FONT)
+        obj.config(textvariable=var, bg=ENTRY_BACKGROUND, fg=TEXT_COLOR, font=FONT, highlightthickness=0)
 
         if nama and jendela:
             #"https://stackoverflow.com/questions/1976007/what-characters-are-forbidden-in-windows-and-linux-directory-names"
@@ -123,9 +123,15 @@ class gaya:
             batas_karakter = (jendela.register(pilihan_karakter), '%S')
             obj.config(validate="key", validatecommand=batas_karakter)
 
-        def select_all(event):
+        def selected(event):
             obj.selection_range(0, END)
-        obj.bind("<FocusIn>", select_all)
+            obj.config(highlightthickness=1)
+        
+        def deselected(event):
+            obj.config(highlightthickness=0)
+        
+        obj.bind("<FocusIn>", selected)
+        obj.bind("<FocusOut>", deselected)
 
 def bingkai(root: Tk):
     bingkai_utama = Frame(root)
