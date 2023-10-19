@@ -24,44 +24,23 @@ import maker
 import paths
 import threading
 
-latar_belakang = "#737373"
-latar_belakang_bingkai = "#3c4038"
-latar_belakang_bingkai_options = "#606060"
-latar_belakang_bingkai_tombol_options = "#444444"
-warna_teks = "#ffffff"
-warna_teks_tidak_aktif = "#aaaaaa"
-latar_belakang_centang = "#686868"
-latar_belakang_kotak_centang_aktif = "#ffffff"
-latar_belakang_entry = "#565656"
-latar_belakang_checkbutton = "#686e61"
-latar_belakang_checkbutton_aktif = "#ffffff"
-teks_checkbutton = "#ffffff"
-teks_checkbutton_aktif = "#000000"
+BACKGROUND = "#737373"
+FRAME_BACKGROUND = "#3c4038"
+CHECKBUTTON_BOX_BACKGROUND = "#686868"
+CHECKBUTTON_ACTIVE_BACKGROUND = "#ffffff"
+ENTRY_BACKGROUND = "#565656"
 
-lebar_tombol = 8
-tinggi_tombol = 2
+BUTTON_WIDTH = 8
+BUTTON_HEIGHT = 2
+ADD_PATH_BUTTON_WIDTH = 2
 
-lebar_tombol_select_f = 14
-lebar_tombol_titik = 2
-
-lebar_centang = False
-tinggi_centang = 2
-
-ukuran_teks = 10
-font_teks = ("Helvetica", ukuran_teks)
-
-#for test
-# def tes_linux():
-#     return "Linux"
-
-# def tes_darwin():
-#     return "Darwin"
-
-# platform.system = tes_darwin
+TEXT_COLOR = "#ffffff"
+FONT_SIZE = 10
+FONT = ("Helvetica", FONT_SIZE)
 
 class gaya:
     def gaya_label(obj: Label):
-        obj.config(bg=latar_belakang, fg=warna_teks)
+        obj.config(bg=BACKGROUND, fg=TEXT_COLOR)
 
     def gaya_tombol(obj: Label, callable: object | bool, *args: tuple, **pilihan):
         """jika sudah berada di *args, maka bebas menambahkan apa saja, kecuali **pilihan"""
@@ -74,11 +53,11 @@ class gaya:
         border_bg = "#929292"
         global f
         f = False
-        obj.config(fg=default_fg, bg=default_bg, highlightthickness=1, highlightbackground=border_bg, height=tinggi_tombol, font=font_teks)
+        obj.config(fg=default_fg, bg=default_bg, highlightthickness=1, highlightbackground=border_bg, height=BUTTON_HEIGHT, font=FONT)
         try:
-            obj.config(width=pilihan["s_lebar_tombol"])
+            obj.config(width=pilihan["my_width"])
         except:
-            obj.config(width=lebar_tombol)
+            obj.config(width=BUTTON_WIDTH)
         def klik(event):
             obj.config(fg=klik_fg, bg=klik_bg)
         def lepas(event):
@@ -106,10 +85,10 @@ class gaya:
         obj.bind("<ButtonRelease-1>", lepas) #ButtonRelease-1==tombol semula setelah ditekan
 
     def gaya_tombol_cek(obj: Checkbutton, var: IntVar):
-        obj.config(variable=var, onvalue=1, offvalue=0, bg=latar_belakang, activebackground=latar_belakang_kotak_centang_aktif, fg=warna_teks, disabledforeground=warna_teks_tidak_aktif, selectcolor=latar_belakang_centang)
+        obj.config(variable=var, onvalue=1, offvalue=0, bg=BACKGROUND, activebackground=CHECKBUTTON_ACTIVE_BACKGROUND, fg=TEXT_COLOR, selectcolor=CHECKBUTTON_BOX_BACKGROUND)
 
     def gaya_entry(obj: Entry, var: StringVar, nama: bool = False, jendela: Toplevel = False, **more_obj):
-        obj.config(textvariable=var, bg=latar_belakang_entry, fg=warna_teks, font=font_teks)
+        obj.config(textvariable=var, bg=ENTRY_BACKGROUND, fg=TEXT_COLOR, font=FONT)
 
         if nama and jendela:
             #"https://stackoverflow.com/questions/1976007/what-characters-are-forbidden-in-windows-and-linux-directory-names"
@@ -152,7 +131,7 @@ def bingkai(root: Tk):
     bingkai_utama.pack(fill=BOTH, expand=True)
     bingkai_kedua = Frame(root)
     bingkai_kedua.pack(fill=BOTH)
-    kanvas = Canvas(bingkai_utama, bg=latar_belakang_bingkai, highlightthickness=0)
+    kanvas = Canvas(bingkai_utama, bg=FRAME_BACKGROUND, highlightthickness=0)
     kanvas.pack(side=LEFT, fill=BOTH, expand=True)
 
     gulir = Scrollbar(bingkai_utama,orient=VERTICAL, command=kanvas.yview)
@@ -178,7 +157,7 @@ def bingkai(root: Tk):
     kanvas.bind_all("<MouseWheel>", on_mousewheel)
     kanvas.focus_set()
 
-    bingkai = Frame(kanvas, bg=latar_belakang_bingkai)
+    bingkai = Frame(kanvas, bg=FRAME_BACKGROUND)
 
     kanvas.create_window((0,0), window=bingkai, anchor="nw")
 
@@ -200,7 +179,7 @@ class opsi:
         jendela_tanya.grab_set()
         jendela_tanya.title("Configuration")
         jendela_tanya.resizable(0,0)
-        jendela_tanya.configure(bg=latar_belakang)
+        jendela_tanya.configure(bg=BACKGROUND)
         jendela_tanya.focus_set()
         #GUI
         lebar_layar = root.winfo_screenwidth()
@@ -285,12 +264,12 @@ class opsi:
         def pack_checkbutton(checkbutton: Checkbutton):
             checkbutton.pack(side="right")
 
-        f_label_nama = Frame(jendela_tanya, bg=latar_belakang)
+        f_label_nama = Frame(jendela_tanya, bg=BACKGROUND)
         pack_frame(f_label_nama)
-        label_nama_title = Label(f_label_nama, text="Name:", bg=latar_belakang, fg=warna_teks)
+        label_nama_title = Label(f_label_nama, text="Name:", bg=BACKGROUND, fg=TEXT_COLOR)
         pack_label_1(label_nama_title)
 
-        f_entry_nama = Frame(jendela_tanya, bg=latar_belakang, height=tinggi_tombol)
+        f_entry_nama = Frame(jendela_tanya, bg=BACKGROUND, height=BUTTON_HEIGHT)
         pack_frame(f_entry_nama)
         entry_nama = Entry(f_entry_nama)
         pack_entry(entry_nama)
@@ -301,16 +280,16 @@ class opsi:
 
         gaya.gaya_entry(entry_nama, nama, True, jendela_tanya, label_name = label_nama)
 
-        gaya.gaya_tombol(label_nama, d_file_folder, "n", s_lebar_tombol=0) #Hasilnya 14
+        gaya.gaya_tombol(label_nama, d_file_folder, "n", my_width=0) #Hasilnya 14
 
         nama_lama = entry_nama.get()
         #
-        f_label_direktori = Frame(jendela_tanya, bg=latar_belakang)
+        f_label_direktori = Frame(jendela_tanya, bg=BACKGROUND)
         pack_frame(f_label_direktori)
-        label_direktori_title = Label(f_label_direktori, text="Source path:", bg=latar_belakang, fg=warna_teks)
+        label_direktori_title = Label(f_label_direktori, text="Source path:", bg=BACKGROUND, fg=TEXT_COLOR)
         pack_label_1(label_direktori_title)
 
-        f_entry_direktori = Frame(jendela_tanya, bg=latar_belakang)
+        f_entry_direktori = Frame(jendela_tanya, bg=BACKGROUND)
         pack_frame(f_entry_direktori)
         entry_direktori = Entry(f_entry_direktori)
         pack_entry(entry_direktori)
@@ -320,17 +299,17 @@ class opsi:
         gaya.gaya_tombol_cek(direktori_centang, d_f_or_f)
         label_direktori = Label(f_entry_direktori, text="...")
         pack_label_2(label_direktori)
-        gaya.gaya_tombol(label_direktori, d_file_folder, "dr", s_lebar_tombol=lebar_tombol_titik)
+        gaya.gaya_tombol(label_direktori, d_file_folder, "dr", my_width=ADD_PATH_BUTTON_WIDTH)
         label_plus_direktori = Label(f_entry_direktori, text="+...")
         pack_label_2(label_plus_direktori)
-        gaya.gaya_tombol(label_plus_direktori, d_file_folder, "dr", "tambahkan", s_lebar_tombol=lebar_tombol_titik)
+        gaya.gaya_tombol(label_plus_direktori, d_file_folder, "dr", "tambahkan", my_width=ADD_PATH_BUTTON_WIDTH)
         #
-        f_label_tujuan = Frame(jendela_tanya, bg=latar_belakang)
+        f_label_tujuan = Frame(jendela_tanya, bg=BACKGROUND)
         pack_frame(f_label_tujuan)
-        label_tujuan_title = Label(f_label_tujuan, text="Destination path:", bg=latar_belakang, fg=warna_teks)
+        label_tujuan_title = Label(f_label_tujuan, text="Destination path:", bg=BACKGROUND, fg=TEXT_COLOR)
         pack_label_1(label_tujuan_title)
 
-        f_entry_tujuan = Frame(jendela_tanya, bg=latar_belakang)
+        f_entry_tujuan = Frame(jendela_tanya, bg=BACKGROUND)
         pack_frame(f_entry_tujuan)
         entry_tujuan = Entry(f_entry_tujuan)
         pack_entry(entry_tujuan)
@@ -340,10 +319,10 @@ class opsi:
         gaya.gaya_tombol_cek(tujuan_centang, t_f_or_f)
         label_tujuan = Label(f_entry_tujuan, text="...")
         pack_label_2(label_tujuan)
-        gaya.gaya_tombol(label_tujuan, d_file_folder, "tj", s_lebar_tombol=lebar_tombol_titik)
+        gaya.gaya_tombol(label_tujuan, d_file_folder, "tj", my_width=ADD_PATH_BUTTON_WIDTH)
         label_plus_tujuan = Label(f_entry_tujuan, text="+...")
         pack_label_2(label_plus_tujuan)
-        gaya.gaya_tombol(label_plus_tujuan, d_file_folder, "tj", "tambahkan", s_lebar_tombol=lebar_tombol_titik)
+        gaya.gaya_tombol(label_plus_tujuan, d_file_folder, "tj", "tambahkan", my_width=ADD_PATH_BUTTON_WIDTH)
 
         entry_nama.bind("<Up>", lambda e:entry_tujuan.focus_set())
         entry_direktori.bind("<Up>", lambda e:entry_nama.focus_set())

@@ -22,7 +22,7 @@ import paths
 import identify_path
 
 def make_dir(metode_file: bool, s: str, d: str):
-    if metode_file and d.count(paths.symbol): #jika destinasinya file (ada) dan ada simbol jalur
+    if metode_file and d.count(paths.PATH_SYMBOL): #jika destinasinya file (ada) dan ada simbol jalur
         try:
             os.makedirs(os.path.dirname(d))
         except Exception as error: #jika sudah ada

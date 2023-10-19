@@ -13,7 +13,13 @@
 # limitations under the License.
 
 from tkinter import *
+from gui import FONT
 import identify_path
+
+CHECKBUTTON_SELECTED_FOREGROUND = "#000000"
+CHECKBUTTON_SELECTED_BACKGROUND = "#ffffff"
+CHECKBUTTON_DESELECTED_FOREGROUND = "#ffffff"
+CHECKBUTTON_DESELECTED_BACKGROUND = "#686e61"
 
 def eksekusi(
         pilihan: Frame,
@@ -42,8 +48,8 @@ def eksekusi(
                 fperintah.append(d)
                 tperintah.append(t)
                 snama.append(n)
-            globals()[f"{n}_cb"]["fg"] = "#000000"
-            globals()[f"{n}_cb"]["bg"] = "#ffffff"
+            globals()[f"{n}_cb"]["fg"] = CHECKBUTTON_SELECTED_FOREGROUND
+            globals()[f"{n}_cb"]["bg"] = CHECKBUTTON_SELECTED_BACKGROUND
         else:
             try:
                 fperintah.remove(d)
@@ -51,19 +57,19 @@ def eksekusi(
                 snama.remove(n)
             except:
                 pass
-            globals()[f"{n}_cb"]["fg"] = "#ffffff"
-            globals()[f"{n}_cb"]["bg"] = "#686e61"
+            globals()[f"{n}_cb"]["fg"] = CHECKBUTTON_DESELECTED_FOREGROUND
+            globals()[f"{n}_cb"]["bg"] = CHECKBUTTON_DESELECTED_BACKGROUND
 
     globals()[f"{n}_var"] = IntVar()
 
     globals()[f"{n}_cb"] = Checkbutton(pilihan,
                                        text=n,
-                                       bg="#686e61",
-                                       fg='#ffffff',
+                                       bg=CHECKBUTTON_DESELECTED_BACKGROUND,
+                                       fg=CHECKBUTTON_DESELECTED_FOREGROUND,
                                        variable=globals()[f"{n}_var"],
                                        onvalue=1, offvalue=0,
                                        command=centang,
-                                       font=("Helvetica", 10),
+                                       font=FONT,
                                        height=2)
     if tambahkan:
         globals()[f"{n}_cb"].grid(sticky='w', pady=1)

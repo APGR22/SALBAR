@@ -49,7 +49,7 @@ if len(sys.argv) > 1: #jika ada argumen lainnya tidak peduli dengan argumen lain
 jendela_utama = Tk()
 jendela_utama.title("SALBAR")
 jendela_utama.minsize(width=532, height=440)
-jendela_utama.configure(bg=gui.latar_belakang)
+jendela_utama.configure(bg=gui.BACKGROUND)
 lebar_layar = jendela_utama.winfo_screenwidth()
 tinggi_layar = jendela_utama.winfo_screenheight()
 default_w = 752

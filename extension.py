@@ -25,17 +25,17 @@ class ekstensi:
         teks = f"""{bahasa_1}{d}<<;
 {bahasa_2}{t}<<;"""
         if nama_lama:
-            if os.path.isfile(paths.path+nama_lama+".slbr"):
-                os.rename(paths.path+nama_lama+".slbr", paths.path+nama+".slbr")
-        o = open(paths.path+nama+".slbr", "w")
+            if os.path.isfile(paths.PATH+nama_lama+".slbr"):
+                os.rename(paths.PATH+nama_lama+".slbr", paths.PATH+nama+".slbr")
+        o = open(paths.PATH+nama+".slbr", "w")
         o.write(teks)
         o.close()
 
     def read(nama: str):
-        o = open(paths.path+nama+".slbr", "r")
+        o = open(paths.PATH+nama+".slbr", "r")
         teks = o.read()
         o.close()
-        baris = open(paths.path+nama+".slbr", "r").readlines()
+        baris = open(paths.PATH+nama+".slbr", "r").readlines()
         if not (
             teks.count(bahasa_1) == 1 and
             teks.count(bahasa_2) == 1 and

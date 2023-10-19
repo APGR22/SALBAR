@@ -15,14 +15,14 @@
 import platform
 
 if platform.system() == "Windows":
-    symbol = "\\"
+    PATH_SYMBOL = "\\"
 else: #Linux and Darwin
-    symbol = "/"
+    PATH_SYMBOL = "/"
 
 def ganti_simbol(path: str) -> str:
-    path = path.replace("\\", symbol)
-    path = path.replace("/", symbol)
+    path = path.replace("\\", PATH_SYMBOL)
+    path = path.replace("/", PATH_SYMBOL)
         
     return path
 
-path = "Paths"+symbol
+PATH = "Paths"+PATH_SYMBOL
