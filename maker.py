@@ -55,7 +55,7 @@ def buat(root: Tk | Toplevel, nama: StringVar, direktori: StringVar, tujuan: Str
             parent=root
         )
     if nama_lama: #mustahil akan dikirim "" alias kosong
-        if os.path.isfile(paths.path+n+".slbr") and n != nama_lama:
+        if os.path.isfile(paths.PATH+n+".slbr") and n != nama_lama:
             return showinfo(
                 title = "Info",
                 message = "We found the filename is the same as your entry name. Try again",
@@ -72,7 +72,7 @@ def buat(root: Tk | Toplevel, nama: StringVar, direktori: StringVar, tujuan: Str
                 parent=root
             )
         return root.destroy()
-    if os.path.isfile(paths.path+n+".slbr"):
+    if os.path.isfile(paths.PATH+n+".slbr"):
         ask = askokcancel(
             title="Warning",
             message='We found the filename is the same as your entry name.\nClick "Ok" to overwrite (old file will be deleted)',
@@ -80,7 +80,7 @@ def buat(root: Tk | Toplevel, nama: StringVar, direktori: StringVar, tujuan: Str
             parent=root
         )
         if ask: #True
-            os.remove(paths.path+n+".slbr")
+            os.remove(paths.PATH+n+".slbr")
             daftar_nama_edit_timpa["nama_timpa"] = n
         else:
             return ""
