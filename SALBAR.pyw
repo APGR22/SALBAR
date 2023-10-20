@@ -24,15 +24,14 @@ if __name__ != "__main__":
     sys.exit()
 
 from tkinter import *
+from tkinter import dialog
 from tkinter.ttk import Progressbar
 from tkinter.messagebox import *
 import gui
 from PIL import Image, ImageTk
 import os
-import pathlib
 import extension
 import execute
-import paths
 import threading
 
 pesan_error_menanti = ""
