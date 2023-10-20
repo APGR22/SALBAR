@@ -109,23 +109,30 @@ bingkai = kanvas_bingkai[1]
 
 gui.tombol(jendela_utama, snama, fperintah, tperintah, nama_edit_timpa, jendela_progress, progress)
 
-deteksi = sorted(pathlib.Path("Paths").iterdir(), key=os.path.getctime) #can't do this on Linux but get modified time
-daftar_program = [] #daftar program yang untuk dijalankan
-for x in deteksi:
-    p_cache = "".join(str(x))
-    p_cache = p_cache.replace("Paths" + paths.PATH_SYMBOL, "")
-    if os.path.splitext(p_cache)[1] == ".slbr":
-        daftar_program.append(p_cache)
+program_list = [] #daftar program yang untuk dijalankan
+excluded_program_list = [] #daftar program yang dilarang untuk dijalankan
 
-def perbarui_daftar_program():
-    global daftar_program
-    deteksi = sorted(pathlib.Path("Paths").iterdir(), key=os.path.getctime)
-    daftar_program.clear()
-    for x in deteksi:
-        p_cache = "".join(str(x))
-        p_cache = p_cache.replace("Paths" + paths.PATH_SYMBOL, "")
-        if os.path.splitext(p_cache)[1] == ".slbr":
-            daftar_program.append(p_cache)
+def refresh_program_list():
+    program_list.clear()
+    program_list.extend(os.listdir("Paths"))
+    program_time_list = {}
+    for program in program_list:
+        name = os.path.splitext(program)[0]
+        date = extension.ekstensi.read_time(name)
+        #harus memasukkan isi kamus dengan tipe list
+        try:
+            program_time_list[date].append(name) #jika sudah ada date yang sama
+        except KeyError:
+            program_time_list[date] = [name]
+    results = []
+    for i in sorted(program_time_list): #sorted in date
+        for program in sorted(program_time_list[i]): #sorted in name, maybe?
+            if not program in excluded_program_list: #cek jika termasuk program yang dikecualikan
+                results.append(program)
+    program_list.clear()
+    program_list.extend(results)
+
+refresh_program_list() #start
 
 f_pilihan = Frame(bingkai, bg="#3c4038")
 f_pilihan.grid()
@@ -147,12 +154,13 @@ def baca(nama: str, r: int | None = None, tambahkan: bool = False):
 def mulai():
     nama_kesalahan = []
     kesalahan = []
-    for r, i in enumerate(daftar_program):
+    for r, i in enumerate(program_list):
         try:
-            baca(os.path.splitext(i)[0], r)
+            baca(i, r)
         except Exception as error:
             nama_kesalahan.append(i)
             kesalahan.append(error)
+            excluded_program_list.append(i)
     if nama_kesalahan:
         for i, j in zip(nama_kesalahan, kesalahan):
             showerror(
@@ -169,7 +177,7 @@ if len(daftar_pembaruan) > 744:
     )
 
 def perbarui():
-    global daftar_pembaruan, daftar_program
+    global daftar_pembaruan, program_list
     daftar_pembaruan_2 = os.listdir("Paths")
 
     if len(nama_edit_timpa) == 2: #edit
@@ -183,17 +191,17 @@ def perbarui():
         fperintah.clear()
         tperintah.clear()
         snama.clear()
-        perbarui_daftar_program()
+        refresh_program_list()
 
     elif len(nama_edit_timpa) == 1: #timpa
         del globals()[f"{nama_edit_timpa['nama_timpa']}_var"], globals()[f"{nama_edit_timpa['nama_timpa']}_centang"]
         globals()[f"{nama_edit_timpa['nama_timpa']}_cb"].destroy()
         globals()[f"{nama_edit_timpa['nama_timpa']}_label"].destroy()
         baca(nama_edit_timpa["nama_timpa"], tambahkan = True)
-        perbarui_daftar_program()
-        for r, i in enumerate(daftar_program):
-            globals()[f"{os.path.splitext(i)[0]}_cb"].grid(row=r) #config ulang
-            globals()[f"{os.path.splitext(i)[0]}_label"].grid(row=r) #config ulang
+        refresh_program_list()
+        for r, i in enumerate(program_list):
+            globals()[f"{i}_cb"].grid(row=r) #config ulang
+            globals()[f"{i}_label"].grid(row=r) #config ulang
         nama_edit_timpa.clear()
         fperintah.clear()
         tperintah.clear()
@@ -214,19 +222,19 @@ def perbarui():
                 globals()[f"{os.path.splitext(i)[0]}_cb"].destroy()
                 globals()[f"{os.path.splitext(i)[0]}_label"].destroy()
 
-            perbarui_daftar_program()
-            for r, i in enumerate(daftar_program):
+            refresh_program_list()
+            for r, i in enumerate(program_list):
                 #config ulang
                 try:
-                    globals()[f"{os.path.splitext(i)[0]}_cb"].grid(row=r)
-                    globals()[f"{os.path.splitext(i)[0]}_label"].grid(row=r)
+                    globals()[f"{i}_cb"].grid(row=r)
+                    globals()[f"{i}_label"].grid(row=r)
                 except KeyError: #seandainya kesalahannya berasal dari tindakan pengguna yang rename file .slbr secara manual
-                    baca(os.path.splitext(i)[0])
-                    globals()[f"{os.path.splitext(i)[0]}_cb"].grid(row=r)
-                    globals()[f"{os.path.splitext(i)[0]}_label"].grid(row=r)
+                    baca(i)
+                    globals()[f"{i}_cb"].grid(row=r)
+                    globals()[f"{i}_label"].grid(row=r)
 
         daftar_pembaruan = daftar_pembaruan_2
-        perbarui_daftar_program()
+        refresh_program_list()
 
     jendela_utama.after(100, perbarui)
 
@@ -238,14 +246,14 @@ def thread_mulai():
 jendela_utama.after(100, thread_mulai) #jangan pakai () agar tidak terpanggil
 
 def pilih(event):
-    for i in daftar_program: #kalau kosong maka for loop-nya tidak berjalan dan dikira selesai
-        globals()[f"{os.path.splitext(i)[0]}_cb"].select()
-        globals()[f"{os.path.splitext(i)[0]}_centang"]()
+    for i in program_list: #kalau kosong maka for loop-nya tidak berjalan dan dikira selesai
+        globals()[f"{i}_cb"].select()
+        globals()[f"{i}_centang"]()
 
 def tidak_pilih(event):
-    for i in daftar_program:
-        globals()[f"{os.path.splitext(i)[0]}_cb"].deselect()
-        globals()[f"{os.path.splitext(i)[0]}_centang"]()
+    for i in program_list:
+        globals()[f"{i}_cb"].deselect()
+        globals()[f"{i}_centang"]()
 
 kanvas.bind("<Control-a>",  pilih)
 kanvas.bind("<Control-A>",  pilih)
