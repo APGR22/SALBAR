@@ -92,7 +92,7 @@ def perintah(progress_window: Toplevel,
                         elif os.path.isdir(s):
                             metode_file = False
                         else:
-                            kesalahan.append(f'{p[1]}: "{s}" does not exist')
+                            kesalahan.append(f"{p[0]}: No source file or folder found: '{s}'")
                             continue
 
                         make_dir(metode_file, s, d)
@@ -117,6 +117,7 @@ def perintah(progress_window: Toplevel,
 
                         if hasil:
                             kesalahan.append(hasil)
+                            continue
 
                         berhasil += 1
         else:
@@ -131,7 +132,7 @@ def perintah(progress_window: Toplevel,
                         elif os.path.isdir(s):
                             metode_file = False
                         else:
-                            kesalahan.append(f'{p[1]}: "{s}" does not exist')
+                            kesalahan.append(f"{p[0]}: No source file or folder found: '{s}'")
                             continue
 
                         make_dir(metode_file, s, d)
@@ -156,6 +157,7 @@ def perintah(progress_window: Toplevel,
 
                         if hasil:
                             kesalahan.append(hasil)
+                            continue
                         
                         berhasil += 1
     except Exception as error:

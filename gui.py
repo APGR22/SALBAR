@@ -402,22 +402,22 @@ class opsi:
             hasil = command.perintah(progress_window, progress, snama, fperintah, tperintah, copy, konfirmasi_timpa, konfirmasi_lewati)
             if hasil.count("SUCCESSFULLY"):
                 showinfo(
-                    title = "Info",
+                    title = "Command-Info",
                     message = hasil
                 )
             elif hasil == "CANCELED":
                 showinfo(
-                    title = "Info",
+                    title = "Command-Info",
                     message = "CANCELED BY USER"
                 )
             elif hasil == "SKIP":
                 showinfo(
-                    title = "Info",
+                    title = "Command-Info",
                     message = "SKIPPED BY USER"
                 )
             else:
                 showerror(
-                    title = "Error",
+                    title = "Command-Error",
                     message = hasil
                 )
         else:
