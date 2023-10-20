@@ -30,7 +30,7 @@ class ekstensi:
         d = convert.make(direktori)
         t = convert.make(tujuan)
         if nama_lama:
-            make_time = ekstensi.read(nama_lama)[2]
+            make_time = ekstensi.read_time(nama_lama)
         else:
             make_time = get_time()
 
