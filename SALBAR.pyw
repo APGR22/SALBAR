@@ -24,7 +24,6 @@ if __name__ != "__main__":
     sys.exit()
 
 from tkinter import *
-from tkinter import dialog
 from tkinter.ttk import Progressbar
 from tkinter.messagebox import *
 import gui
