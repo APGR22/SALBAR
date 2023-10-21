@@ -13,8 +13,8 @@
 # limitations under the License.
 
 from tkinter import *
-from gui import FONT
-import identify_path
+from gui.styles import FONT
+import salbar_path
 
 CHECKBUTTON_SELECTED_FOREGROUND = "#000000"
 CHECKBUTTON_SELECTED_BACKGROUND = "#ffffff"
@@ -79,7 +79,7 @@ def eksekusi(
     else:
         globals()[f"{n}_cb"].grid(row=r, sticky='w', pady=1)
 
-    if identify_path.separate(d, True) or identify_path.separate(t, True):
+    if salbar_path.is_abs_path(d) or salbar_path.is_abs_path(t):
         label_text="     Has absolute path"
         label_fg="#25dafd"
     else:
