@@ -108,13 +108,25 @@ def refresh_program_list():
     program_list.extend(os.listdir("Paths"))
     program_time_list = {}
     for program in program_list:
-        name = os.path.splitext(program)[0]
-        date = extension.ekstensi.read_time(name)
-        #harus memasukkan isi kamus dengan tipe list
-        try:
-            program_time_list[date].append(name) #jika sudah ada date yang sama
-        except KeyError:
-            program_time_list[date] = [name]
+        if program.endswith(".slbr"):
+            name = program[:-5]
+            if name in excluded_program_list:
+                program_list.remove(program)
+            else:
+                try:
+                    extension.ekstensi.check_read(name)
+                    date = extension.ekstensi.read_time(name)
+                    #harus memasukkan isi kamus dengan tipe list
+                    try:
+                        program_time_list[date].append(name) #jika sudah ada date yang sama
+                    except KeyError:
+                        program_time_list[date] = [name]
+                except Exception as error:
+                    showerror(
+                        title="Error",
+                        message=f"{name}: {error}"
+                    )
+                    excluded_program_list.append(name)
     results = []
     for i in sorted(program_time_list): #sorted in date
         for program in sorted(program_time_list[i]): #sorted in name, maybe?
@@ -122,8 +134,6 @@ def refresh_program_list():
                 results.append(program)
     program_list.clear()
     program_list.extend(results)
-
-refresh_program_list() #start
 
 f_pilihan = Frame(bingkai, bg="#3c4038")
 f_pilihan.grid()
@@ -142,9 +152,111 @@ def baca(nama: str, r: int | None = None, tambahkan: bool = False):
     globals()[f"{nama}_centang"] = hasil[2]
     globals()[f"{nama}_label"] = hasil[3]
 
+def remove_non_slbr(daftar: list[str]):
+    daftar_cache = set(daftar) - set([name+".slbr" for name in excluded_program_list])
+    daftar.clear()
+    daftar.extend(daftar_cache)
+    for path in daftar:
+        if path[:-5] in excluded_program_list:
+            daftar.remove(path)
+        elif path.endswith(".slbr"):
+            try:
+                extension.ekstensi.check_read(path[:-5])
+            except Exception as error:
+                showerror(
+                    title="Error",
+                    message=f"{path[:-5]}: {error}"
+                )
+                excluded_program_list.append(path[:-5])
+                daftar.remove(path)
+        else:
+            daftar.remove(path)
+
+daftar_pembaruan = os.listdir("Paths")
+remove_non_slbr(daftar_pembaruan)
+
+if len(daftar_pembaruan) > 744:
+    showwarning(
+        title="Warning",
+        message="Check button exceeds 744.\nPossible rendering will be broken at the very bottom"
+    )
+
+def perbarui():
+    global daftar_pembaruan, program_list
+    daftar_pembaruan_2 = os.listdir("Paths")
+    remove_non_slbr(daftar_pembaruan_2)
+
+    if len(nama_edit_timpa) == 2: #edit
+        cache_row = globals()[f"{nama_edit_timpa['nama_lama']}_cb"].grid_info()["row"]
+        del globals()[f"{nama_edit_timpa['nama_lama']}_var"], globals()[f"{nama_edit_timpa['nama_lama']}_centang"]
+        globals()[f"{nama_edit_timpa['nama_lama']}_cb"].destroy()
+        globals()[f"{nama_edit_timpa['nama_lama']}_label"].destroy()
+        baca(nama_edit_timpa["nama"], cache_row)
+        nama_edit_timpa.clear()
+        fperintah.clear()
+        tperintah.clear()
+        snama.clear()
+
+    elif len(nama_edit_timpa) == 1: #timpa
+        try:
+            del globals()[f"{nama_edit_timpa['nama_timpa']}_var"], globals()[f"{nama_edit_timpa['nama_timpa']}_centang"]
+            globals()[f"{nama_edit_timpa['nama_timpa']}_cb"].destroy()
+            globals()[f"{nama_edit_timpa['nama_timpa']}_label"].destroy()
+        except:
+            try:
+                excluded_program_list.remove(nama_edit_timpa["nama_timpa"])
+            except:
+                pass
+        baca(nama_edit_timpa["nama_timpa"], tambahkan = True)
+        refresh_program_list()
+        for r, i in enumerate(program_list):
+            globals()[f"{i}_cb"].grid(row=r) #reconfig
+            globals()[f"{i}_label"].grid(row=r) #reconfig
+        nama_edit_timpa.clear()
+        fperintah.clear()
+        tperintah.clear()
+        snama.clear()
+        daftar_pembaruan_2 = os.listdir("Paths") #reconfig
+        remove_non_slbr(daftar_pembaruan_2)
+
+    elif daftar_pembaruan != daftar_pembaruan_2:
+        if len(daftar_pembaruan_2) > len(daftar_pembaruan): #tambah
+            jumlah = set(daftar_pembaruan_2) - set(daftar_pembaruan)
+            for i in jumlah:
+                baca(i[:-5], tambahkan=True)
+        else: #kurang
+            jumlah = set(daftar_pembaruan) - set(daftar_pembaruan_2)
+
+            for i in jumlah:
+                globals()[f"{i[:-5]}_cb"].deselect() #pastikan untuk membatalkan centangnya
+                globals()[f"{i[:-5]}_centang"]() #pastikan fungsinya berjalan tanpa checkbutton
+                del globals()[f"{i[:-5]}_var"], globals()[f"{i[:-5]}_centang"]
+                globals()[f"{i[:-5]}_cb"].destroy()
+                globals()[f"{i[:-5]}_label"].destroy()
+
+            refresh_program_list()
+            for r, i in enumerate(program_list):
+                #reconfig
+                try:
+                    globals()[f"{i}_cb"].grid(row=r)
+                    globals()[f"{i}_label"].grid(row=r)
+                except KeyError: #seandainya kesalahannya berasal dari tindakan pengguna yang rename file .slbr secara manual
+                    baca(i)
+                    globals()[f"{i}_cb"].grid(row=r)
+                    globals()[f"{i}_label"].grid(row=r)
+
+    daftar_pembaruan = daftar_pembaruan_2
+    refresh_program_list()
+
+    jendela_utama.after(100, perbarui)
+
+perbarui()
+
+#tidak bisa untuk threading semua kode
 def mulai():
     nama_kesalahan = []
     kesalahan = []
+    refresh_program_list() #start
     for r, i in enumerate(program_list):
         try:
             baca(i, r)
@@ -159,79 +271,6 @@ def mulai():
                 message=f"{i}: {j}"
             )
 
-daftar_pembaruan = os.listdir("Paths")
-
-if len(daftar_pembaruan) > 744:
-    showwarning(
-        title="Warning",
-        message="Check button exceeds 744.\nPossible rendering will be broken at the very bottom"
-    )
-
-def perbarui():
-    global daftar_pembaruan, program_list
-    daftar_pembaruan_2 = os.listdir("Paths")
-
-    if len(nama_edit_timpa) == 2: #edit
-        cache_row = globals()[f"{nama_edit_timpa['nama_lama']}_cb"].grid_info()["row"]
-        del globals()[f"{nama_edit_timpa['nama_lama']}_var"], globals()[f"{nama_edit_timpa['nama_lama']}_centang"]
-        globals()[f"{nama_edit_timpa['nama_lama']}_cb"].destroy()
-        globals()[f"{nama_edit_timpa['nama_lama']}_label"].destroy()
-        baca(nama_edit_timpa["nama"], cache_row)
-        nama_edit_timpa.clear()
-        daftar_pembaruan = os.listdir("Paths")
-        fperintah.clear()
-        tperintah.clear()
-        snama.clear()
-        refresh_program_list()
-
-    elif len(nama_edit_timpa) == 1: #timpa
-        del globals()[f"{nama_edit_timpa['nama_timpa']}_var"], globals()[f"{nama_edit_timpa['nama_timpa']}_centang"]
-        globals()[f"{nama_edit_timpa['nama_timpa']}_cb"].destroy()
-        globals()[f"{nama_edit_timpa['nama_timpa']}_label"].destroy()
-        baca(nama_edit_timpa["nama_timpa"], tambahkan = True)
-        refresh_program_list()
-        for r, i in enumerate(program_list):
-            globals()[f"{i}_cb"].grid(row=r) #config ulang
-            globals()[f"{i}_label"].grid(row=r) #config ulang
-        nama_edit_timpa.clear()
-        fperintah.clear()
-        tperintah.clear()
-        snama.clear()
-
-    elif daftar_pembaruan != daftar_pembaruan_2:
-        if len(daftar_pembaruan_2) > len(daftar_pembaruan): #tambah
-            jumlah = set(daftar_pembaruan_2) - set(daftar_pembaruan)
-            for i in jumlah:
-                baca(os.path.splitext(i)[0], tambahkan=True)
-        else: #kurang
-            jumlah = set(daftar_pembaruan) - set(daftar_pembaruan_2)
-
-            for i in jumlah:
-                globals()[f"{os.path.splitext(i)[0]}_cb"].deselect() #pastikan untuk membatalkan centangnya
-                globals()[f"{os.path.splitext(i)[0]}_centang"]() #pastikan fungsinya berjalan tanpa checkbutton
-                del globals()[f"{os.path.splitext(i)[0]}_var"], globals()[f"{os.path.splitext(i)[0]}_centang"]
-                globals()[f"{os.path.splitext(i)[0]}_cb"].destroy()
-                globals()[f"{os.path.splitext(i)[0]}_label"].destroy()
-
-            refresh_program_list()
-            for r, i in enumerate(program_list):
-                #config ulang
-                try:
-                    globals()[f"{i}_cb"].grid(row=r)
-                    globals()[f"{i}_label"].grid(row=r)
-                except KeyError: #seandainya kesalahannya berasal dari tindakan pengguna yang rename file .slbr secara manual
-                    baca(i)
-                    globals()[f"{i}_cb"].grid(row=r)
-                    globals()[f"{i}_label"].grid(row=r)
-
-        daftar_pembaruan = daftar_pembaruan_2
-        refresh_program_list()
-
-    jendela_utama.after(100, perbarui)
-
-perbarui()
-
-#tidak bisa untuk threading semua kode
 def thread_mulai():
     threading.Thread(target = mulai).start()
 jendela_utama.after(100, thread_mulai) #jangan pakai () agar tidak terpanggil

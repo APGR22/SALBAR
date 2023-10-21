@@ -45,7 +45,7 @@ class ekstensi:
         o.write(teks)
         o.close()
 
-    def read(name: str):
+    def check_read(name):
         with open(paths.PATH+name+".slbr", "r") as o:
             teks = o.read()
 
@@ -80,6 +80,10 @@ class ekstensi:
             len(baris) == 3
             ):
             raise Exception("there is modification")
+
+    def read(name: str):
+        with open(paths.PATH+name+".slbr", "r") as o:
+            baris = o.readlines()
         hasil_d = baris[0].split(SYNTAX_STRING_1)[1].split("<<;")[0]
         hasil_t = baris[1].split(SYNTAX_STRING_2)[1].split("<<;")[0]
         hasil_d = convert.read(hasil_d)
