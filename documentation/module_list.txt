@@ -1,0 +1,14 @@
+tkinter
+
+internal modules:
+	sys
+	os
+	shutil
+	platform
+	threading
+	base64
+	time
+
+external modules:
+	pillow
+	fonttools
