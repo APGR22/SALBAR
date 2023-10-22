@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from tkinter import *
+from tkinter import ttk
 from gui.styles import *
 import gui.icon as icon
 import salbar_path
@@ -52,8 +53,13 @@ root.geometry('%dx%d+%d+%d' % (w, h, x, y))
 icon.set_icon(root)
 
 content = Text(root, bg=HELP_BACKGROUND, fg=TEXT_COLOR, font=FONT) #Later I want to use a font that is similar to the Windows Terminal font if possible or you can help me with the condition that you make it yourself or download it from a trusted source.
-content.pack(fill=BOTH, expand=True)
+content.pack(side=LEFT, fill=BOTH, expand=True)
 content.insert('end', message)
 content.config(state='disabled') #read-only
+
+scrollbar = ttk.Scrollbar(root, orient='vertical', command=content.yview)
+scrollbar.pack(side=RIGHT, fill=Y)
+
+content['yscrollcommand'] = scrollbar.set
 
 root.mainloop()

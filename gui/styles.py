@@ -30,9 +30,8 @@ ADD_PATH_BUTTON_WIDTH = 2
 TEXT_COLOR = "#ffffff"
 FONT_SIZE = 10
 
-def add_font(font_name: str, font_filename: str) -> tuple:
-    if font_filename:
-        TTFont(os.path.join(salbar_path.get_current_path(), "fonts", font_filename)) #https://stackoverflow.com/questions/63468751/adding-ttf-fonts-with-fonttools-in-to-tkinter
-    return (font_name, FONT_SIZE)
+def add_font(font_filename: str) -> tuple:
+    font = TTFont(os.path.join(salbar_path.get_current_path(False), "fonts", font_filename)) #https://stackoverflow.com/questions/63468751/adding-ttf-fonts-with-fonttools-in-to-tkinter
+    return (font, FONT_SIZE)
 
-FONT = add_font("arial", "arial.ttf") #copied from windows font #default
+FONT = add_font("arial.ttf") #copied from windows font #default

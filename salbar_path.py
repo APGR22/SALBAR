@@ -13,9 +13,13 @@
 # limitations under the License.
 
 import os
+from paths import PATH_SYMBOL
 
-def get_current_path() -> str:
-    return os.path.dirname(__file__)
+def get_current_path(replace: bool = True) -> str:
+    if replace:
+        return os.path.dirname(__file__).replace(PATH_SYMBOL+"_internal", "") #pyinstaller directory
+    else:
+        return os.path.dirname(__file__)
 
 def separate_path(path: str) -> list:
     path = path.replace('" "', '"')

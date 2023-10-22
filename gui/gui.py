@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from tkinter import *
+from tkinter import ttk
 from tkinter.ttk import Progressbar
 from tkinter.filedialog import *
 from tkinter.messagebox import *
@@ -33,10 +34,10 @@ def bingkai(root: Tk):
     kanvas = Canvas(bingkai_utama, bg=FRAME_BACKGROUND, highlightthickness=0)
     kanvas.pack(side=LEFT, fill=BOTH, expand=True)
 
-    gulir = Scrollbar(bingkai_utama,orient=VERTICAL, command=kanvas.yview)
+    gulir = ttk.Scrollbar(bingkai_utama,orient=VERTICAL, command=kanvas.yview)
     gulir.pack(side=RIGHT, fill=Y)
 
-    gulirx = Scrollbar(bingkai_kedua,orient=HORIZONTAL, command=kanvas.xview)
+    gulirx = ttk.Scrollbar(bingkai_kedua,orient=HORIZONTAL, command=kanvas.xview)
     gulirx.pack(side=TOP, fill=X)
 
     kanvas.configure(xscrollcommand=gulirx.set, yscrollcommand=gulir.set)
