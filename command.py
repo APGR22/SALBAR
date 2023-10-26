@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from tkinter import Toplevel, IntVar
-from tkinter.ttk import Progressbar
+from tkinter import IntVar
+#get class "do_progress" from gui/progress
 from tkinter.messagebox import *
 from tkinter.messagebox import WARNING
 import os
@@ -45,8 +45,7 @@ def cek_ada(path, skip: IntVar):
         return ask
     return "tidak ada"
 
-def perintah(progress_window: Toplevel,
-            progress: Progressbar,
+def perintah(do_progress: type,
             list_name: list,
             list_source: list,
             list_destination: list,
@@ -55,14 +54,7 @@ def perintah(progress_window: Toplevel,
             skip: IntVar):
     """tanya: Overwrites for all\n
     skip: Skip overwrites"""
-    progress_window.grab_set()
-    progress_window.focus_set()
-    progress_window.deiconify()
-    progress.start(25)
-    def hentikan_jendela_progress():
-        progress.stop()
-        progress_window.grab_release()
-        progress_window.withdraw()
+    do_progress.progress_start()
 
     list_path = [] #0 = name, 1 = list source, 2 = list destination
     berhasil = 0
@@ -81,12 +73,23 @@ def perintah(progress_window: Toplevel,
 
     try:
         if copy: #sekali dijalankan
-            for p in list_path: #perulangan
-                for s in p[1]: #perulangan dalam perulangan
-                    if operasi_cancel: #perulangan dalam perulangan dalam perulangan
+            for number_title, p in enumerate(list_path): #perulangan
+                for number_s, s in enumerate(p[1]): #perulangan dalam perulangan
+                    if operasi_cancel:
                         break
 
-                    for d in p[2]:
+                    #perulangan dalam perulangan dalam perulangan
+                    for number_d, d in enumerate(p[2]):
+
+                        do_progress.progress(
+                                            p[0], #title
+                                            (number_title, list_path), #number_title
+                                            (number_s, p[1]), #number_s
+                                            s, #source_path
+                                            (number_d, p[2]), #number_d
+                                            d #destination_path
+                                            )
+
                         if os.path.isfile(s):
                             metode_file = True
                         elif os.path.isdir(s):
@@ -163,7 +166,7 @@ def perintah(progress_window: Toplevel,
     except Exception as error:
         kesalahan.append(str(error))
 
-    hentikan_jendela_progress()
+    do_progress.progress_stop()
 
     if copy:
         tindakan = "COPIED"

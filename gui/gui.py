@@ -289,10 +289,10 @@ class options:
                 message="You not selected anything"
         )
 
-    def jalankan_perintah(progress_window: Toplevel, progress: Progressbar, copy: bool, snama: list, fperintah: list, tperintah: list):
+    def jalankan_perintah(do_progress: type, copy: bool, snama: list, fperintah: list, tperintah: list):
         """if copy == False: cut"""
         if snama and fperintah and tperintah:
-            hasil = command.perintah(progress_window, progress, snama, fperintah, tperintah, copy, konfirmasi_timpa, konfirmasi_lewati)
+            hasil = command.perintah(do_progress, snama, fperintah, tperintah, copy, konfirmasi_timpa, konfirmasi_lewati)
             if hasil.count("SUCCESSFULLY"):
                 showinfo(
                     title = "Command-Info",
@@ -319,7 +319,7 @@ class options:
                 message = "You not selected anything"
             )
 
-def tombol(root: Tk, snama: list, fperintah: list, tperintah: list, nama_edit_timpa: dict, progress_window: Toplevel, progress: Progressbar):
+def tombol(root: Tk, snama: list, fperintah: list, tperintah: list, nama_edit_timpa: dict, do_progress: type):
     global nama, direktori, tujuan, konfirmasi_timpa, konfirmasi_lewati
     nama = StringVar()
     direktori = StringVar()
@@ -347,15 +347,15 @@ def tombol(root: Tk, snama: list, fperintah: list, tperintah: list, nama_edit_ti
 
     copy = Label(root, text="Copy")
     copy.pack(side=RIGHT, fill=Y)
-    config.gaya_tombol(copy, options.jalankan_perintah, progress_window, progress, True, snama, fperintah, tperintah, thread = threading.Thread)
+    config.gaya_tombol(copy, options.jalankan_perintah, do_progress, True, snama, fperintah, tperintah, thread = threading.Thread)
     def copy_bind(event):
-        threading.Thread(target = options.jalankan_perintah, args = (progress_window, progress, True, snama, fperintah, tperintah)).start()
+        threading.Thread(target = options.jalankan_perintah, args = (do_progress, True, snama, fperintah, tperintah)).start()
 
     cut = Label(root, text="Cut")
     cut.pack(side=RIGHT, fill=Y)
-    config.gaya_tombol(cut, options.jalankan_perintah, progress_window, progress, False, snama, fperintah, tperintah, thread = threading.Thread)
+    config.gaya_tombol(cut, options.jalankan_perintah, do_progress, False, snama, fperintah, tperintah, thread = threading.Thread)
     def cut_bind(event):
-        threading.Thread(target = options.jalankan_perintah, args=(progress_window, progress, False, snama, fperintah, tperintah)).start()
+        threading.Thread(target = options.jalankan_perintah, args=(do_progress, False, snama, fperintah, tperintah)).start()
 
     def timpa_dicentang():
         if konfirmasi_timpa.get() == 1:

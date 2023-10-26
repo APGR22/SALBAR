@@ -35,3 +35,4 @@ def add_font(font_filename: str) -> tuple:
     return (font, FONT_SIZE)
 
 FONT = add_font("arial.ttf") #copied from windows font #default
+JUST_FONT = FONT[0]

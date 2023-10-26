@@ -40,7 +40,7 @@ if len(sys.argv) > 1: #jika ada argumen lainnya tidak peduli dengan argumen lain
         sys.exit()
 
 from tkinter import *
-from tkinter.ttk import Progressbar
+import gui.progress as progress
 from tkinter.messagebox import *
 import gui.gui as gui
 from gui.styles import *
@@ -53,16 +53,16 @@ jendela_utama = Tk()
 jendela_utama.title("SALBAR")
 jendela_utama.minsize(width=532, height=440)
 jendela_utama.configure(bg=BACKGROUND)
-lebar_layar = jendela_utama.winfo_screenwidth()
-tinggi_layar = jendela_utama.winfo_screenheight()
+width_screen = jendela_utama.winfo_screenwidth()
+height_screen = jendela_utama.winfo_screenheight()
 default_w = 752
 default_h = 480
 
 w = default_w
 h = default_h
 
-x = (lebar_layar/2) - (w/2)
-y = (tinggi_layar/2) - (h/2)
+x = (width_screen/2) - (w/2)
+y = (height_screen/2) - (h/2)
 
 jendela_utama.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
@@ -71,23 +71,7 @@ icon.set_icon(jendela_utama)
 if not os.path.isdir("Paths"):
     os.makedirs("Paths")
 
-#Progress Bar
-jendela_progress = Toplevel()
-jendela_progress.resizable(0, 0)
-progress = Progressbar(jendela_progress, orient=HORIZONTAL, mode='indeterminate')
-progress.pack(fill=BOTH)
-wp = 250
-hp = 24
-xp = (lebar_layar/2) - (wp/2)
-yp = (tinggi_layar/2) - (hp/2)
-
-jendela_progress.geometry('%dx%d+%d+%d' % (wp, hp, xp, yp))
-jendela_progress.withdraw()
-
-def cegah_exit():
-    pass
-
-jendela_progress.protocol("WM_DELETE_WINDOW", cegah_exit)
+do_progress = progress.make_progress(width_screen, height_screen)
 
 fperintah = [] #path
 tperintah = [] #path
@@ -98,7 +82,7 @@ kanvas_bingkai = gui.bingkai(jendela_utama)
 kanvas = kanvas_bingkai[0]
 bingkai = kanvas_bingkai[1]
 
-gui.tombol(jendela_utama, snama, fperintah, tperintah, nama_edit_timpa, jendela_progress, progress)
+gui.tombol(jendela_utama, snama, fperintah, tperintah, nama_edit_timpa, do_progress)
 
 program_list = [] #daftar program yang untuk dijalankan
 excluded_program_list = [] #daftar program yang dilarang untuk dijalankan
@@ -309,7 +293,7 @@ def check_deletion():
             message='The “Paths” folder has been deleted, SALBAR will be close'
         )
         sys.exit()
-    jendela_utama.after(10, check_deletion)
+    jendela_utama.after(100, check_deletion)
 
 check_deletion()
 
