@@ -23,9 +23,9 @@ FRAME_BACKGROUND = "#3c4038"
 CHECKBUTTON_BOX_BACKGROUND = "#686868"
 CHECKBUTTON_ACTIVE_BACKGROUND = "#ffffff"
 ENTRY_BACKGROUND = "#565656"
-if platform == "Windows":
+if platform.system() == "Windows":
     MESSAGEBOX_BACKGROUND = "#ffffff"
-    MESSAGEBOX_BUTTON_FRAME_BACKGROUND = "#d9d9d9"
+    MESSAGEBOX_BUTTON_FRAME_BACKGROUND = "SystemButtonFace" #I know the true color is '#f0f0f0' from "https://stackoverflow.com/questions/36093839/how-to-reset-background-color-of-a-python-tkinter-button/68903355#68903355"
     MESSAGEBOX_ICON = "icon/Warning.png"
 else:
     MESSAGEBOX_BACKGROUND = "#d9d9d9"
