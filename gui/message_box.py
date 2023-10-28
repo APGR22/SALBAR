@@ -35,6 +35,8 @@ def create(
     message_window.grab_set()
     message_window.focus_set()
 
+    message_window.bind("<Escape>", lambda e: message_window.destroy())
+
     w = 500
     h = window_height
     w_screen = message_window.winfo_screenwidth()
