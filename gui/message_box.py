@@ -108,7 +108,7 @@ def create(
         get_value = option
         message_window.destroy()
     
-    button_list = [ttk.Button] #just for Visual Studio Code (pylance extension) notation
+    button_list = [ttk.Button] #just for Visual Studio Code (pylance extension) annotation
     button_list.clear()
 
     def switch(event, n: int):
