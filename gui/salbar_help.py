@@ -24,7 +24,7 @@ message = f'''Usage: SALBAR [help | main-path | directory=...]
 [help | h | -help | -h | --help | --h]:
 \tdisplays all commands just by running the 'Help' window without running 'SALBAR' window
 
-[main-path]:
+[main]:
 \tset directory to the directory where SALBAR.exe is located ("{paths.get_current_path()}")
 
 [directory=(directory)]:

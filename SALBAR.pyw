@@ -28,7 +28,7 @@ if __name__ != "__main__":
 pending_error_message = ""
 
 if len(sys.argv) > 1: #jika ada argumen lainnya tidak peduli dengan argumen lainnya setelah kedua
-    if sys.argv[1] == "main-path": #jika itu adalah perintah
+    if sys.argv[1] == "main": #jika itu adalah perintah
         os.chdir(paths.get_current_path()) #configuration for all to apply
     elif sys.argv[1].startswith("directory="): #jika itu adalah perintah
         try:
