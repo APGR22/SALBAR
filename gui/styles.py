@@ -14,7 +14,7 @@
 
 from fontTools.ttLib import TTFont
 import os
-import salbar_path
+import paths
 
 BACKGROUND = "#737373"
 HELP_BACKGROUND = "#000000"
@@ -32,7 +32,7 @@ TEXT_COLOR = "#ffffff"
 FONT_SIZE = 10
 
 def add_font(font_filename: str) -> tuple:
-    font = TTFont(os.path.join(salbar_path.get_current_path(False), "fonts", font_filename)) #https://stackoverflow.com/questions/63468751/adding-ttf-fonts-with-fonttools-in-to-tkinter
+    font = TTFont(os.path.join(paths.get_current_path(False), "fonts", font_filename)) #https://stackoverflow.com/questions/63468751/adding-ttf-fonts-with-fonttools-in-to-tkinter
     return (font, FONT_SIZE)
 
 FONT = add_font("arial.ttf") #copied from windows font #default

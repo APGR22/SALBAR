@@ -13,11 +13,14 @@
 # limitations under the License.
 
 import platform
+import os
 
 if platform.system() == "Windows":
     PATH_SYMBOL = "\\"
 else: #Linux and Darwin
     PATH_SYMBOL = "/"
+
+PATH = "Paths"+PATH_SYMBOL
 
 def replace_path_symbol(path: str) -> str:
     path = path.replace("\\", PATH_SYMBOL)
@@ -25,4 +28,26 @@ def replace_path_symbol(path: str) -> str:
         
     return path
 
-PATH = "Paths"+PATH_SYMBOL
+def get_current_path(replace: bool = True) -> str:
+    if replace:
+        return os.path.dirname(__file__).replace(PATH_SYMBOL+"_internal", "") #pyinstaller directory
+    else:
+        return os.path.dirname(__file__)
+
+def separate_path(path: str) -> list:
+    path = path.replace('" "', '"')
+    paths = path.split('"')
+    while True:
+        try:
+            paths.remove("")
+        except:
+            break #buat daftar untuk setiap jalur
+    return paths
+
+def is_abs_path(path: str) -> bool:
+    abs_path = False
+    for path in separate_path(path):
+        if os.path.isabs(path):
+            abs_path = True #jika sudah ketemu meski cuman 1 maka akan dianggap ada
+            break
+    return abs_path

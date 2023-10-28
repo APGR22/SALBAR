@@ -20,7 +20,7 @@
 
 import sys
 import os
-import salbar_path
+import paths
 
 if __name__ != "__main__":
     sys.exit()
@@ -29,7 +29,7 @@ pending_error_message = ""
 
 if len(sys.argv) > 1: #jika ada argumen lainnya tidak peduli dengan argumen lainnya setelah kedua
     if sys.argv[1] == "main-path": #jika itu adalah perintah
-        os.chdir(salbar_path.get_current_path()) #configuration for all to apply
+        os.chdir(paths.get_current_path()) #configuration for all to apply
     elif sys.argv[1].startswith("directory="): #jika itu adalah perintah
         try:
             os.chdir(sys.argv[1].replace("directory=", ""))

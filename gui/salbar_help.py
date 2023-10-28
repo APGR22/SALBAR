@@ -16,7 +16,7 @@ from tkinter import *
 from tkinter import ttk
 from gui.styles import *
 import gui.icon as icon
-import salbar_path
+import paths
 import os
 
 message = f'''Usage: SALBAR [help | main-path | directory=...]
@@ -25,7 +25,7 @@ message = f'''Usage: SALBAR [help | main-path | directory=...]
 \tdisplays all commands just by running the 'Help' window without running 'SALBAR' window
 
 [main-path]:
-\tset directory to the directory where SALBAR.exe is located ("{salbar_path.get_current_path()}")
+\tset directory to the directory where SALBAR.exe is located ("{paths.get_current_path()}")
 
 [directory=(directory)]:
 \tset directory to (directory)

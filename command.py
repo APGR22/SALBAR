@@ -19,7 +19,6 @@ from tkinter.messagebox import WARNING
 import os
 import copycut
 import paths
-import salbar_path
 
 def make_dir(metode_file: bool, s: str, d: str):
     if metode_file and d.count(paths.PATH_SYMBOL): #jika destinasinya file (ada) dan ada simbol jalur
@@ -67,8 +66,8 @@ def perintah(do_progress: type,
         tindakan_skip = False
 
     for ln, ls, ld in zip(list_name, list_source, list_destination):
-        source = salbar_path.separate_path(ls)
-        destination = salbar_path.separate_path(ld)
+        source = paths.separate_path(ls)
+        destination = paths.separate_path(ld)
         list_path.append((ln, source, destination))
 
     try:
@@ -164,6 +163,7 @@ def perintah(do_progress: type,
                         
                         berhasil += 1
     except Exception as error:
+        print(error)
         kesalahan.append(str(error))
 
     do_progress.progress_stop()
