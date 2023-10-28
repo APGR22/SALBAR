@@ -20,17 +20,11 @@ import os
 import command.copycut as copycut
 import paths
 
-def make_dir(metode_file: bool, s: str, d: str):
-    if metode_file and d.count(paths.PATH_SYMBOL): #jika destinasinya file (ada) dan ada simbol jalur
-        try:
-            os.makedirs(os.path.dirname(d))
-        except Exception as error: #jika sudah ada
-            pass
-    else:
-        try:
-            os.makedirs(d)
-        except Exception as error: #jika sudah ada
-            pass
+def make_dir(d: str):
+    try:
+        os.makedirs(d)
+    except Exception as error: #jika sudah ada. meski ada exist_ok, itu berarti ditimpa sehingga tidak digunakan
+        pass
 
 def cek_ada(path, skip: IntVar):
     if os.path.exists(path):
@@ -97,7 +91,7 @@ def perintah(do_progress: type,
                             kesalahan.append(f"{p[0]}: No source file or folder found: '{s}'")
                             continue
 
-                        make_dir(metode_file, s, d)
+                        make_dir(d)
 
                         path = os.path.join(d, os.path.basename(s))
 
@@ -137,7 +131,7 @@ def perintah(do_progress: type,
                             kesalahan.append(f"{p[0]}: No source file or folder found: '{s}'")
                             continue
 
-                        make_dir(metode_file, s, d)
+                        make_dir(d)
 
                         path = os.path.join(d, os.path.basename(s))
 

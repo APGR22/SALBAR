@@ -48,11 +48,11 @@ def pindah_folder(s: str, d: str): #If it proves to be very slow and inefficient
     except FileNotFoundError: #firasat saya tidak enak kalau tidak ada pengecualian
         pass
 
-def salin(n, s: str, d: str, method_file: bool):
+def salin(n: str, s: str, d: str, method_file: bool):
     if method_file: #file
         try:
             shutil.copy(paths.replace_path_symbol(s),
-                        paths.replace_path_symbol(d))
+                        paths.replace_path_symbol(os.path.join(d, os.path.basename(s))))
         except Exception as error:
             return f"{n}: {error}"
     else: #folder
@@ -63,7 +63,7 @@ def salin(n, s: str, d: str, method_file: bool):
         except Exception as error:
             return f"{n}: {error}"
 
-def pindah(n, s: str, d: str, method_file: bool):
+def pindah(n: str, s: str, d: str, method_file: bool):
     if method_file: #file
         try:
             shutil.move(paths.replace_path_symbol(s),
