@@ -312,7 +312,7 @@ class options:
 
                         showinfo(
                             title="Command-Warning-Info",
-                            message="You can change this configuration in user.yaml file CAREFULLY if you change your mind\nAll you have to do is remove 'warning0: false'!" #"I know you can also change the value"
+                            message='''You can change this configuration in "user.yaml" file CAREFULLY if you change your mind.\nAll you have to do is remove 'warning0: false'!''' #"I know you can also change the value or delete the file"
                         )
             else:
                 answer = "Yes"
