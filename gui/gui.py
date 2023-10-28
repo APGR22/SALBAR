@@ -14,7 +14,6 @@
 
 from tkinter import *
 from tkinter import ttk
-from tkinter.ttk import Progressbar
 from tkinter.filedialog import *
 from tkinter.messagebox import *
 from tkinter.messagebox import WARNING
@@ -25,6 +24,8 @@ import paths
 import threading
 from gui.styles import *
 import gui.config as config
+import gui.message_box as message_box
+import configurator
 
 def bingkai(root: Tk):
     bingkai_utama = Frame(root)
@@ -292,27 +293,52 @@ class options:
     def jalankan_perintah(do_progress: type, copy: bool, snama: list, fperintah: list, tperintah: list):
         """if copy == False: cut"""
         if snama and fperintah and tperintah:
-            hasil = command.perintah(do_progress, snama, fperintah, tperintah, copy, konfirmasi_timpa, konfirmasi_lewati)
-            if hasil.count("SUCCESSFULLY"):
-                showinfo(
-                    title = "Command-Info",
-                    message = hasil
-                )
-            elif hasil == "CANCELED":
-                showinfo(
-                    title = "Command-Info",
-                    message = "CANCELED BY USER"
-                )
-            elif hasil == "SKIP":
-                showinfo(
-                    title = "Command-Info",
-                    message = "SKIPPED BY USER"
-                )
+
+            if configurator.config("user.yaml").get_value("warning0") != False:
+                answer = message_box.create(
+                                        title="Command-Warning",
+                                        message="Copy/move action cannot be stopped while it is in progress, continue?",
+                                        options=["Yes", "Always Yes", "No"],
+                                        icon_path="icon/Warning.png",
+                                        button_padx=15,
+                                        window_height=110,
+                                        bell=True
+                                        )[0]
+                if answer == "Always Yes":
+                        if configurator.config("user.yaml").find("warning0"):
+                            configurator.config("user.yaml").change("warning0", False)
+                        else:
+                            configurator.config("user.yaml").add("warning0: false")
+
+                        showinfo(
+                            title="Command-Warning-Info",
+                            message="You can change this configuration in user.yaml file CAREFULLY if you change your mind\nAll you have to do is remove 'warning0: false'!" #"I know you can also change the value"
+                        )
             else:
-                showerror(
-                    title = "Command-Error",
-                    message = hasil
-                )
+                answer = "Yes"
+
+            if answer in ["Yes", "Always Yes"]:
+                hasil = command.perintah(do_progress, snama, fperintah, tperintah, copy, konfirmasi_timpa, konfirmasi_lewati)
+                if hasil.count("SUCCESSFULLY"):
+                    showinfo(
+                        title = "Command-Info",
+                        message = hasil
+                    )
+                elif hasil == "CANCELED":
+                    showinfo(
+                        title = "Command-Info",
+                        message = "CANCELED BY USER"
+                    )
+                elif hasil == "SKIP":
+                    showinfo(
+                        title = "Command-Info",
+                        message = "SKIPPED BY USER"
+                    )
+                else:
+                    showerror(
+                        title = "Command-Error",
+                        message = hasil
+                    )
         else:
             showerror(
                 title = "Error",

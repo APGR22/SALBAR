@@ -27,3 +27,9 @@ def set_icon(root: Tk):
             image.write(kode_icon)
         root.wm_iconphoto(True, ImageTk.PhotoImage(Image.open(path_icon)))
         os.remove(path_icon)
+
+def get_image(path: str, pixel: tuple[int, int] = None):
+    if pixel:
+        return ImageTk.PhotoImage(Image.open(path).resize(pixel))
+    else:
+        return ImageTk.PhotoImage(Image.open(path))
