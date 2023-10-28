@@ -40,13 +40,13 @@ if len(sys.argv) > 1: #jika ada argumen lainnya tidak peduli dengan argumen lain
         sys.exit()
 
 from tkinter import *
-import gui.progress as progress
+from gui import progress
 from tkinter.messagebox import *
-import gui.gui as gui
+from gui import gui
 from gui.styles import *
-import gui.icon as icon
-import extension
-import execute
+from gui import icon
+from file_handler import extension
+from file_handler import execute
 import threading
 
 jendela_utama = Tk()

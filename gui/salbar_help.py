@@ -15,7 +15,7 @@
 from tkinter import *
 from tkinter import ttk
 from gui.styles import *
-import gui.icon as icon
+from gui import icon
 import paths
 import os
 

@@ -14,7 +14,7 @@
 
 from tkinter import *
 from tkinter import ttk
-import gui.icon as icon
+from gui import icon
 from gui.styles import MESSAGEBOX_BACKGROUND, JUST_FONT
 
 def create(

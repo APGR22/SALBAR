@@ -18,13 +18,13 @@ from tkinter.filedialog import *
 from tkinter.messagebox import *
 from tkinter.messagebox import WARNING
 import os
-import command
-import maker
+from command import command
+from file_handler import maker
 import paths
 import threading
 from gui.styles import *
-import gui.config as config
-import gui.message_box as message_box
+from gui import config
+from gui import message_box
 import configurator
 
 def bingkai(root: Tk):
