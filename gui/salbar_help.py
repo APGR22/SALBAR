@@ -57,6 +57,9 @@ content.pack(side=LEFT, fill=BOTH, expand=True)
 content.insert('end', message)
 content.config(state='disabled') #read-only
 
+content.tag_configure("path", foreground="#d4d400")
+content.tag_add("path", "7.62", f"7.{62+len(paths.get_current_path())}")
+
 scrollbar = ttk.Scrollbar(root, orient='vertical', command=content.yview)
 scrollbar.pack(side=RIGHT, fill=Y)
 
