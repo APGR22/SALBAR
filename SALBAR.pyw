@@ -28,14 +28,14 @@ if __name__ != "__main__":
 pending_error_message = ""
 
 if len(sys.argv) > 1: #jika ada argumen lainnya tidak peduli dengan argumen lainnya setelah kedua
-    if sys.argv[1] == "main": #jika itu adalah perintah
+    if sys.argv[1] in ["-main", "--main"]: #jika itu adalah perintah
         os.chdir(paths.get_current_path()) #configuration for all to apply
-    elif sys.argv[1].startswith("directory="): #jika itu adalah perintah
+    elif sys.argv[1].startswith("--directory="): #jika itu adalah perintah
         try:
-            os.chdir(sys.argv[1].replace("directory=", ""))
+            os.chdir(sys.argv[1][len("--directory="):])
         except Exception as error:
             pending_error_message = error #if it calls showerror() too early then the icon implementation won't work
-    elif sys.argv[1] in ["help", "h", "-help", "-h", "--help", "--h"]:
+    elif sys.argv[1] in ["-help", "-h", "--help", "--h"]:
         import gui.salbar_help
         sys.exit()
 
@@ -237,7 +237,7 @@ def perbarui():
 perbarui()
 
 #tidak bisa untuk threading semua kode
-def mulai():
+def start():
     nama_kesalahan = []
     kesalahan = []
     refresh_program_list() #start
@@ -254,10 +254,6 @@ def mulai():
                 title="Error",
                 message=f"{i}: {j}"
             )
-
-def thread_mulai():
-    threading.Thread(target = mulai).start()
-jendela_utama.after(100, thread_mulai) #jangan pakai () agar tidak terpanggil
 
 def pilih(event):
     for i in program_list: #kalau kosong maka for loop-nya tidak berjalan dan dikira selesai
@@ -297,5 +293,6 @@ def check_deletion():
 
 check_deletion()
 
+threading.Thread(target = start).start()
 
 jendela_utama.mainloop()
