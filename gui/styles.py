@@ -15,6 +15,7 @@
 from fontTools.ttLib import TTFont
 import os
 import paths
+import platform
 
 BACKGROUND = "#737373"
 HELP_BACKGROUND = "#000000"
@@ -22,7 +23,12 @@ FRAME_BACKGROUND = "#3c4038"
 CHECKBUTTON_BOX_BACKGROUND = "#686868"
 CHECKBUTTON_ACTIVE_BACKGROUND = "#ffffff"
 ENTRY_BACKGROUND = "#565656"
-MESSAGEBOX_BACKGROUND = "#ffffff"
+if platform == "Windows":
+    MESSAGEBOX_BACKGROUND = "#ffffff"
+    MESSAGEBOX_ICON = "icon/Warning.png"
+else:
+    MESSAGEBOX_BACKGROUND = "#d9d9d9"
+    MESSAGEBOX_ICON = "icon/Warning (ubuntu).png"
 
 BUTTON_WIDTH = 8
 BUTTON_HEIGHT = 2

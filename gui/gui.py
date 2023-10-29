@@ -322,7 +322,7 @@ class options:
                                         title="Command-Warning",
                                         message="Copy/move action cannot be stopped while it is in progress, continue?",
                                         options=["Yes", "Always Yes", "No"],
-                                        icon_path="icon/Warning.png",
+                                        icon_path=MESSAGEBOX_ICON,
                                         button_padx=15,
                                         window_height=110,
                                         bell=True
