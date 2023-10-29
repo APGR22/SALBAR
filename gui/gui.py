@@ -290,6 +290,29 @@ class options:
                 message="You not selected anything"
         )
 
+    def _run_command(do_progress: type, copy: bool, snama: list, fperintah: list, tperintah: list):
+        hasil = command.perintah(do_progress, snama, fperintah, tperintah, copy, konfirmasi_timpa, konfirmasi_lewati)
+        if hasil.count("SUCCESSFULLY"):
+            showinfo(
+                title = "Command-Info",
+                message = hasil
+            )
+        elif hasil == "CANCELED":
+            showinfo(
+                title = "Command-Info",
+                message = "CANCELED BY USER"
+            )
+        elif hasil == "SKIP":
+            showinfo(
+                title = "Command-Info",
+                message = "SKIPPED BY USER"
+            )
+        else:
+            showerror(
+                title = "Command-Error",
+                message = hasil
+            )
+
     def jalankan_perintah(do_progress: type, copy: bool, snama: list, fperintah: list, tperintah: list):
         """if copy == False: cut"""
         if snama and fperintah and tperintah:
@@ -318,27 +341,7 @@ class options:
                 answer = "Yes"
 
             if answer in ["Yes", "Always Yes"]:
-                hasil = command.perintah(do_progress, snama, fperintah, tperintah, copy, konfirmasi_timpa, konfirmasi_lewati)
-                if hasil.count("SUCCESSFULLY"):
-                    showinfo(
-                        title = "Command-Info",
-                        message = hasil
-                    )
-                elif hasil == "CANCELED":
-                    showinfo(
-                        title = "Command-Info",
-                        message = "CANCELED BY USER"
-                    )
-                elif hasil == "SKIP":
-                    showinfo(
-                        title = "Command-Info",
-                        message = "SKIPPED BY USER"
-                    )
-                else:
-                    showerror(
-                        title = "Command-Error",
-                        message = hasil
-                    )
+                threading.Thread(target=options._run_command, args=(do_progress, copy, snama, fperintah, tperintah)).start()
         else:
             showerror(
                 title = "Error",
@@ -373,15 +376,15 @@ def tombol(root: Tk, snama: list, fperintah: list, tperintah: list, nama_edit_ti
 
     copy = Label(root, text="Copy")
     copy.pack(side=RIGHT, fill=Y)
-    config.button(copy, options.jalankan_perintah, do_progress, True, snama, fperintah, tperintah, thread = threading.Thread)
+    config.button(copy, options.jalankan_perintah, do_progress, True, snama, fperintah, tperintah)
     def copy_bind(event):
-        threading.Thread(target = options.jalankan_perintah, args = (do_progress, True, snama, fperintah, tperintah)).start()
+        options.jalankan_perintah(do_progress, True, snama, fperintah, tperintah)
 
     cut = Label(root, text="Cut")
     cut.pack(side=RIGHT, fill=Y)
-    config.button(cut, options.jalankan_perintah, do_progress, False, snama, fperintah, tperintah, thread = threading.Thread)
+    config.button(cut, options.jalankan_perintah, do_progress, False, snama, fperintah, tperintah)
     def cut_bind(event):
-        threading.Thread(target = options.jalankan_perintah, args=(do_progress, False, snama, fperintah, tperintah)).start()
+        options.jalankan_perintah(do_progress, False, snama, fperintah, tperintah)
 
     def timpa_dicentang():
         if konfirmasi_timpa.get() == 1:
