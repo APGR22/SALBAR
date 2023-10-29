@@ -60,6 +60,7 @@ content.pack(side=LEFT, fill=BOTH, expand=True)
 content.insert('end', message)
 content.config(state='disabled') #read-only
 
+#reference: https://askubuntu.com/questions/17299/what-do-the-different-colors-mean-in-ls
 content.tag_configure("path", foreground="#0000ff")
 content.tag_add("path", "3.29", "3.end")
 content.tag_add("path", "9.62", f"9.{62+len(paths.get_current_path())}")
