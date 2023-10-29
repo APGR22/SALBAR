@@ -16,10 +16,10 @@ from tkinter import *
 from gui.styles import *
 import platform
 
-def gaya_label(obj: Label):
+def label(obj: Label):
     obj.config(bg=BACKGROUND, fg=TEXT_COLOR, font=FONT)
 
-def gaya_tombol(obj: Label, callable: object | bool, *args: tuple, **option):
+def button(obj: Label, callable: object | bool, *args: tuple, **option):
     """jika sudah berada di *args, maka bebas menambahkan apa saja, kecuali **pilihan"""
 
     DEFAULT_FOREGROUND = '#ffffff'
@@ -62,10 +62,10 @@ def gaya_tombol(obj: Label, callable: object | bool, *args: tuple, **option):
     obj.bind("<ButtonPress-1>", click) #Button-1==tombol berubah tapi ketika kursor meninggalkannya
     obj.bind("<ButtonRelease-1>", release) #ButtonRelease-1==tombol semula setelah ditekan
 
-def gaya_tombol_cek(obj: Checkbutton, var: IntVar):
+def checkbutton(obj: Checkbutton, var: IntVar):
     obj.config(variable=var, onvalue=1, offvalue=0, bg=BACKGROUND, activebackground=CHECKBUTTON_ACTIVE_BACKGROUND, fg=TEXT_COLOR, font=FONT, selectcolor=CHECKBUTTON_BOX_BACKGROUND, highlightthickness=0)
 
-def gaya_entry(obj: Entry, var: StringVar, nama: bool = False, jendela: Toplevel = False, **more_obj):
+def entry(obj: Entry, var: StringVar, nama: bool = False, jendela: Toplevel = False, **more_obj):
     obj.config(textvariable=var, bg=ENTRY_BACKGROUND, fg=TEXT_COLOR, font=FONT, highlightthickness=0)
 
     if nama and jendela:

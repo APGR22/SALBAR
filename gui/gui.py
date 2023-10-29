@@ -179,9 +179,9 @@ class options:
         label_nama = Label(f_entry_nama, text="")
         pack_label_2(label_nama)
 
-        config.gaya_entry(entry_nama, nama, True, jendela_tanya, label_name = label_nama)
+        config.entry(entry_nama, nama, True, jendela_tanya, label_name = label_nama)
 
-        config.gaya_tombol(label_nama, d_file_folder, "n", my_width=0) #Hasilnya 14
+        config.button(label_nama, d_file_folder, "n", my_width=0) #Hasilnya 14
 
         nama_lama = entry_nama.get()
         #
@@ -194,16 +194,16 @@ class options:
         pack_frame(f_entry_direktori)
         entry_direktori = Entry(f_entry_direktori)
         pack_entry(entry_direktori)
-        config.gaya_entry(entry_direktori, direktori)
+        config.entry(entry_direktori, direktori)
         direktori_centang = Checkbutton(f_entry_direktori, text="Select (File)")
         pack_checkbutton(direktori_centang)
-        config.gaya_tombol_cek(direktori_centang, d_f_or_f)
+        config.checkbutton(direktori_centang, d_f_or_f)
         label_direktori = Label(f_entry_direktori, text="...")
         pack_label_2(label_direktori)
-        config.gaya_tombol(label_direktori, d_file_folder, "dr", my_width=ADD_PATH_BUTTON_WIDTH)
+        config.button(label_direktori, d_file_folder, "dr", my_width=ADD_PATH_BUTTON_WIDTH)
         label_plus_direktori = Label(f_entry_direktori, text="+...")
         pack_label_2(label_plus_direktori)
-        config.gaya_tombol(label_plus_direktori, d_file_folder, "dr", "tambahkan", my_width=ADD_PATH_BUTTON_WIDTH)
+        config.button(label_plus_direktori, d_file_folder, "dr", "tambahkan", my_width=ADD_PATH_BUTTON_WIDTH)
         #
         f_label_tujuan = Frame(jendela_tanya, bg=BACKGROUND)
         pack_frame(f_label_tujuan)
@@ -214,16 +214,16 @@ class options:
         pack_frame(f_entry_tujuan)
         entry_tujuan = Entry(f_entry_tujuan)
         pack_entry(entry_tujuan)
-        config.gaya_entry(entry_tujuan, tujuan)
+        config.entry(entry_tujuan, tujuan)
         tujuan_centang = Checkbutton(f_entry_tujuan, text="Become (File)")
         pack_checkbutton(tujuan_centang)
-        config.gaya_tombol_cek(tujuan_centang, t_f_or_f)
+        config.checkbutton(tujuan_centang, t_f_or_f)
         label_tujuan = Label(f_entry_tujuan, text="...")
         pack_label_2(label_tujuan)
-        config.gaya_tombol(label_tujuan, d_file_folder, "tj", my_width=ADD_PATH_BUTTON_WIDTH)
+        config.button(label_tujuan, d_file_folder, "tj", my_width=ADD_PATH_BUTTON_WIDTH)
         label_plus_tujuan = Label(f_entry_tujuan, text="+...")
         pack_label_2(label_plus_tujuan)
-        config.gaya_tombol(label_plus_tujuan, d_file_folder, "tj", "tambahkan", my_width=ADD_PATH_BUTTON_WIDTH)
+        config.button(label_plus_tujuan, d_file_folder, "tj", "tambahkan", my_width=ADD_PATH_BUTTON_WIDTH)
 
         entry_nama.bind("<Up>", lambda e:entry_tujuan.focus_set())
         entry_direktori.bind("<Up>", lambda e:entry_nama.focus_set())
@@ -238,11 +238,11 @@ class options:
         label_buat = Label(frame_buat, text="Add")
         label_buat.pack(fill="x")
         if edit:
-            config.gaya_tombol(label_buat, maker.buat, jendela_tanya, nama, direktori, tujuan, nama_edit_timpa, nama_lama)
+            config.button(label_buat, maker.buat, jendela_tanya, nama, direktori, tujuan, nama_edit_timpa, nama_lama)
             def return_cmd(event):
                 maker.buat(jendela_tanya, nama, direktori, tujuan, nama_edit_timpa, nama_lama)
         else:
-            config.gaya_tombol(label_buat, maker.buat, jendela_tanya, nama, direktori, tujuan, nama_edit_timpa)
+            config.button(label_buat, maker.buat, jendela_tanya, nama, direktori, tujuan, nama_edit_timpa)
             def return_cmd(event):
                 maker.buat(jendela_tanya, nama, direktori, tujuan, nama_edit_timpa)
 
@@ -355,31 +355,31 @@ def tombol(root: Tk, snama: list, fperintah: list, tperintah: list, nama_edit_ti
 
     new = Label(root, text="New")
     new.pack(side=LEFT, fill=Y)
-    config.gaya_tombol(new, options.menu, root, nama_edit_timpa, False)
+    config.button(new, options.menu, root, nama_edit_timpa, False)
     def new_bind(event):
         options.menu(root, nama_edit_timpa, False)
 
     edit = Label(root, text="Edit")
     edit.pack(side=LEFT, fill=Y)
-    config.gaya_tombol(edit, options.sunting_file, root, snama, fperintah, tperintah, nama_edit_timpa)
+    config.button(edit, options.sunting_file, root, snama, fperintah, tperintah, nama_edit_timpa)
     def edit_bind(event):
         options.sunting_file(root, snama, fperintah, tperintah, nama_edit_timpa)
 
     delete = Label(root, text="Delete")
     delete.pack(side=LEFT, fill=Y)
-    config.gaya_tombol(delete, options.hapus_file, snama, fperintah, tperintah)
+    config.button(delete, options.hapus_file, snama, fperintah, tperintah)
     def delete_bind(event):
         options.hapus_file(snama, fperintah, tperintah)
 
     copy = Label(root, text="Copy")
     copy.pack(side=RIGHT, fill=Y)
-    config.gaya_tombol(copy, options.jalankan_perintah, do_progress, True, snama, fperintah, tperintah, thread = threading.Thread)
+    config.button(copy, options.jalankan_perintah, do_progress, True, snama, fperintah, tperintah, thread = threading.Thread)
     def copy_bind(event):
         threading.Thread(target = options.jalankan_perintah, args = (do_progress, True, snama, fperintah, tperintah)).start()
 
     cut = Label(root, text="Cut")
     cut.pack(side=RIGHT, fill=Y)
-    config.gaya_tombol(cut, options.jalankan_perintah, do_progress, False, snama, fperintah, tperintah, thread = threading.Thread)
+    config.button(cut, options.jalankan_perintah, do_progress, False, snama, fperintah, tperintah, thread = threading.Thread)
     def cut_bind(event):
         threading.Thread(target = options.jalankan_perintah, args=(do_progress, False, snama, fperintah, tperintah)).start()
 
@@ -394,15 +394,15 @@ def tombol(root: Tk, snama: list, fperintah: list, tperintah: list, nama_edit_ti
 
     timpa = Checkbutton(root, text = "Overwrites all", command = timpa_dicentang) #bg harus sama dengan jendela_utama
     timpa.pack(side=RIGHT, fill=Y)
-    config.gaya_tombol_cek(timpa, konfirmasi_timpa)
+    config.checkbutton(timpa, konfirmasi_timpa)
 
     atau = Label(root, text="or")
     atau.pack(side=RIGHT, fill=Y)
-    config.gaya_label(atau)
+    config.label(atau)
 
     lewati = Checkbutton(root, text = "Skip", command = lewati_dicentang) #bg harus sama dengan jendela_utama
     lewati.pack(side=RIGHT, fill=Y)
-    config.gaya_tombol_cek(lewati, konfirmasi_lewati)
+    config.checkbutton(lewati, konfirmasi_lewati)
 
     root.bind("<Control-n>", new_bind)
     root.bind("<Control-N>", new_bind)              #(if Caps lock on)
