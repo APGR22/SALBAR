@@ -19,7 +19,7 @@ from gui import icon
 import paths
 import os
 
-message = f'''Usage: SALBAR [help | main-path | directory=...]
+message = f'''Usage: SALBAR [help | main | directory=...]
 
 [help | h | -help | -h | --help | --h]:
 \tdisplays all commands just by running the 'Help' window without running 'SALBAR' window
@@ -30,7 +30,8 @@ message = f'''Usage: SALBAR [help | main-path | directory=...]
 [directory=(directory)]:
 \tset directory to (directory)
 \texample: SALBAR directory="{os.path.join("SALBAR", "build", "example")}"
-\tdefault: follows current directory based on console or if not on console then [main-path]'''
+\tdefault: follows the current directory based on the specified directory,
+\t\tfor example: console, windows shortcut (I don't know if it can be in ubuntu shortcut)'''
 
 root = Tk()
 root.grab_set()
