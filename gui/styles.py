@@ -25,9 +25,11 @@ CHECKBUTTON_ACTIVE_BACKGROUND = "#ffffff"
 ENTRY_BACKGROUND = "#565656"
 if platform == "Windows":
     MESSAGEBOX_BACKGROUND = "#ffffff"
+    MESSAGEBOX_BUTTON_FRAME_BACKGROUND = "#d9d9d9"
     MESSAGEBOX_ICON = "icon/Warning.png"
 else:
     MESSAGEBOX_BACKGROUND = "#d9d9d9"
+    MESSAGEBOX_BUTTON_FRAME_BACKGROUND = "#d9d9d9"
     MESSAGEBOX_ICON = "icon/Warning (ubuntu).png"
 
 BUTTON_WIDTH = 8

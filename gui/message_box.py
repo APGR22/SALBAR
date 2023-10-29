@@ -15,7 +15,7 @@
 from tkinter import *
 from tkinter import ttk
 from gui import icon
-from gui.styles import MESSAGEBOX_BACKGROUND, JUST_FONT
+from gui.styles import MESSAGEBOX_BACKGROUND, MESSAGEBOX_BUTTON_FRAME_BACKGROUND, JUST_FONT
 
 def create(
             title: str,
@@ -94,10 +94,10 @@ def create(
 
     #Down-Start
 
-    option_frame = Frame(message_window)
+    option_frame = Frame(message_window, bg=MESSAGEBOX_BUTTON_FRAME_BACKGROUND)
     option_frame.pack(fill=BOTH, pady=9)
 
-    button_frame = Frame(option_frame)
+    button_frame = Frame(option_frame, bg=MESSAGEBOX_BUTTON_FRAME_BACKGROUND)
     button_frame.pack()
 
     global get_value
