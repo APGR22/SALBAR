@@ -45,6 +45,7 @@ from tkinter.messagebox import *
 from gui import gui
 from gui.styles import *
 from gui import icon
+from gui import progress
 from file_handler import extension
 from file_handler import execute
 import threading
@@ -236,12 +237,20 @@ def perbarui():
 
 perbarui()
 
+progress_window = progress.simple_progress()
 #tidak bisa untuk threading semua kode
 def start():
     nama_kesalahan = []
     kesalahan = []
+    if len(program_list) > 64:
+        progress_window.active()
+        total = len(program_list) - 1
+    else:
+        total = 100 #must not zero
     refresh_program_list() #start
     for r, i in enumerate(program_list):
+        persent = r / total * 100
+        progress_window.set(persent)
         try:
             baca(i, r)
         except Exception as error:
@@ -254,21 +263,8 @@ def start():
                 title="Error",
                 message=f"{i}: {j}"
             )
-
-def pilih(event):
-    for i in program_list: #kalau kosong maka for loop-nya tidak berjalan dan dikira selesai
-        globals()[f"{i}_cb"].select()
-        globals()[f"{i}_centang"]()
-
-def tidak_pilih(event):
-    for i in program_list:
-        globals()[f"{i}_cb"].deselect()
-        globals()[f"{i}_centang"]()
-
-kanvas.bind("<Control-a>",  pilih)
-kanvas.bind("<Control-A>",  pilih)
-kanvas.bind("<Control-Shift-a>",  tidak_pilih)
-kanvas.bind("<Control-Shift-A>",  tidak_pilih)
+    progress_window.disable()
+    kanvas.focus_set()
 
 if len(sys.argv) > 2:
     showinfo(
@@ -294,5 +290,21 @@ def check_deletion():
 check_deletion()
 
 threading.Thread(target = start).start()
+
+def pilih(event):
+    for i in program_list: #kalau kosong maka for loop-nya tidak berjalan dan dikira selesai
+        globals()[f"{i}_cb"].select()
+        globals()[f"{i}_centang"]()
+
+def tidak_pilih(event):
+    for i in program_list:
+        globals()[f"{i}_cb"].deselect()
+        globals()[f"{i}_centang"]()
+
+#doesn't catch the exception even if the user disables the progress bar window
+kanvas.bind("<Control-a>",  pilih)
+kanvas.bind("<Control-A>",  pilih)
+kanvas.bind("<Control-Shift-a>",  tidak_pilih)
+kanvas.bind("<Control-Shift-A>",  tidak_pilih)
 
 jendela_utama.mainloop()

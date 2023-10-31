@@ -92,3 +92,43 @@ def make_progress(width_screen: int, height_screen: int):
     progress_window.protocol("WM_DELETE_WINDOW", cegah_exit)
 
     return do_progress
+
+class simple_progress():
+    def __init__(self):
+        self.progress_window = Toplevel()
+        self.progress_window.resizable(0, 0)
+
+        self.progress = Progressbar(self.progress_window, orient=HORIZONTAL, mode='determinate')
+        self.progress.pack(fill=X)
+
+        wp = 500
+        hp = 18
+        xp = (self.progress_window.winfo_screenwidth()/2) - (wp/2)
+        yp = (self.progress_window.winfo_screenheight()/2) - (hp/2)
+
+        self.progress_window.geometry('%dx%d+%d+%d' % (wp, hp, xp, yp))
+        self.progress_window.withdraw()
+
+        self.progress_window.protocol("WM_DELETE_WINDOW", self.disable)
+
+    def active(self):
+        self.progress_window.deiconify()
+        self.progress_window.grab_set()
+        self.progress_window.focus_set()
+    
+    actived = active
+    
+    def disable(self):
+        self.progress.stop()
+        self.progress_window.grab_release()
+        self.progress_window.withdraw()
+    
+    disabled = disable
+
+    def set(self, value: int):
+        self.progress["value"] = value
+    
+    def destroy(self):
+        self.progress_window.destroy()
+    
+    delete = deleted = destroyed = destroy
