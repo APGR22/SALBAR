@@ -12,3 +12,4 @@ internal modules:
 external modules:
 	pillow
 	fonttools
+	pyyaml
