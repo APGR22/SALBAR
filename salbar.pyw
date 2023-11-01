@@ -237,9 +237,9 @@ def perbarui():
 
 perbarui()
 
-progress_window = progress.simple_progress()
 #tidak bisa untuk threading semua kode
 def start():
+    progress_window = progress.simple_progress()
     nama_kesalahan = []
     kesalahan = []
     if len(program_list) > 64:
@@ -263,7 +263,7 @@ def start():
                 title="Error",
                 message=f"{i}: {j}"
             )
-    progress_window.disable()
+    progress_window.destroy()
     kanvas.focus_set()
 
 if len(sys.argv) > 2:
