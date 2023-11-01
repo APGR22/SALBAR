@@ -45,7 +45,6 @@ from tkinter.messagebox import *
 from gui import gui
 from gui.styles import *
 from gui import icon
-from gui import progress
 from file_handler import extension
 from file_handler import execute
 import threading
@@ -72,8 +71,6 @@ icon.set_icon(jendela_utama)
 if not os.path.isdir("Paths"):
     os.makedirs("Paths")
 
-do_progress = progress.make_progress(width_screen, height_screen)
-
 fperintah = [] #path
 tperintah = [] #path
 snama = [] #nama
@@ -83,7 +80,7 @@ kanvas_bingkai = gui.bingkai(jendela_utama)
 kanvas = kanvas_bingkai[0]
 bingkai = kanvas_bingkai[1]
 
-gui.tombol(jendela_utama, snama, fperintah, tperintah, nama_edit_timpa, do_progress)
+gui.tombol(jendela_utama, snama, fperintah, tperintah, nama_edit_timpa)
 
 program_list = [] #daftar program yang untuk dijalankan
 excluded_program_list = [] #daftar program yang dilarang untuk dijalankan
@@ -239,7 +236,7 @@ perbarui()
 
 #tidak bisa untuk threading semua kode
 def start():
-    progress_window = progress.simple_progress()
+    progress_window = progress.simple_progress_bar()
     nama_kesalahan = []
     kesalahan = []
     if len(program_list) > 64:

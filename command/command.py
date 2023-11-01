@@ -19,6 +19,7 @@ from tkinter.messagebox import WARNING
 import os
 import command.copycut as copycut
 import paths
+from gui import progress
 
 def make_dir(d: str):
     try:
@@ -38,7 +39,7 @@ def cek_ada(path, skip: IntVar):
         return ask
     return "tidak ada"
 
-def perintah(do_progress: type,
+def perintah(command_info: progress.progress_bar,
             list_name: list,
             list_source: list,
             list_destination: list,
@@ -46,8 +47,8 @@ def perintah(do_progress: type,
             timpa: IntVar,
             skip: IntVar):
     """tanya: Overwrites for all\n
-    skip: Skip overwrites"""
-    do_progress.progress_start()
+    skip: Skip overwrites\n
+    (not active) command_info = ["title", "source", "destination"]"""
 
     list_path = [] #0 = name, 1 = list source, 2 = list destination
     berhasil = 0
@@ -66,26 +67,42 @@ def perintah(do_progress: type,
 
     total_title = len(list_path)
 
+    command_info.active()
+
     try:
         if copy: #sekali dijalankan
-            for number_title, p in enumerate(list_path): #perulangan
+            for count_title, p in enumerate(list_path): #perulangan
                 total_source = len(p[1])
                 total_destination = len(p[2])
-                for number_s, s in enumerate(p[1]): #perulangan dalam perulangan
+
+                command_info.set(
+                                program_name="title",
+                                value=(count_title+1)/total_title*100,
+                                title=f"{count_title+1}/{total_title}",
+                                message=p[0]
+                                )
+
+                for count_s, s in enumerate(p[1]): #perulangan dalam perulangan
+
+                    command_info.set(
+                                    program_name="source",
+                                    value=(count_s+1)/total_source*100,
+                                    title=f"Source: {count_s+1}/{total_source}",
+                                    message=s
+                                    )
+
                     if operasi_cancel:
                         break
 
                     #perulangan dalam perulangan dalam perulangan
-                    for number_d, d in enumerate(p[2]):
+                    for count_d, d in enumerate(p[2]):
 
-                        do_progress.progress(
-                                            p[0], #title
-                                            (number_title+1, total_title), #number_title
-                                            (number_s+1, total_source), #number_s
-                                            s, #source_path
-                                            (number_d+1, total_destination), #number_d
-                                            d #destination_path
-                                            )
+                        command_info.set(
+                                        program_name="destination",
+                                        value=(count_d+1)/total_destination*100,
+                                        title=f"Destination: {count_d+1}/{total_destination}",
+                                        message=d
+                                        )
 
                         if os.path.isfile(s):
                             metode_file = True
@@ -164,7 +181,7 @@ def perintah(do_progress: type,
         print(error)
         kesalahan.append(str(error))
 
-    do_progress.progress_stop()
+    command_info.destroy()
 
     if copy:
         tindakan = "COPIED"

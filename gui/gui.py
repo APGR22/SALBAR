@@ -25,6 +25,7 @@ import threading
 from gui.styles import *
 from gui import config
 from gui import message_box
+from gui import progress
 import configurator
 
 def bingkai(root: Tk):
@@ -290,8 +291,9 @@ class options:
                 message="You not selected anything"
         )
 
-    def _run_command(do_progress: type, copy: bool, snama: list, fperintah: list, tperintah: list):
-        hasil = command.perintah(do_progress, snama, fperintah, tperintah, copy, konfirmasi_timpa, konfirmasi_lewati)
+    def _run_command(command_info, copy: bool, snama: list, fperintah: list, tperintah: list):
+        """(not active) command_info = ["title", "source", "destination"]"""
+        hasil = command.perintah(command_info, snama, fperintah, tperintah, copy, konfirmasi_timpa, konfirmasi_lewati)
         if hasil.count("SUCCESSFULLY"):
             showinfo(
                 title = "Command-Info",
@@ -313,7 +315,7 @@ class options:
                 message = hasil
             )
 
-    def jalankan_perintah(do_progress: type, copy: bool, snama: list, fperintah: list, tperintah: list):
+    def jalankan_perintah(copy: bool, snama: list, fperintah: list, tperintah: list):
         """if copy == False: cut"""
         if snama and fperintah and tperintah:
 
@@ -341,14 +343,15 @@ class options:
                 answer = "Yes"
 
             if answer in ["Yes", "Always Yes"]:
-                threading.Thread(target=options._run_command, args=(do_progress, copy, snama, fperintah, tperintah)).start()
+                command_info = progress.progress_bar(["title", "source", "destination"])
+                threading.Thread(target=options._run_command, args=(command_info, copy, snama, fperintah, tperintah)).start()
         else:
             showerror(
                 title = "Error",
                 message = "You not selected anything"
             )
 
-def tombol(root: Tk, snama: list, fperintah: list, tperintah: list, nama_edit_timpa: dict, do_progress: type):
+def tombol(root: Tk, snama: list, fperintah: list, tperintah: list, nama_edit_timpa: dict):
     global nama, direktori, tujuan, konfirmasi_timpa, konfirmasi_lewati
     nama = StringVar()
     direktori = StringVar()
@@ -376,15 +379,15 @@ def tombol(root: Tk, snama: list, fperintah: list, tperintah: list, nama_edit_ti
 
     copy = Label(root, text="Copy")
     copy.pack(side=RIGHT, fill=Y)
-    config.button(copy, options.jalankan_perintah, do_progress, True, snama, fperintah, tperintah)
+    config.button(copy, options.jalankan_perintah, True, snama, fperintah, tperintah)
     def copy_bind(event):
-        options.jalankan_perintah(do_progress, True, snama, fperintah, tperintah)
+        options.jalankan_perintah(True, snama, fperintah, tperintah)
 
     cut = Label(root, text="Cut")
     cut.pack(side=RIGHT, fill=Y)
-    config.button(cut, options.jalankan_perintah, do_progress, False, snama, fperintah, tperintah)
+    config.button(cut, options.jalankan_perintah, False, snama, fperintah, tperintah)
     def cut_bind(event):
-        options.jalankan_perintah(do_progress, False, snama, fperintah, tperintah)
+        options.jalankan_perintah(False, snama, fperintah, tperintah)
 
     def timpa_dicentang():
         if konfirmasi_timpa.get() == 1:
