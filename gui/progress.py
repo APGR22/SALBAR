@@ -47,10 +47,7 @@ def make_progress(width_screen: int, height_screen: int):
         pass
 
     def calculator_percent(count: int|float, total: list) -> (int|float):
-        return (count+1)/len(total)*100
-    
-    def calculator_left(total: int, count: int) -> int:
-        return len(total)-1 - count
+        return count/total*100
 
     class do_progress:
         def progress_start():
@@ -60,20 +57,20 @@ def make_progress(width_screen: int, height_screen: int):
 
         def progress(
                     title: str,
-                    number_for_title: tuple[int, list],
-                    number_s: tuple[int, list],
+                    number_for_title: tuple[int, int],
+                    number_s: tuple[int, int],
                     source_path: str,
-                    number_d: tuple[int, list],
+                    number_d: tuple[int, int],
                     destination_path: str
                     ):
-            progress_title_label["text"] = f"{calculator_left(number_for_title[1], number_for_title[0])} lefts: {title}"
+            progress_title_label["text"] = f"{number_for_title[0]}/{number_for_title[1]}: {title}"
             progress_title["value"] = calculator_percent(number_for_title[0], number_for_title[1])
 
-            progress_label["text"] = f"Source: {calculator_left(number_s[1], number_s[0])} lefts"
+            progress_label["text"] = f"Source: {number_s[0]}/{number_s[1]}"
             progress["value"] = calculator_percent(number_s[0], number_s[1])
             progress_info["text"] = source_path
 
-            sub_progress_label["text"] = f"Destination: {calculator_left(number_d[1], number_d[0])} lefts"
+            sub_progress_label["text"] = f"Destination: {number_d[0]}/{number_d[1]}"
             sub_progress["value"] = calculator_percent(number_d[0], number_d[1])
             sub_progress_info["text"] = destination_path
             

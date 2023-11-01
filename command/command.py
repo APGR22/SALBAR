@@ -64,9 +64,13 @@ def perintah(do_progress: type,
         destination = paths.separate_path(ld)
         list_path.append((ln, source, destination))
 
+    total_title = len(list_path)
+
     try:
         if copy: #sekali dijalankan
             for number_title, p in enumerate(list_path): #perulangan
+                total_source = len(p[1])
+                total_destination = len(p[2])
                 for number_s, s in enumerate(p[1]): #perulangan dalam perulangan
                     if operasi_cancel:
                         break
@@ -76,10 +80,10 @@ def perintah(do_progress: type,
 
                         do_progress.progress(
                                             p[0], #title
-                                            (number_title, list_path), #number_title
-                                            (number_s, p[1]), #number_s
+                                            (number_title+1, total_title), #number_title
+                                            (number_s+1, total_source), #number_s
                                             s, #source_path
-                                            (number_d, p[2]), #number_d
+                                            (number_d+1, total_destination), #number_d
                                             d #destination_path
                                             )
 
