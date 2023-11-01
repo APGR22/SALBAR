@@ -76,16 +76,16 @@ def perintah(command_info: progress.progress_bar,
                 total_destination = len(p[2])
 
                 command_info.set(
-                                program_name="title",
+                                progress_name="title",
                                 value=(count_title+1)/total_title*100,
-                                title=f"{count_title+1}/{total_title}",
+                                title=f"Process: {count_title+1}/{total_title}",
                                 message=p[0]
                                 )
 
                 for count_s, s in enumerate(p[1]): #perulangan dalam perulangan
 
                     command_info.set(
-                                    program_name="source",
+                                    progress_name="source",
                                     value=(count_s+1)/total_source*100,
                                     title=f"Source: {count_s+1}/{total_source}",
                                     message=s
@@ -98,7 +98,7 @@ def perintah(command_info: progress.progress_bar,
                     for count_d, d in enumerate(p[2]):
 
                         command_info.set(
-                                        program_name="destination",
+                                        progress_name="destination",
                                         value=(count_d+1)/total_destination*100,
                                         title=f"Destination: {count_d+1}/{total_destination}",
                                         message=d

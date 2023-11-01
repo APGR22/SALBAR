@@ -56,24 +56,24 @@ class progress_bar():
     
     disabled = disable
 
-    def set(self, program_name: str, value: int, title: str = "", message: str = ""):
+    def set(self, progress_name: str, value: int, title: str = "", message: str = ""):
         "progress"
-        self.progress_list[program_name][0]["text"] = title
-        self.progress_list[program_name][1]["value"] = value
-        self.progress_list[program_name][2]["text"] = message
+        self.progress_list[progress_name][0]["text"] = title
+        self.progress_list[progress_name][1]["value"] = value
+        self.progress_list[progress_name][2]["text"] = message
 
         self._auto_config()
 
-    def stop(self, program_name: str):
+    def stop(self, progress_name: str):
         "progress"
-        self.progress_list[program_name][1].stop()
+        self.progress_list[progress_name][1].stop()
 
     reset = restart = stop
 
     def stop_all(self):
         "progress"
-        for program_name in self.progress_list:
-            self.progress_list[program_name][1].stop()
+        for progress_name in self.progress_list:
+            self.progress_list[progress_name][1].stop()
     
     reset_all = restart_all = stop_all
     
