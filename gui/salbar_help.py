@@ -15,7 +15,7 @@
 from tkinter import *
 from tkinter import ttk
 from gui.styles import *
-from gui import icon
+from gui import image
 import paths
 import os
 
@@ -53,7 +53,7 @@ y = (screen_height/2) - (h/2)
 
 root.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
-icon.set_icon(root)
+image.set_icon(root)
 
 content = Text(root, bg=HELP_BACKGROUND, fg=TEXT_COLOR, font=FONT) #Later I want to use a font that is similar to the Windows Terminal font if possible or you can help me with the condition that you make it yourself or download it from a trusted source.
 content.pack(side=LEFT, fill=BOTH, expand=True)

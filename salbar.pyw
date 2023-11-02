@@ -44,7 +44,7 @@ from gui import progress
 from tkinter.messagebox import *
 from gui import gui
 from gui.styles import *
-from gui import icon
+from gui import image
 from file_handler import extension
 from file_handler import execute
 import threading
@@ -66,7 +66,7 @@ y = (height_screen/2) - (h/2)
 
 jendela_utama.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
-icon.set_icon(jendela_utama)
+image.set_icon(jendela_utama)
 
 if not os.path.isdir("Paths"):
     os.makedirs("Paths")

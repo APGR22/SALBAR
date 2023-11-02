@@ -14,7 +14,7 @@
 
 from tkinter import *
 from tkinter import ttk
-from gui import icon
+from gui import image
 from gui.styles import MESSAGEBOX_BACKGROUND, MESSAGEBOX_BUTTON_FRAME_BACKGROUND, JUST_FONT
 
 def create(
@@ -55,7 +55,7 @@ def create(
     icon_frame = Frame(main_frame, bg=MESSAGEBOX_BACKGROUND)
     icon_frame.pack(fill=Y, side=LEFT)
 
-    img = icon.get_image(icon_path, (64,64)) #must be saved to memory
+    img = image.get_image(icon_path, (64,64)) #must be saved to memory
     icon_image = Label(icon_frame, image=img, bg=MESSAGEBOX_BACKGROUND)
     icon_image.pack(fill=BOTH, padx=5)
 
