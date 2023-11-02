@@ -26,11 +26,11 @@ ENTRY_BACKGROUND = "#565656"
 if platform.system() == "Windows":
     MESSAGEBOX_BACKGROUND = "#ffffff"
     MESSAGEBOX_BUTTON_FRAME_BACKGROUND = "SystemButtonFace" #I know the true color is '#f0f0f0' from "https://stackoverflow.com/questions/36093839/how-to-reset-background-color-of-a-python-tkinter-button/68903355#68903355"
-    MESSAGEBOX_ICON = os.path.join("icons", "Warning.png")
+    MESSAGEBOX_ICON = os.path.join(paths.get_current_path(), "icons", "Warning.png")
 else:
     MESSAGEBOX_BACKGROUND = "#d9d9d9"
     MESSAGEBOX_BUTTON_FRAME_BACKGROUND = "#d9d9d9"
-    MESSAGEBOX_ICON = os.path.join("icons", "Warning (ubuntu).png")
+    MESSAGEBOX_ICON = os.path.join(paths.get_current_path(), "icons", "Warning (ubuntu).png")
 
 BUTTON_WIDTH = 8
 BUTTON_HEIGHT = 2
@@ -40,7 +40,7 @@ TEXT_COLOR = "#ffffff"
 FONT_SIZE = 10
 
 def add_font(font_filename: str) -> tuple:
-    font = TTFont(os.path.join(paths.get_current_path(False), "fonts", font_filename)) #https://stackoverflow.com/questions/63468751/adding-ttf-fonts-with-fonttools-in-to-tkinter
+    font = TTFont(os.path.join(paths.get_current_path(), "fonts", font_filename)) #https://stackoverflow.com/questions/63468751/adding-ttf-fonts-with-fonttools-in-to-tkinter
     return (font, FONT_SIZE)
 
 FONT = add_font("arial.ttf") #copied from windows font #default
