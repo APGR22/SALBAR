@@ -26,11 +26,11 @@ ENTRY_BACKGROUND = "#565656"
 if platform.system() == "Windows":
     MESSAGEBOX_BACKGROUND = "#ffffff"
     MESSAGEBOX_BUTTON_FRAME_BACKGROUND = "SystemButtonFace" #I know the true color is '#f0f0f0' from "https://stackoverflow.com/questions/36093839/how-to-reset-background-color-of-a-python-tkinter-button/68903355#68903355"
-    MESSAGEBOX_ICON = "icons/Warning.png"
+    MESSAGEBOX_ICON = os.path.join("icons", "Warning.png")
 else:
     MESSAGEBOX_BACKGROUND = "#d9d9d9"
     MESSAGEBOX_BUTTON_FRAME_BACKGROUND = "#d9d9d9"
-    MESSAGEBOX_ICON = "icons/Warning (ubuntu).png"
+    MESSAGEBOX_ICON = os.path.join("icons", "Warning (ubuntu).png")
 
 BUTTON_WIDTH = 8
 BUTTON_HEIGHT = 2
