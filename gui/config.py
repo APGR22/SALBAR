@@ -62,7 +62,7 @@ class undo_redo:
             self.update()
 
 def label(obj: Label):
-    obj.config(bg=BACKGROUND, fg=TEXT_COLOR, font=FONT)
+    obj.config(bg=background, fg=TEXT_COLOR, font=FONT)
 
 def button(obj: Label, callable: object | bool, *args: tuple, **option):
     """jika sudah berada di *args, maka bebas menambahkan apa saja, kecuali **pilihan"""
@@ -71,12 +71,11 @@ def button(obj: Label, callable: object | bool, *args: tuple, **option):
     DEFAULT_BACKGROUND = '#4b4b4b'
     EVENT_CLICK_FOREGROUND = '#ffffff'
     EVENT_CLICK_BACKGROUND = '#1f1f1f'
-    HIGHLIGHT_BACKGROUND = "#929292"
 
     global clicked
     clicked = False
 
-    obj.config(fg=DEFAULT_FOREGROUND, bg=DEFAULT_BACKGROUND, highlightthickness=1, highlightbackground=HIGHLIGHT_BACKGROUND, height=BUTTON_HEIGHT, font=FONT)
+    obj.config(fg=DEFAULT_FOREGROUND, bg=DEFAULT_BACKGROUND, highlightthickness=0, highlightbackground=background, height=BUTTON_HEIGHT, font=FONT)
     try:
         obj.config(width=option["my_width"])
     except:
@@ -106,9 +105,10 @@ def button(obj: Label, callable: object | bool, *args: tuple, **option):
     obj.bind("<Leave>", cursor_exit) #kursor meninggalkannya
     obj.bind("<ButtonPress-1>", click) #Button-1==tombol berubah tapi ketika kursor meninggalkannya
     obj.bind("<ButtonRelease-1>", release) #ButtonRelease-1==tombol semula setelah ditekan
+    obj.pack(padx=1)
 
 def checkbutton(obj: Checkbutton, var: IntVar):
-    obj.config(variable=var, onvalue=1, offvalue=0, bg=BACKGROUND, activebackground=CHECKBUTTON_ACTIVE_BACKGROUND, fg=TEXT_COLOR, font=FONT, selectcolor=CHECKBUTTON_BOX_BACKGROUND, highlightthickness=0)
+    obj.config(variable=var, onvalue=1, offvalue=0, bg=background, activebackground=CHECKBUTTON_ACTIVE_BACKGROUND, fg=TEXT_COLOR, font=FONT, selectcolor=CHECKBUTTON_BOX_BACKGROUND, highlightthickness=0)
 
 def entry(obj: Entry, var: StringVar, nama: bool = False, **more_obj):
     obj.config(textvariable=var, bg=ENTRY_BACKGROUND, fg=TEXT_COLOR, font=FONT, highlightthickness=0)

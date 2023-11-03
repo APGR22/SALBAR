@@ -14,6 +14,7 @@
 
 import yaml
 import os
+import typing
 
 EMPTY = """- null"""
 
@@ -40,8 +41,11 @@ class config:
             file.write(content)
 
     def _load(self) -> (dict | None):
-        with open(self.file, "r") as file:
-            return yaml.safe_load(file)
+        try:
+            with open(self.file, "r") as file:
+                return yaml.safe_load(file)
+        except:
+            return
 
     def _write(self, data: dict, mode: str = "a"):
         "must check the syntax before write it"
@@ -94,7 +98,7 @@ class config:
             data[config_name] = new_value
             self._write(data, "w")
 
-    def get_value(self, config_name: str) -> (dict | None):
+    def get_value(self, config_name: str) -> (typing.Any | None):
         "if file or item is not found then return None"
         if self.find(config_name):
             return self._load().get(config_name)

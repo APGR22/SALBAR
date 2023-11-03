@@ -13,13 +13,8 @@
 # limitations under the License.
 
 from tkinter import *
-from gui.styles import FONT
+from gui.styles import *
 import paths
-
-CHECKBUTTON_SELECTED_FOREGROUND = "#000000"
-CHECKBUTTON_SELECTED_BACKGROUND = "#ffffff"
-CHECKBUTTON_DESELECTED_FOREGROUND = "#ffffff"
-CHECKBUTTON_DESELECTED_BACKGROUND = "#686e61"
 
 def eksekusi(
         pilihan: Frame,
@@ -48,8 +43,8 @@ def eksekusi(
                 fperintah.append(d)
                 tperintah.append(t)
                 snama.append(n)
-            globals()[f"{n}_cb"]["fg"] = CHECKBUTTON_SELECTED_FOREGROUND
-            globals()[f"{n}_cb"]["bg"] = CHECKBUTTON_SELECTED_BACKGROUND
+            globals()[f"{n}_cb"]["fg"] = checkbutton_selected_foreground
+            globals()[f"{n}_cb"]["bg"] = checkbutton_selected_background
         else:
             try:
                 fperintah.remove(d)
@@ -57,16 +52,16 @@ def eksekusi(
                 snama.remove(n)
             except:
                 pass
-            globals()[f"{n}_cb"]["fg"] = CHECKBUTTON_DESELECTED_FOREGROUND
-            globals()[f"{n}_cb"]["bg"] = CHECKBUTTON_DESELECTED_BACKGROUND
+            globals()[f"{n}_cb"]["fg"] = checkbutton_deselected_foreground
+            globals()[f"{n}_cb"]["bg"] = checkbutton_deselected_background
 
     globals()[f"{n}_var"] = IntVar()
 
     globals()[f"{n}_cb"] = Checkbutton(
                                        pilihan,
                                        text=n,
-                                       bg=CHECKBUTTON_DESELECTED_BACKGROUND,
-                                       fg=CHECKBUTTON_DESELECTED_FOREGROUND,
+                                       bg=checkbutton_deselected_background,
+                                       fg=checkbutton_deselected_foreground,
                                        variable=globals()[f"{n}_var"],
                                        onvalue=1, offvalue=0,
                                        command=centang,

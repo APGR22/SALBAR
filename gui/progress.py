@@ -5,22 +5,25 @@ from gui.styles import *
 class progress_bar():
     def __init__(self, progress_names: list[str]) -> None:
         self.progress_window = Toplevel()
+        self.progress_window.configure(bg=PROGRESS_BACKGROUND)
         self.progress_window.resizable(0, 0)
 
         self.progress_list = {} #{str: [Label, Progressbar, Label]}
 
         for progress_name in progress_names:
-            progress_frame = Frame(self.progress_window)
+            progress_frame = Frame(self.progress_window, bg=PROGRESS_BACKGROUND)
             progress_frame.pack(fill=X, expand=True, pady=5)
 
-            progress_title = Label(progress_frame, font=(JUST_FONT, 9))
+            progress_title = Label(progress_frame, font=(JUST_FONT, 9), foreground=PROGRESS_FOREGROUND)
             progress_title.pack(fill=X)
+            progress_title.configure(background=PROGRESS_BACKGROUND)
 
             progress = Progressbar(progress_frame, orient=HORIZONTAL, mode='determinate')
             progress.pack(fill=X)
 
-            progress_msg = Label(progress_frame, wraplength=490, font=(JUST_FONT, 9))
+            progress_msg = Label(progress_frame, wraplength=490, font=(JUST_FONT, 9), foreground=PROGRESS_FOREGROUND)
             progress_msg.pack(fill=X)
+            progress_msg.configure(background=PROGRESS_BACKGROUND)
 
             self.progress_list[progress_name] = [progress_title, progress, progress_msg]
 

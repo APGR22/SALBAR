@@ -15,7 +15,7 @@
 from tkinter import *
 from tkinter import ttk
 from gui import image
-from gui.styles import MESSAGEBOX_BACKGROUND, MESSAGEBOX_BUTTON_FRAME_BACKGROUND, JUST_FONT
+from gui.styles import *
 
 def create(
             title: str,
@@ -47,26 +47,26 @@ def create(
 
     #Up-Start
 
-    main_frame = Frame(message_window, bg=MESSAGEBOX_BACKGROUND)
+    main_frame = Frame(message_window, bg=messagebox_background)
     main_frame.pack(fill=BOTH)
 
         #Left-Start
 
-    icon_frame = Frame(main_frame, bg=MESSAGEBOX_BACKGROUND)
+    icon_frame = Frame(main_frame, bg=messagebox_background)
     icon_frame.pack(fill=Y, side=LEFT)
 
     img = image.get_image(icon_path, (64,64)) #must be saved to memory
-    icon_image = Label(icon_frame, image=img, bg=MESSAGEBOX_BACKGROUND)
+    icon_image = Label(icon_frame, image=img, bg=messagebox_background)
     icon_image.pack(fill=BOTH, padx=5)
 
         #Left-End
 
         #Right-Start
 
-    message_frame = Frame(main_frame, bg=MESSAGEBOX_BACKGROUND)
+    message_frame = Frame(main_frame, bg=messagebox_background)
     message_frame.pack(fill=Y, side=LEFT)
 
-    message_text = Label(main_frame, text=message, wraplength=80/100*w, bg=MESSAGEBOX_BACKGROUND, font=(JUST_FONT, 9))
+    message_text = Label(main_frame, text=message, wraplength=80/100*w, bg=messagebox_background, font=(JUST_FONT, 9))
     message_text.pack(fill=BOTH, expand=True)
 
         #Right-End
@@ -77,7 +77,7 @@ def create(
 
     if use_checkbutton:
 
-        checkbutton_frame = Frame(main_frame, bg=MESSAGEBOX_BACKGROUND)
+        checkbutton_frame = Frame(main_frame, bg=messagebox_background)
         checkbutton_frame.pack()
 
         checkbutton = Checkbutton(
@@ -85,8 +85,8 @@ def create(
                                     text=checkbutton_text,
                                     variable=checkbutton_value,
                                     wraplength=80/100*w,
-                                    bg=MESSAGEBOX_BACKGROUND,
-                                    activebackground=MESSAGEBOX_BACKGROUND,
+                                    bg=messagebox_background,
+                                    activebackground=messagebox_background,
                                     highlightthickness=0,
                                     font=(JUST_FONT, 9)
                                     )
@@ -94,10 +94,10 @@ def create(
 
     #Down-Start
 
-    option_frame = Frame(message_window, bg=MESSAGEBOX_BUTTON_FRAME_BACKGROUND)
+    option_frame = Frame(message_window, bg=messagebox_background)
     option_frame.pack(fill=BOTH, pady=9)
 
-    button_frame = Frame(option_frame, bg=MESSAGEBOX_BUTTON_FRAME_BACKGROUND)
+    button_frame = Frame(option_frame, bg=messagebox_background)
     button_frame.pack()
 
     global get_value

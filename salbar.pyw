@@ -52,7 +52,7 @@ import threading
 jendela_utama = Tk()
 jendela_utama.title("SALBAR")
 jendela_utama.minsize(width=532, height=440)
-jendela_utama.configure(bg=BACKGROUND)
+jendela_utama.configure(bg=background)
 width_screen = jendela_utama.winfo_screenwidth()
 height_screen = jendela_utama.winfo_screenheight()
 default_w = 752
@@ -117,7 +117,7 @@ def refresh_program_list():
     program_list.clear()
     program_list.extend(results)
 
-f_pilihan = Frame(bingkai, bg="#3c4038")
+f_pilihan = Frame(bingkai, bg=frame_background)
 f_pilihan.grid()
 
 def baca(nama: str, r: int | None = None, tambahkan: bool = False):

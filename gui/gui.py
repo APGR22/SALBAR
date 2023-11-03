@@ -33,7 +33,7 @@ def bingkai(root: Tk):
     bingkai_utama.pack(fill=BOTH, expand=True)
     bingkai_kedua = Frame(root)
     bingkai_kedua.pack(fill=BOTH)
-    kanvas = Canvas(bingkai_utama, bg=FRAME_BACKGROUND, highlightthickness=0)
+    kanvas = Canvas(bingkai_utama, bg=frame_background, highlightthickness=0)
     kanvas.pack(side=LEFT, fill=BOTH, expand=True)
 
     gulir = ttk.Scrollbar(bingkai_utama,orient=VERTICAL, command=kanvas.yview)
@@ -59,7 +59,7 @@ def bingkai(root: Tk):
     kanvas.bind_all("<MouseWheel>", on_mousewheel)
     kanvas.focus_set()
 
-    bingkai = Frame(kanvas, bg=FRAME_BACKGROUND)
+    bingkai = Frame(kanvas, bg=frame_background)
 
     kanvas.create_window((0,0), window=bingkai, anchor="nw")
 
@@ -81,7 +81,7 @@ class options:
         jendela_tanya.grab_set()
         jendela_tanya.title("Configuration")
         jendela_tanya.resizable(0,0)
-        jendela_tanya.configure(bg=BACKGROUND)
+        jendela_tanya.configure(bg=background)
         jendela_tanya.focus_set()
         #GUI
         lebar_layar = root.winfo_screenwidth()
@@ -152,6 +152,7 @@ class options:
                     config_entry(tujuan, entry_tujuan, t0)
 
         def pack_frame(frame: Frame):
+            frame.config(bg=background)
             frame.pack(padx=10, fill='x', expand=True)
         
         def pack_label_1(label: Label):
@@ -166,12 +167,12 @@ class options:
         def pack_checkbutton(checkbutton: Checkbutton):
             checkbutton.pack(side="right")
 
-        f_label_nama = Frame(jendela_tanya, bg=BACKGROUND)
+        f_label_nama = Frame(jendela_tanya)
         pack_frame(f_label_nama)
-        label_nama_title = Label(f_label_nama, text="Name:", bg=BACKGROUND, fg=TEXT_COLOR)
+        label_nama_title = Label(f_label_nama, text="Name:", bg=background, fg=TEXT_COLOR)
         pack_label_1(label_nama_title)
 
-        f_entry_nama = Frame(jendela_tanya, bg=BACKGROUND, height=BUTTON_HEIGHT)
+        f_entry_nama = Frame(jendela_tanya, height=BUTTON_HEIGHT)
         pack_frame(f_entry_nama)
         entry_nama = Entry(f_entry_nama)
         pack_entry(entry_nama)
@@ -186,12 +187,12 @@ class options:
 
         nama_lama = entry_nama.get()
         #
-        f_label_direktori = Frame(jendela_tanya, bg=BACKGROUND)
+        f_label_direktori = Frame(jendela_tanya)
         pack_frame(f_label_direktori)
-        label_direktori_title = Label(f_label_direktori, text="Source path:", bg=BACKGROUND, fg=TEXT_COLOR)
+        label_direktori_title = Label(f_label_direktori, text="Source path:", bg=background, fg=TEXT_COLOR)
         pack_label_1(label_direktori_title)
 
-        f_entry_direktori = Frame(jendela_tanya, bg=BACKGROUND)
+        f_entry_direktori = Frame(jendela_tanya)
         pack_frame(f_entry_direktori)
         entry_direktori = Entry(f_entry_direktori)
         pack_entry(entry_direktori)
@@ -206,12 +207,12 @@ class options:
         pack_label_2(label_plus_direktori)
         config.button(label_plus_direktori, d_file_folder, "dr", "tambahkan", my_width=ADD_PATH_BUTTON_WIDTH)
         #
-        f_label_tujuan = Frame(jendela_tanya, bg=BACKGROUND)
+        f_label_tujuan = Frame(jendela_tanya)
         pack_frame(f_label_tujuan)
-        label_tujuan_title = Label(f_label_tujuan, text="Destination path:", bg=BACKGROUND, fg=TEXT_COLOR)
+        label_tujuan_title = Label(f_label_tujuan, text="Destination path:", bg=background, fg=TEXT_COLOR)
         pack_label_1(label_tujuan_title)
 
-        f_entry_tujuan = Frame(jendela_tanya, bg=BACKGROUND)
+        f_entry_tujuan = Frame(jendela_tanya)
         pack_frame(f_entry_tujuan)
         entry_tujuan = Entry(f_entry_tujuan)
         pack_entry(entry_tujuan)
@@ -324,7 +325,7 @@ class options:
                                         title="Command-Warning",
                                         message="Copy/move action cannot be stopped while it is in progress, continue?",
                                         options=["Yes", "Always Yes", "No"],
-                                        icon_path=MESSAGEBOX_ICON,
+                                        icon_path=messagebox_icon,
                                         button_padx=15,
                                         window_height=110,
                                         bell=True
