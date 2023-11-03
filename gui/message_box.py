@@ -94,10 +94,10 @@ def create(
 
     #Down-Start
 
-    option_frame = Frame(message_window, bg=messagebox_background)
+    option_frame = Frame(message_window, bg=messagebox_button_frame_background)
     option_frame.pack(fill=BOTH, pady=9)
 
-    button_frame = Frame(option_frame, bg=messagebox_background)
+    button_frame = Frame(option_frame, bg=messagebox_button_frame_background)
     button_frame.pack()
 
     global get_value
