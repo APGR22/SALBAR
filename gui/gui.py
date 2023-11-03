@@ -93,7 +93,7 @@ class options:
         yt = (tinggi_layar/2) - (ht/2)
 
         jendela_tanya.geometry('%dx%d+%d+%d' % (wt, ht, xt, yt))
-
+        #
         d_f_or_f = IntVar()
         t_f_or_f = IntVar()
 
@@ -180,7 +180,7 @@ class options:
         label_nama = Label(f_entry_nama, text="")
         pack_label_2(label_nama)
 
-        config.entry(entry_nama, nama, True, jendela_tanya, label_name = label_nama)
+        config.entry(entry_nama, nama, True, label_name = label_nama)
 
         config.button(label_nama, d_file_folder, "n", my_width=0) #Hasilnya 14
 

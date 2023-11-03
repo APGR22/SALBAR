@@ -16,6 +16,51 @@ from tkinter import *
 from gui.styles import *
 import platform
 
+class undo_redo:
+    def __init__(self, entry: Entry):
+        self.entry = entry
+        self.entry.bind("<Key>", self.add)
+        self.entry.bind("<Control-Z>", self.undo)
+        self.entry.bind("<Control-z>", self.undo)
+        self.entry.bind("<Control-Y>", self.redo)
+        self.entry.bind("<Control-y>", self.redo)
+        self.changed = {0: self.entry.get()} #0 = default. 0 ini tidak dapat diubah
+        self.position = {0: self.entry.index(INSERT)}
+        self.current = 0 #ditambah berarti redo atau add. tidak mungkin akan 0 seandainya ditambah
+
+    def add(self, *event):
+        if self.entry.get() != self.changed[self.current]: #if changed
+            total = len(self.changed)-1
+            for count_redo in range(total - self.current): #get total redo
+                self.changed.pop(total - count_redo)
+                self.position.pop(total - count_redo)
+
+            #add a new change
+            self.current += 1
+            self.changed[self.current] = self.entry.get()
+            self.position[self.current] = self.entry.index(INSERT)
+
+    def update(self):
+        text = self.changed[self.current]
+        self.entry.delete(0, END)
+        self.entry.insert(0, text)
+
+        self.entry.icursor(self.position[self.current])
+
+        total = len(self.entry.get())
+        if total > 0:
+            self.entry.xview_moveto(self.position[self.current]/total - (50/total))
+
+    def undo(self, *event):
+        if self.current > 0: #jika tidak di awal
+            self.current -= 1
+            self.update()
+
+    def redo(self, *event):
+        if self.current < len(self.changed)-1: #jika tidak di akhir
+            self.current += 1
+            self.update()
+
 def label(obj: Label):
     obj.config(bg=BACKGROUND, fg=TEXT_COLOR, font=FONT)
 
@@ -65,10 +110,10 @@ def button(obj: Label, callable: object | bool, *args: tuple, **option):
 def checkbutton(obj: Checkbutton, var: IntVar):
     obj.config(variable=var, onvalue=1, offvalue=0, bg=BACKGROUND, activebackground=CHECKBUTTON_ACTIVE_BACKGROUND, fg=TEXT_COLOR, font=FONT, selectcolor=CHECKBUTTON_BOX_BACKGROUND, highlightthickness=0)
 
-def entry(obj: Entry, var: StringVar, nama: bool = False, jendela: Toplevel = False, **more_obj):
+def entry(obj: Entry, var: StringVar, nama: bool = False, **more_obj):
     obj.config(textvariable=var, bg=ENTRY_BACKGROUND, fg=TEXT_COLOR, font=FONT, highlightthickness=0)
 
-    if nama and jendela:
+    if nama:
         #"https://stackoverflow.com/questions/1976007/what-characters-are-forbidden-in-windows-and-linux-directory-names"
         if platform.system() == "Windows":
             karakter = '\\/:*?"<>|'
@@ -78,7 +123,7 @@ def entry(obj: Entry, var: StringVar, nama: bool = False, jendela: Toplevel = Fa
                     more_obj["label_name"].config(bg="#ff0000")
                 else:
                     more_obj["label_name"].config(bg="#4b4b4b")
-                jendela.after(10, tandai)
+                obj.master.after(10, tandai)
             
             tandai()
 
@@ -89,23 +134,29 @@ def entry(obj: Entry, var: StringVar, nama: bool = False, jendela: Toplevel = Fa
         def pilihan_karakter(S):
             if len(S) == 1:
                 if S in karakter: #kalau mengetikkan karakter yang dilarang
-                    jendela.bell()
+                    obj.master.bell()
                     return False
             else:
                 for i in karakter:
                     if i in S: #kalau menempel teks yang terdapat karakter yang dilarang
-                        jendela.bell()
+                        obj.master.bell()
                         return False
             return True
-        batas_karakter = (jendela.register(pilihan_karakter), '%S')
+        batas_karakter = (obj.master.register(pilihan_karakter), '%S')
         obj.config(validate="key", validatecommand=batas_karakter)
+
+    scrollbar_entry = Scrollbar(obj.master, orient=HORIZONTAL, command=obj.xview, width=8, relief=FLAT, highlightthickness=0)
+    obj.configure(xscrollcommand=scrollbar_entry.set)
 
     def selected(event):
         obj.selection_range(0, END)
-        obj.config(highlightthickness=1)
-    
+
+        scrollbar_entry.pack(side=BOTTOM, fill=X, in_=obj)
+
     def deselected(event):
-        obj.config(highlightthickness=0)
-    
+        scrollbar_entry.pack_forget()
+
     obj.bind("<FocusIn>", selected)
     obj.bind("<FocusOut>", deselected)
+
+    undo_redo(obj)
