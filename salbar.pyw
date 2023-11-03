@@ -222,7 +222,7 @@ def perbarui():
                 try:
                     globals()[f"{i}_cb"].grid(row=r)
                     globals()[f"{i}_label"].grid(row=r)
-                except KeyError: #seandainya kesalahannya berasal dari tindakan pengguna yang rename file .slbr secara manual
+                except: #seandainya kesalahannya berasal dari tindakan pengguna yang rename file .slbr secara manual
                     baca(i)
                     globals()[f"{i}_cb"].grid(row=r)
                     globals()[f"{i}_label"].grid(row=r)
