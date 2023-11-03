@@ -27,7 +27,13 @@ class progress_bar():
 
             self.progress_list[progress_name] = [progress_title, progress, progress_msg]
 
-        self._auto_config()
+        w = 500
+        h = self.progress_window.winfo_reqheight()
+        x = (self.progress_window.winfo_screenwidth()/2) - (w/2)
+        y = (self.progress_window.winfo_screenheight()/2) - (h/2)
+
+        self.progress_window.geometry('%dx%d+%d+%d' % (w, h, x, y))
+
         self.progress_window.withdraw()
 
         def prevent_exit():
@@ -38,10 +44,8 @@ class progress_bar():
     def _auto_config(self):
         w = 500
         h = self.progress_window.winfo_reqheight()
-        x = (self.progress_window.winfo_screenwidth()/2) - (w/2)
-        y = (self.progress_window.winfo_screenheight()/2) - (h/2)
 
-        self.progress_window.geometry('%dx%d+%d+%d' % (w, h, x, y))
+        self.progress_window.geometry('%dx%d' % (w, h))
 
     def active(self):
         "window"
