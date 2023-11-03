@@ -19,20 +19,20 @@ from gui import image
 import paths
 import os
 
-message = f'''Usage: SALBAR [help | main | directory=[directory]]
+message = f'''Usage: salbar [help | main | directory=[directory]]
 
 current/specified directory: {os.getcwd()}
 
 [-help | -h | --help | --h]:
-\tdisplays all commands just by running the 'Help' window without running 'SALBAR' window
+\tdisplays all commands just by running the 'Help' window without running 'salbar' window
 
 [-main | --main]:
-\tset directory to the directory where SALBAR.exe is located ("{paths.get_current_path()}")
+\tset directory to the directory where 'salbar.exe' is located ("{paths.get_current_path()}")
 \tdefault: follows the current directory based on the specified directory
 
 [--directory=[directory]]:
 \tset directory to [directory]
-\texample: SALBAR directory="{os.path.join("SALBAR", "build", "example")}"
+\texample: salbar --directory="{os.path.join("salbar", "build", "example")}"
 \tdefault: follows the current directory based on the specified directory'''
 
 root = Tk()
@@ -63,7 +63,10 @@ content.config(state='disabled') #read-only
 #reference: https://askubuntu.com/questions/17299/what-do-the-different-colors-mean-in-ls
 content.tag_configure("path", foreground="#0000ff")
 content.tag_add("path", "3.29", "3.end")
-content.tag_add("path", "9.62", f"9.{62+len(paths.get_current_path())}")
+content.tag_add("path", "9.64", f"9.{64+len(paths.get_current_path())}")
+
+content.tag_configure("salbar", foreground="#feff58")
+content.tag_add("salbar", "9.39", f"9.49")
 
 scrollbar = ttk.Scrollbar(root, orient='vertical', command=content.yview)
 scrollbar.pack(side=RIGHT, fill=Y)
