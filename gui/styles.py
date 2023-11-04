@@ -16,11 +16,14 @@ from fontTools.ttLib import TTFont
 import os
 import paths
 import platform
-import _test
+from gui import _test
 import configurator
 
 def short_func(name: str, except_color: str) -> str:
-    return _test.test().apply_color(configurator.config("user.yaml").get_value(name), except_color)
+    if _test.color_test(configurator.config("user.yaml").get_value(name)):
+        return configurator.config("user.yaml").get_value(name)
+    else:
+        return except_color
 
 background = short_func("background_window", "#737373")
 frame_background = short_func("background", "#3c4038")
