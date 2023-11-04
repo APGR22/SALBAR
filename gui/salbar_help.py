@@ -24,7 +24,7 @@ message = f'''Usage: salbar [help | main | directory=[directory]]
 current/specified directory: {os.getcwd()}
 
 [-help | -h | --help | --h]:
-\tdisplays all commands just by running the 'Help' window without running 'salbar' window
+\tdisplays all commands just by running the 'Help' window without running 'SALBAR' window
 
 [-main | --main]:
 \tset directory to the directory where 'salbar.exe' is located ("{paths.get_current_path()}")

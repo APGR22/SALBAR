@@ -384,7 +384,7 @@ def tombol(root: Tk, snama: list, fperintah: list, tperintah: list, nama_edit_ti
     def copy_bind(event):
         options.jalankan_perintah(True, snama, fperintah, tperintah)
 
-    cut = Label(root, text="Cut")
+    cut = Label(root, text="Move")
     cut.pack(side=RIGHT, fill=Y)
     config.button(cut, options.jalankan_perintah, False, snama, fperintah, tperintah)
     def cut_bind(event):
