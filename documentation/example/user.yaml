@@ -1,0 +1,7 @@
+background_window: "#737373"
+background: "#3c4038"
+
+background_checkbox_selected: "#ffffff"
+foreground_checkbox_selected: "#000000"
+background_checkbox_deselected: "#686e61"
+foreground_checkbox_deselected: "#ffffff"

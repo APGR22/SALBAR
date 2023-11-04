@@ -26,3 +26,9 @@
 
 • (Only Windows) Filename correction.
           That means it will give a sign that there is an incorrect placement of a character
+
+•add working directory configuration (default: current directory. for more information, type "salbar --help" in the console)
+    this can load "Paths" in another directory without having to copy/move the .slbr file to the main directory
+
+•can configure background and foreground colors
+    see the example in the 'user.yaml' file in the 'example' folder then move the file to the directory where salbar.exe is located to apply (be careful when modifying)

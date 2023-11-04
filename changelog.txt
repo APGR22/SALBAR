@@ -1,5 +1,36 @@
 (ALL OF THIS TEXT WAS TRANSLATED INDONESIAN TO ENGLISH BY GOOGLE TRANSLATE)
 
+-------------------salbar v1.0.0 beta
+
+important:
+-fix bugs
+-added support for ubuntu
+-directory will be set by default to the current directory (based on console)
+-Automatically highlights all text so that users who cannot select all text (especially Ubuntu users) can copy it directly when needed
+-can skip all files/folders you want to overwrite
+-move folders with pure move method (previously used copy method then acts like move but delete of source directory is retained)
+-replace existing path symbols to user OS defined path symbols (since Linux cannot accept Windows path symbols)
+-if the length of the error message text is more than 160 it will be stored in error.txt
+-absolute path detection feature
+-added working directory configuration
+-character limitation from 251 to 250
+-added a check that if the "Paths" folder has been deleted, then SALBAR will be closed (to avoid bugs)
+-records the creation time of the .slbr file so that it can be sorted by creation time also on Linux
+    -if there is the same creation time, it will be sorted based on the default from python
+-added a help window to see all available commands and other information (type "salbar --help" in the console)
+-brought the arial font from my Windows Font along so it can be applied on systems that don't have it
+-added warning message box before copy/move action
+-appears a progress bar when first started if the .slbr file is more than 64 files
+-added undo&redo feature
+-added entry scroll bar
+
+not important:
+-added some shortcuts familiar to some Ubuntu users and Linux users in the terminal
+-each platform (Windows and Ubuntu) will have a different message box icon
+-added configuration support with yaml v1.1 (based on pyyaml)
+-reduce file writing for images by storing them in memory
+-can configure background and foreground colors (see features in the documentation)
+
 -------------------SALBAR v0.10.1 Beta (not available for download)
 
 -Added a warning that if the check box is more than 744

@@ -9,3 +9,15 @@
 • Haven't tested it on another computer because I only have a laptop (lent by my uncle). The possibility of bugs occurring is very large.
 
 • Long execution time so it is not suitable for laptops or computers with low processor capabilities.
+
+• absolute paths cannot be read by other OS and cannot be converted, aka they are only specific to the OS where they were created
+
+• will be considered to have an absolute path depending on the OS
+
+• still saves creation time when copying/moving .slbr files
+
+• file names must comply with target OS rules before being copied/moved to the target OS
+
+• Windows: when there are 32 .slbr files, it starts to lag (based on my computer)
+
+• Ubuntu Linux: when there are 128 .slbr files, it starts to lag (based on my computer)
