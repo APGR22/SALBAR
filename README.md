@@ -12,7 +12,7 @@ SALBAR can copy/move more than one file/folder to more than one destination dire
 The commands will be saved in file form and can be shared with other computers.
 
 # Requirements:
--OS: -Windows 10 or later.\
+- OS:&nbsp;&nbsp;-Windows 10 or later.\
 &emsp;&emsp;&nbsp;-Linux (especially Ubuntu) or later (haven't tested it on other distros yet)
 \
 \
