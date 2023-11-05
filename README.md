@@ -13,7 +13,7 @@ The commands will be saved in file form and can be shared with other computers.
 
 # Requirements:
 -OS: -Windows 10 or later.\
-     -Linux (especially Ubuntu) or later (haven't tested it on other distros yet)
+&emsp;&emsp;&nbsp;-Linux (especially Ubuntu) or later (haven't tested it on other distros yet)
 \
 \
 \
