@@ -1,0 +1,30 @@
+Windows:
+	nuitka "salbar.pyw"
+			--disable-console
+			--output-dir=<output directory>
+			--standalone
+			--remove-output
+			--prefer-source-code
+			--plugin-enable=upx
+			--upx-binary=<upx directory>
+			--enable-plugin=tk-inter
+			--mingw64
+			--windows-icon-from-ico=<ico file path>
+			--include-data-files="SALBAR.png"="SALBAR.png"
+			--include-data-files="fonts\arial.ttf"="fonts\arial.ttf"
+			--include-data-files="icons\Warning.png"="icons\Warning.png"
+
+Linux:
+	{nuitka/nuitka3} "salbar.pyw" 
+					--disable-console
+					--output-dir=<output directory>
+					--standalone
+					--remove-output
+					--prefer-source-code
+					--plugin-enable=upx
+					--upx-binary=<upx directory>
+					--enable-plugin=tk-inter
+					--linux-icon=<ico file path>
+					--include-data-files="SALBAR.png"="SALBAR.png"
+					--include-data-files="fonts/arial.ttf"="fonts/arial.ttf"
+					--include-data-files="icons/Warning (ubuntu).png"="icons/Warning (ubuntu).png"
