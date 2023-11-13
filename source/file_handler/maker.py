@@ -20,58 +20,69 @@ import platform
 from file_handler import extension
 import paths
 
-def buat(root: Tk | Toplevel, nama: StringVar, direktori: StringVar, tujuan: StringVar, daftar_nama_edit_timpa: dict = {}, nama_lama: str = ""):
+def buat(root: Tk | Toplevel, disable_window: object, nama: StringVar, direktori: StringVar, tujuan: StringVar, old_name: str, daftar_nama_edit_timpa: dict = {}):
     """jika nama_lama ada, maka akan dianggap edit (daftar_nama_edit diperlukan)"""
-    def hapus(stri: str) -> str:
-        if platform.system() == "Windows":
-            while True: #menghapus jika ia berkali-kali lipat adanya
-                if stri.startswith(" "):
-                    stri = stri[1:]
-                else:
-                    break
-        return stri
-    n = hapus(nama.get())
+
+    n = nama.get()
+    if platform.system() == "Windows":
+        while True: #menghapus jika ia berkali-kali lipat adanya
+            if n.startswith(" "):
+                n = n[1:]
+            else:
+                break
     d = direktori.get()
     t = tujuan.get()
     if not n or not d or not t:
-        return showerror(
+        showerror(
             title="Error",
             message="You can't fill empty!",
             parent=root
         )
+        return 1
+
     if platform.system() == "Windows":
         daftar_filename = "CON, CONIN$, CONOUT$, PRN, AUX, CLOCK$, NUL, COM0, COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9, LPT0, LPT1, LPT2, LPT3, LPT4, LPT5, LPT6, LPT7, LPT8, LPT9" #https://en.wikipedia.org/wiki/Filename
         daftar_filename = daftar_filename.split(", ")
         if n in daftar_filename:
-            return showinfo(
+            showinfo(
                 title = "Info",
                 message = "You entered a prohibited filename. Try again",
                 parent=root
             )
+            return 1
+
     if len(n) > 250:
-        return showwarning(
+        showwarning(
             title="Warning",
             message="Sorry, you can't insert over 250 characters!",
             parent=root
         )
-    if nama_lama: #mustahil akan dikirim "" alias kosong
-        if os.path.isfile(paths.PATH+n+".slbr") and n != nama_lama:
-            return showinfo(
+        return 1
+
+    if old_name: #mustahil True jika dikirim "" alias kosong
+        if os.path.isfile(paths.PATH+n+".slbr") and n != old_name:
+            showinfo(
                 title = "Info",
                 message = "We found the filename is the same as your entry name. Try again",
                 parent=root
             )
+            return 1
+
         try:
-            extension.ekstensi.make(n, d, t, nama_lama)
+            extension.ekstensi.make(n, d, t, old_name)
             daftar_nama_edit_timpa["nama"] = n
-            daftar_nama_edit_timpa["nama_lama"] = nama_lama
+            daftar_nama_edit_timpa["nama_lama"] = old_name
         except Exception as error:
-            return showerror(
+            showerror(
                 title="System error",
                 message=error,
                 parent=root
             )
-        return root.destroy()
+            return 1
+
+        disable_window()
+        return 0
+
     if os.path.isfile(paths.PATH+n+".slbr"):
         ask = askokcancel(
             title="Warning",
@@ -83,13 +94,17 @@ def buat(root: Tk | Toplevel, nama: StringVar, direktori: StringVar, tujuan: Str
             os.remove(paths.PATH+n+".slbr")
             daftar_nama_edit_timpa["nama_timpa"] = n
         else:
-            return ""
+            return -1
+
     try:
         extension.ekstensi.make(n, d, t)
     except Exception as error:
-        return showerror(
+        showerror(
             title="System error",
             message=error,
             parent=root
         )
-    root.destroy()
+        return 1
+
+    disable_window()
+    return 0

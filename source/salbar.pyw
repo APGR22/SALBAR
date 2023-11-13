@@ -71,16 +71,16 @@ image.set_icon(jendela_utama)
 if not os.path.isdir("Paths"):
     os.makedirs("Paths")
 
-fperintah = [] #path
-tperintah = [] #path
-snama = [] #nama
-nama_edit_timpa = {} #sebagai komunikasi antara front-end dan back-end
+list_source = []
+list_destination = []
+list_name = []
+nama_edit_timpa = {} #as communication between this program and the "maker" module
 
 kanvas_bingkai = gui.bingkai(jendela_utama)
 kanvas = kanvas_bingkai[0]
 bingkai = kanvas_bingkai[1]
 
-gui.tombol(jendela_utama, snama, fperintah, tperintah, nama_edit_timpa)
+gui.tombol(jendela_utama, list_name, list_source, list_destination, nama_edit_timpa)
 
 program_list = [] #daftar program yang untuk dijalankan
 excluded_program_list = [] #daftar program yang dilarang untuk dijalankan
@@ -126,9 +126,9 @@ def baca(nama: str, r: int | None = None, tambahkan: bool = False):
     tujuan = dapat[1]
     #untuk didefinisi ulang di utama
     if tambahkan:
-        hasil = execute.eksekusi(f_pilihan, r, nama, direktori, tujuan, fperintah, tperintah, snama, tambahkan)
+        hasil = execute.eksekusi(f_pilihan, r, nama, direktori, tujuan, list_source, list_destination, list_name, tambahkan)
     else:
-        hasil = execute.eksekusi(f_pilihan, r, nama, direktori, tujuan, fperintah, tperintah, snama)
+        hasil = execute.eksekusi(f_pilihan, r, nama, direktori, tujuan, list_source, list_destination, list_name)
     globals()[f"{nama}_var"] = hasil[0]
     globals()[f"{nama}_cb"] = hasil[1]
     globals()[f"{nama}_centang"] = hasil[2]
@@ -175,9 +175,9 @@ def perbarui():
         globals()[f"{nama_edit_timpa['nama_lama']}_label"].destroy()
         baca(nama_edit_timpa["nama"], cache_row)
         nama_edit_timpa.clear()
-        fperintah.clear()
-        tperintah.clear()
-        snama.clear()
+        list_source.clear()
+        list_destination.clear()
+        list_name.clear()
 
     elif len(nama_edit_timpa) == 1: #timpa
         try:
@@ -195,9 +195,9 @@ def perbarui():
             globals()[f"{i}_cb"].grid(row=r) #reconfig
             globals()[f"{i}_label"].grid(row=r) #reconfig
         nama_edit_timpa.clear()
-        fperintah.clear()
-        tperintah.clear()
-        snama.clear()
+        list_source.clear()
+        list_destination.clear()
+        list_name.clear()
         daftar_pembaruan_2 = os.listdir("Paths") #reconfig
         remove_non_slbr(daftar_pembaruan_2)
 
