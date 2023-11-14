@@ -324,11 +324,6 @@ class _menu:
         self.label_buat = Label(frame_buat, text="Add")
         self.label_buat.pack(fill="x")
 
-        #to be able to accept changes at any time
-        def just_config():
-            config.button(self.label_buat, maker.buat, self.menu_window, self.disable, self.name, self.source, self.destination, self.old_name, self.nama_edit_timpa)
-        just_config()
-
         def return_cmd(event):
             maker.buat(self.menu_window, self.disable, self.name, self.source, self.destination, self.old_name, self.nama_edit_timpa)
 
@@ -351,6 +346,9 @@ class _menu:
             self.old_name = ""
 
         self.entry_nama.focus_set()
+
+        #to be able to accept changes at any time
+        config.button(self.label_buat, maker.buat, self.menu_window, self.disable, self.name, self.source, self.destination, self.old_name, self.nama_edit_timpa)
 
         #config
         lebar_layar = self.root.winfo_screenwidth()
