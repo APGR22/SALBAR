@@ -18,3 +18,7 @@ The commands will be saved in file form and can be shared with other computers.
 \
 \
 Compiler: <https://nuitka.net/>
+
+# Downloads:
+<https://sites.google.com/view/apgr22-official/home/salbar/download>\
+or see the releases on github here: <https://github.com/APGR22/SALBAR/tags>
