@@ -21,3 +21,5 @@
 • Windows: when there are 32 .slbr files, it starts to lag (based on my computer)
 
 • Ubuntu Linux: when there are 128 .slbr files, it starts to lag (based on my computer)
+
+• Because it uses threading, sometimes the results of loading .slbr files do not match expectations, such as not loading some files

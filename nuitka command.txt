@@ -9,7 +9,7 @@ Windows:
 			--upx-binary=<upx directory>
 			--enable-plugin=tk-inter
 			--mingw64
-			--windows-icon-from-ico=<ico file path>
+			--windows-icon-from-ico="resource\salbar.ico"
 			--include-data-files="SALBAR.png"="SALBAR.png"
 			--include-data-files="icons\Warning.png"="icons\Warning.png"
 
@@ -23,6 +23,6 @@ Linux:
 					--plugin-enable=upx
 					--upx-binary=<upx directory>
 					--enable-plugin=tk-inter
-					--linux-icon=<ico file path>
+					--linux-icon="resources/salbar.ico"
 					--include-data-files="SALBAR.png"="SALBAR.png"
 					--include-data-files="icons/Warning (ubuntu).png"="icons/Warning (ubuntu).png"
