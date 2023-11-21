@@ -156,7 +156,7 @@ class options:
 
             if answer in ["Yes", "Always Yes"]:
                 command_info = progress.progress_bar(["title", "source", "destination"])
-                threading.Thread(target=options._run_command, args=(command_info, copy, self.list_name, self.list_source, self.list_destination)).start()
+                threading.Thread(target=self._run_command, args=(command_info, copy)).start()
         else:
             showerror(
                 title = "Error",

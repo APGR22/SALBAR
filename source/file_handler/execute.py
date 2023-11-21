@@ -65,7 +65,7 @@ def eksekusi(
                                        variable=globals()[f"{n}_var"],
                                        onvalue=1, offvalue=0,
                                        command=centang,
-                                       font=FONT,
+                                       font=default_font,
                                        height=2,
                                        highlightthickness=0
                                        )

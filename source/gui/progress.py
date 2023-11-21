@@ -14,14 +14,14 @@ class progress_bar():
             progress_frame = Frame(self.progress_window, bg=PROGRESS_BACKGROUND)
             progress_frame.pack(fill=X, expand=True, pady=5)
 
-            progress_title = Label(progress_frame, font=(JUST_FONT, 9), foreground=PROGRESS_FOREGROUND)
+            progress_title = Label(progress_frame, font=(just_font, 9), foreground=PROGRESS_FOREGROUND)
             progress_title.pack(fill=X)
             progress_title.configure(background=PROGRESS_BACKGROUND)
 
             progress = Progressbar(progress_frame, orient=HORIZONTAL, mode='determinate')
             progress.pack(fill=X)
 
-            progress_msg = Label(progress_frame, wraplength=490, font=(JUST_FONT, 9), foreground=PROGRESS_FOREGROUND)
+            progress_msg = Label(progress_frame, wraplength=490, font=(just_font, 9), foreground=PROGRESS_FOREGROUND)
             progress_msg.pack(fill=X)
             progress_msg.configure(background=PROGRESS_BACKGROUND)
 

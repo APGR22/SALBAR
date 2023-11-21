@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from fontTools.ttLib import TTFont
 import os
 import paths
 import platform
 from gui import _test
 import configurator
+from gui import _get
 
 def short_func(name: str, except_color: str) -> str:
     if _test.color_test(configurator.config("user.yaml").get_value(name)):
@@ -56,9 +56,5 @@ ADD_PATH_BUTTON_WIDTH = 2
 TEXT_COLOR = "#ffffff"
 FONT_SIZE = 10
 
-def add_font(font_filename: str) -> tuple:
-    font = TTFont(os.path.join(paths.get_current_path(), "fonts", font_filename)) #https://stackoverflow.com/questions/63468751/adding-ttf-fonts-with-fonttools-in-to-tkinter
-    return (font, FONT_SIZE)
-
-FONT = add_font("arial.ttf") #copied from windows font #default
-JUST_FONT = FONT[0]
+default_font = (_get.default().color(), FONT_SIZE)
+just_font = default_font[0]

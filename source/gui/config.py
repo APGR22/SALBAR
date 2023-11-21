@@ -62,7 +62,7 @@ class undo_redo:
             self.update()
 
 def label(obj: Label):
-    obj.config(bg=background, fg=TEXT_COLOR, font=FONT)
+    obj.config(bg=background, fg=TEXT_COLOR, font=default_font)
 
 def button(obj: Label, callable: object | bool, *args: tuple, **option):
     """jika sudah berada di *args, maka bebas menambahkan apa saja, kecuali **pilihan"""
@@ -75,7 +75,7 @@ def button(obj: Label, callable: object | bool, *args: tuple, **option):
     global clicked
     clicked = False
 
-    obj.config(fg=DEFAULT_FOREGROUND, bg=DEFAULT_BACKGROUND, highlightthickness=0, highlightbackground=background, height=BUTTON_HEIGHT, font=FONT)
+    obj.config(fg=DEFAULT_FOREGROUND, bg=DEFAULT_BACKGROUND, highlightthickness=0, highlightbackground=background, height=BUTTON_HEIGHT, font=default_font)
     try:
         obj.config(width=option["my_width"])
     except:
@@ -108,10 +108,10 @@ def button(obj: Label, callable: object | bool, *args: tuple, **option):
     obj.pack(padx=1)
 
 def checkbutton(obj: Checkbutton, var: IntVar):
-    obj.config(variable=var, onvalue=1, offvalue=0, bg=background, activebackground=CHECKBUTTON_ACTIVE_BACKGROUND, fg=TEXT_COLOR, font=FONT, selectcolor=CHECKBUTTON_BOX_BACKGROUND, highlightthickness=0)
+    obj.config(variable=var, onvalue=1, offvalue=0, bg=background, activebackground=CHECKBUTTON_ACTIVE_BACKGROUND, fg=TEXT_COLOR, font=default_font, selectcolor=CHECKBUTTON_BOX_BACKGROUND, highlightthickness=0)
 
 def entry(obj: Entry, var: StringVar, nama: bool = False, **more_obj):
-    obj.config(textvariable=var, bg=ENTRY_BACKGROUND, fg=TEXT_COLOR, font=FONT, highlightthickness=0)
+    obj.config(textvariable=var, bg=ENTRY_BACKGROUND, fg=TEXT_COLOR, font=default_font, highlightthickness=0)
 
     if nama:
         #"https://stackoverflow.com/questions/1976007/what-characters-are-forbidden-in-windows-and-linux-directory-names"

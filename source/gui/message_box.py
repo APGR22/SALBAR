@@ -66,7 +66,7 @@ def create(
     message_frame = Frame(main_frame, bg=messagebox_background)
     message_frame.pack(fill=Y, side=LEFT)
 
-    message_text = Label(main_frame, text=message, wraplength=80/100*w, bg=messagebox_background, font=(JUST_FONT, 9))
+    message_text = Label(main_frame, text=message, wraplength=80/100*w, bg=messagebox_background, font=(just_font, 9))
     message_text.pack(fill=BOTH, expand=True)
 
         #Right-End
@@ -88,7 +88,7 @@ def create(
                                     bg=messagebox_background,
                                     activebackground=messagebox_background,
                                     highlightthickness=0,
-                                    font=(JUST_FONT, 9)
+                                    font=(just_font, 9)
                                     )
         checkbutton.pack()
 
