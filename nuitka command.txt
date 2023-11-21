@@ -11,7 +11,6 @@ Windows:
 			--mingw64
 			--windows-icon-from-ico=<ico file path>
 			--include-data-files="SALBAR.png"="SALBAR.png"
-			--include-data-files="fonts\arial.ttf"="fonts\arial.ttf"
 			--include-data-files="icons\Warning.png"="icons\Warning.png"
 
 Linux:
@@ -26,5 +25,4 @@ Linux:
 					--enable-plugin=tk-inter
 					--linux-icon=<ico file path>
 					--include-data-files="SALBAR.png"="SALBAR.png"
-					--include-data-files="fonts/arial.ttf"="fonts/arial.ttf"
 					--include-data-files="icons/Warning (ubuntu).png"="icons/Warning (ubuntu).png"
