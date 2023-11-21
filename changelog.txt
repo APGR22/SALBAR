@@ -1,6 +1,6 @@
 (ALL OF THIS TEXT WAS TRANSLATED INDONESIAN TO ENGLISH BY GOOGLE TRANSLATE)
 
--------------------salbar v1.0.0 beta
+-------------------salbar v1.0.0 beta (Deleted)
 
 important:
 -fix bugs
