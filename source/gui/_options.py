@@ -270,46 +270,39 @@ class _menu:
         config.entry(self.entry_nama, self.name, True, label_name = label_nama)
 
         config.button(label_nama, d_file_folder, "n", my_width=0) #Hasilnya 14
-        #
-        f_label_direktori = Frame(self.menu_window)
-        pack_frame(f_label_direktori)
-        label_direktori_title = Label(f_label_direktori, text="Source path:", bg=background, fg=TEXT_COLOR)
-        pack_label_1(label_direktori_title)
 
-        f_entry_direktori = Frame(self.menu_window)
-        pack_frame(f_entry_direktori)
-        entry_direktori = Entry(f_entry_direktori)
-        pack_entry(entry_direktori)
-        config.entry(entry_direktori, self.source)
-        direktori_centang = Checkbutton(f_entry_direktori, text="Select (File)")
-        pack_checkbutton(direktori_centang)
-        config.checkbutton(direktori_centang, d_f_or_f)
-        label_direktori = Label(f_entry_direktori, text="...")
-        pack_label_2(label_direktori)
-        config.button(label_direktori, d_file_folder, "dr", my_width=ADD_PATH_BUTTON_WIDTH)
-        label_plus_direktori = Label(f_entry_direktori, text="+...")
-        pack_label_2(label_plus_direktori)
-        config.button(label_plus_direktori, d_file_folder, "dr", "tambahkan", my_width=ADD_PATH_BUTTON_WIDTH)
         #
-        f_label_tujuan = Frame(self.menu_window)
-        pack_frame(f_label_tujuan)
-        label_tujuan_title = Label(f_label_tujuan, text="Destination path:", bg=background, fg=TEXT_COLOR)
-        pack_label_1(label_tujuan_title)
+        raw_title = ["Source path:", "Destination path:"]
+        raw_stringvar = [self.source, self.destination]
+        raw_local = ["entry_source", "entry_destination"]
+        raw_text = ["Select (File)", "Become (File)"]
+        raw_intvar = [d_f_or_f, t_f_or_f]
+        raw_arg = ["dr", "tj"]
 
-        f_entry_tujuan = Frame(self.menu_window)
-        pack_frame(f_entry_tujuan)
-        entry_tujuan = Entry(f_entry_tujuan)
-        pack_entry(entry_tujuan)
-        config.entry(entry_tujuan, self.destination)
-        tujuan_centang = Checkbutton(f_entry_tujuan, text="Become (File)")
-        pack_checkbutton(tujuan_centang)
-        config.checkbutton(tujuan_centang, t_f_or_f)
-        label_tujuan = Label(f_entry_tujuan, text="...")
-        pack_label_2(label_tujuan)
-        config.button(label_tujuan, d_file_folder, "tj", my_width=ADD_PATH_BUTTON_WIDTH)
-        label_plus_tujuan = Label(f_entry_tujuan, text="+...")
-        pack_label_2(label_plus_tujuan)
-        config.button(label_plus_tujuan, d_file_folder, "tj", "tambahkan", my_width=ADD_PATH_BUTTON_WIDTH)
+        for title, stringvar, local, text, intvar, arg in zip(raw_title, raw_stringvar, raw_local, raw_text, raw_intvar, raw_arg):
+            f_label = Frame(self.menu_window)
+            pack_frame(f_label)
+            label_title = Label(f_label, text=title, bg=background, fg=TEXT_COLOR)
+            pack_label_1(label_title)
+
+            f_entry = Frame(self.menu_window)
+            pack_frame(f_entry)
+            entry = Entry(f_entry)
+            pack_entry(entry)
+            locals()[local] = entry
+            config.entry(entry, stringvar)
+            centang = Checkbutton(f_entry, text=text)
+            pack_checkbutton(centang)
+            config.checkbutton(centang, intvar)
+            label = Label(f_entry, text="...")
+            pack_label_2(label)
+            config.button(label, d_file_folder, arg, my_width=ADD_PATH_BUTTON_WIDTH)
+            label_plus = Label(f_entry, text="+...")
+            pack_label_2(label_plus)
+            config.button(label_plus, d_file_folder, arg, "tambahkan", my_width=ADD_PATH_BUTTON_WIDTH)
+
+        entry_direktori = locals()[raw_local[0]]
+        entry_tujuan = locals()[raw_local[1]]
 
         self.entry_nama.bind("<Up>", lambda e:entry_tujuan.focus_set())
         entry_direktori.bind("<Up>", lambda e:self.entry_nama.focus_set())
