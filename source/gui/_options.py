@@ -103,9 +103,9 @@ class options:
         )
 
     #actually only specifically for threading
-    def _run_command(self, command_info: progress.progress_bar, copy: bool):
+    def _run_command(self, command_info: progress.progress_bar, copy: bool, thread: dict[str, bool]):
         """(not active) command_info = ["title", "source", "destination"]"""
-        hasil = command.perintah(command_info, self.list_name, self.list_source, self.list_destination, copy, self.confirm_to_overwrite, self.confirm_to_skip)
+        hasil = command.perintah(command_info, self.list_name, self.list_source, self.list_destination, copy, self.confirm_to_overwrite, self.confirm_to_skip, thread)
         if hasil.count("SUCCESSFULLY"):
             showinfo(
                 title = "Command-Info",
@@ -155,8 +155,9 @@ class options:
                 answer = "Yes"
 
             if answer in ["Yes", "Always Yes"]:
-                command_info = progress.progress_bar(["title", "source", "destination"])
-                threading.Thread(target=self._run_command, args=(command_info, copy)).start()
+                thread = {"active": True}
+                command_info = progress.progress_bar(["title", "source", "destination"], thread)
+                threading.Thread(target=self._run_command, args=(command_info, copy, thread)).start()
         else:
             showerror(
                 title = "Error",

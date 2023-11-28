@@ -45,7 +45,9 @@ def perintah(command_info: progress.progress_bar,
             list_destination: list,
             copy: bool,
             timpa: IntVar,
-            skip: IntVar):
+            skip: IntVar,
+            thread: dict[str, bool]
+            ):
     """tanya: Overwrites for all\n
     skip: Skip overwrites\n
     (not active) command_info = ["title", "source", "destination"]"""
@@ -72,6 +74,9 @@ def perintah(command_info: progress.progress_bar,
     try:
         if copy: #sekali dijalankan
             for count_title, p in enumerate(list_path): #perulangan
+                if not thread["active"]:
+                    break
+
                 total_source = len(p[1])
                 total_destination = len(p[2])
 
@@ -83,6 +88,8 @@ def perintah(command_info: progress.progress_bar,
                                 )
 
                 for count_s, s in enumerate(p[1]): #perulangan dalam perulangan
+                    if not thread["active"]:
+                        break
 
                     command_info.set(
                                     progress_name="source",
@@ -96,6 +103,8 @@ def perintah(command_info: progress.progress_bar,
 
                     #perulangan dalam perulangan dalam perulangan
                     for count_d, d in enumerate(p[2]):
+                        if not thread["active"]:
+                            break
 
                         command_info.set(
                                         progress_name="destination",
@@ -139,11 +148,20 @@ def perintah(command_info: progress.progress_bar,
                         berhasil += 1
         else:
             for p in list_path: #perulangan
+                if not thread["active"]:
+                    break
+
                 for s in p[1]: #perulangan dalam perulangan
+                    if not thread["active"]:
+                        break
+
                     if operasi_cancel: #perulangan dalam perulangan dalam perulangan
                         break
 
                     for d in p[2]:
+                        if not thread["active"]:
+                            break
+
                         if os.path.isfile(s):
                             metode_file = True
                         elif os.path.isdir(s):

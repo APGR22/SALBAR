@@ -3,7 +3,7 @@ from tkinter.ttk import Progressbar, Label
 from gui.styles import *
 
 class progress_bar():
-    def __init__(self, progress_names: list[str]) -> None:
+    def __init__(self, progress_names: list[str], thread: dict[str, bool]) -> None:
         self.progress_window = Toplevel()
         self.progress_window.configure(bg=PROGRESS_BACKGROUND)
         self.progress_window.resizable(0, 0)
@@ -36,10 +36,10 @@ class progress_bar():
 
         self.progress_window.withdraw()
 
-        def prevent_exit():
-            pass
+        def exit():
+            thread["active"] = False
 
-        self.progress_window.protocol("WM_DELETE_WINDOW", prevent_exit)
+        self.progress_window.protocol("WM_DELETE_WINDOW", exit)
 
     def _auto_config(self):
         w = 500
