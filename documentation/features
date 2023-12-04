@@ -3,7 +3,7 @@
 • [...] is used to search for file/folder directories and then delete the previous directory.
 • [+...] is used to search for file/folder directories and add input without deleting the previous directory.
 
-• Since in tkinter you can only select files or folders, we created the options [Select (file)] and [Become (file)] to be able to select files.
+• Since in tkinter you can only select files or folders, we created the options [Select (file)] to be able to select files.
 
 • Buttons:
                               ↑ = Scroll to up

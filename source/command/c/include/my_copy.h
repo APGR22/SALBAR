@@ -1,0 +1,1 @@
+int start_copy(char * filename, char * output, char * stopthread);

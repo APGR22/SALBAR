@@ -48,3 +48,11 @@ def is_abs_path(path: str) -> bool:
             abs_path = True #jika sudah ketemu meski cuman 1 maka akan dianggap ada
             break
     return abs_path
+
+path = os.path.join(get_current_path(), "command", "c")
+filename = os.path.join(path, "com.txt")
+filethread = os.path.join(path, ".stopthread")
+if platform.system() == "Windows":
+    executable = os.path.join(path, "main.exe")
+else: #Linux
+    executable = os.path.join(path, "main")

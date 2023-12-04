@@ -36,6 +36,7 @@ class options:
                     list_destination: list[str],
                     confirm_to_overwrite: IntVar,
                     confirm_to_skip: IntVar,
+                    confirm_to_not_shutil: IntVar,
                     nama_edit_timpa: dict
                 ) -> None:
 
@@ -49,6 +50,7 @@ class options:
         self.list_destination = list_destination
         self.confirm_to_overwrite = confirm_to_overwrite
         self.confirm_to_skip = confirm_to_skip
+        self.confirm_to_not_shutil = confirm_to_not_shutil
         self.nama_edit_timpa = nama_edit_timpa
 
         self._menu = _menu(self.root, self.name, self.source, self.destination, self.nama_edit_timpa)
@@ -105,26 +107,40 @@ class options:
     #actually only specifically for threading
     def _run_command(self, command_info: progress.progress_bar, copy: bool, thread: dict[str, bool]):
         """(not active) command_info = ["title", "source", "destination"]"""
-        hasil = command.perintah(command_info, self.list_name, self.list_source, self.list_destination, copy, self.confirm_to_overwrite, self.confirm_to_skip, thread)
+        hasil = command.perintah(
+                                command_info,
+                                self.list_name,
+                                self.list_source,
+                                self.list_destination,
+                                copy,
+                                self.confirm_to_overwrite,
+                                self.confirm_to_skip,
+                                self.confirm_to_not_shutil,
+                                thread
+                                )
         if hasil.count("SUCCESSFULLY"):
             showinfo(
                 title = "Command-Info",
-                message = hasil
+                message = hasil,
+                parent=self.root
             )
         elif hasil == "CANCELED":
             showinfo(
                 title = "Command-Info",
-                message = "CANCELED BY USER"
+                message = "CANCELED BY USER",
+                parent=self.root
             )
         elif hasil == "SKIP":
             showinfo(
                 title = "Command-Info",
-                message = "SKIPPED BY USER"
+                message = "SKIPPED BY USER",
+                parent=self.root
             )
         else:
             showerror(
                 title = "Command-Error",
-                message = hasil
+                message = hasil,
+                parent=self.root
             )
 
     def run_command(self, copy: bool):
@@ -194,6 +210,8 @@ class _menu:
                     entry.xview_moveto(1)
                 if pilihan:
                     if pilihan[0] == "tambahkan":
+                        if len(askopen) == 0:
+                            askopen = ""
                         if askopen:
                             if stringvar.get():
                                 askopen = " "+askopen
@@ -292,9 +310,10 @@ class _menu:
             pack_entry(entry)
             locals()[local] = entry
             config.entry(entry, stringvar)
-            centang = Checkbutton(f_entry, text=text)
-            pack_checkbutton(centang)
-            config.checkbutton(centang, intvar)
+            if text != "Become (File)":
+                centang = Checkbutton(f_entry, text=text)
+                pack_checkbutton(centang)
+                config.checkbutton(centang, intvar)
             label = Label(f_entry, text="...")
             pack_label_2(label)
             config.button(label, d_file_folder, arg, my_width=ADD_PATH_BUTTON_WIDTH)
@@ -358,3 +377,78 @@ class _menu:
     def disable(self):
         self.menu_window.grab_release()
         self.menu_window.withdraw()
+
+class options_menu:
+    def __init__(self, confirm_to_overwrite: IntVar, confirm_to_skip: IntVar, confirm_to_not_shutil: IntVar) -> None:
+        self.window = Toplevel()
+        self.window.title("Configuration")
+        self.window.resizable(0,0)
+        self.window.configure(bg=background)
+
+        #config
+        screen_width = self.window.winfo_screenwidth()
+        screen_height = self.window.winfo_screenheight()
+        w = 400
+        h = 50
+
+        x = (screen_width/2) - (w/2)
+        y = (screen_height/2) - (h/2)
+
+        self.window.geometry('%dx%d+%d+%d' % (w, h, x, y))
+
+        def disable_window(*event):
+            self.disable()
+
+        self.window.bind("<Escape>", disable_window)
+        self.window.protocol("WM_DELETE_WINDOW", disable_window)
+
+        self.disable()
+        #start
+
+        #bg harus sama dengan jendela
+
+        overwrite_skip = IntVar(value=0)
+
+        def no_overwrite_skip_checked():
+            confirm_to_overwrite.set(0)
+            confirm_to_skip.set(0)
+        def timpa_dicentang():
+            confirm_to_skip.set(0)
+            confirm_to_overwrite.set(1)
+        def lewati_dicentang():
+            confirm_to_overwrite.set(0)
+            confirm_to_skip.set(1)
+
+        no_overwrite_skip = Radiobutton(self.window, text = "No action", command = no_overwrite_skip_checked)
+        no_overwrite_skip.grid(row=1, column=0)
+        config.radiobutton(no_overwrite_skip, overwrite_skip, 0)
+        no_overwrite_skip.select()
+
+        timpa = Radiobutton(self.window, text = "Overwrites all", command = timpa_dicentang)
+        timpa.grid(row=1, column=1)
+        config.radiobutton(timpa, overwrite_skip, 1)
+
+        lewati = Radiobutton(self.window, text = "Skips all", command = lewati_dicentang)
+        lewati.grid(row=1, column=2)
+        config.radiobutton(lewati, overwrite_skip, 2)
+
+        no_shutil = Checkbutton(self.window, text = "No shutil")
+        no_shutil.grid(row=2, column=0)
+        config.checkbutton(no_shutil, confirm_to_not_shutil)
+        
+        comment_no_shuil = Label(self.window, text = "(slower than shutil")
+        comment_no_shuil.grid(row=2, column=1)
+        config.label(comment_no_shuil)
+
+        comment_no_shuil_2 = Label(self.window, text = "and experimental)")
+        comment_no_shuil_2.grid(row=2, column=2)
+        config.label(comment_no_shuil_2)
+
+    def active(self):
+        self.window.deiconify()
+        self.window.grab_set()
+        self.window.focus_set()
+
+    def disable(self):
+        self.window.grab_release()
+        self.window.withdraw()

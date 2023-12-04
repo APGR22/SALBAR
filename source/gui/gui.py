@@ -65,60 +65,48 @@ def bingkai(root: Tk):
 def tombol(root: Tk, list_name: list, list_source: list, list_destination: list, nama_edit_timpa: dict):
     confirm_to_overwrite = IntVar()
     confirm_to_skip = IntVar()
+    confirm_to_not_shutil = IntVar()
 
-    options = _options.options(root, list_name, list_source, list_destination, confirm_to_overwrite, confirm_to_skip, nama_edit_timpa)
+    options_class = _options.options(root, list_name, list_source, list_destination, confirm_to_overwrite, confirm_to_skip, confirm_to_not_shutil, nama_edit_timpa)
+
+    start = _options.options_menu(confirm_to_overwrite, confirm_to_skip, confirm_to_not_shutil)
 
     new = Label(root, text="New")
     new.pack(side=LEFT, fill=Y)
-    config.button(new, options.menu)
+    config.button(new, options_class.menu)
     def new_bind(event):
-        options.menu()
+        options_class.menu()
 
     edit = Label(root, text="Edit")
     edit.pack(side=LEFT, fill=Y)
-    config.button(edit, options.edit_file)
+    config.button(edit, options_class.edit_file)
     def edit_bind(event):
-        options.edit_file()
+        options_class.edit_file()
 
     delete = Label(root, text="Delete")
     delete.pack(side=LEFT, fill=Y)
-    config.button(delete, options.delete_file)
+    config.button(delete, options_class.delete_file)
     def delete_bind(event):
-        options.delete_file()
+        options_class.delete_file()
 
     copy = Label(root, text="Copy")
     copy.pack(side=RIGHT, fill=Y)
-    config.button(copy, options.run_command, True)
+    config.button(copy, options_class.run_command, True)
     def copy_bind(event):
-        options.run_command(True)
+        options_class.run_command(True)
 
     cut = Label(root, text="Move")
     cut.pack(side=RIGHT, fill=Y)
-    config.button(cut, options.run_command, False)
+    config.button(cut, options_class.run_command, False)
     def cut_bind(event):
-        options.run_command(False)
+        options_class.run_command(False)
 
-    def timpa_dicentang():
-        if confirm_to_overwrite.get() == 1:
-            timpa.select()
-            lewati.deselect()
-    def lewati_dicentang():
-        if confirm_to_skip.get() == 1:
-            timpa.deselect()
-            lewati.select()
-
-    timpa = Checkbutton(root, text = "Overwrites all", command = timpa_dicentang) #bg harus sama dengan jendela_utama
-    timpa.pack(side=RIGHT, fill=Y)
-    config.checkbutton(timpa, confirm_to_overwrite)
-
-    atau = Label(root, text="or")
-    atau.pack(side=RIGHT, fill=Y)
-    config.label(atau)
-
-    lewati = Checkbutton(root, text = "Skips all", command = lewati_dicentang) #bg harus sama dengan jendela_utama
-    lewati.pack(side=RIGHT, fill=Y)
-    config.checkbutton(lewati, confirm_to_skip)
-
+    menu = Label(root, text="Menu")
+    menu.pack(side=RIGHT, fill=Y)
+    config.button(menu, start.active)
+    def menu_bind(event):
+        start.active()
+    
     root.bind("<Control-n>", new_bind)
     root.bind("<Control-N>", new_bind)              #(if Caps lock on)
     root.bind("<Alt-d>", edit_bind)                 #based on Chrome
@@ -134,3 +122,4 @@ def tombol(root: Tk, list_name: list, list_source: list, list_destination: list,
     root.bind("<Control-X>", cut_bind)              #(if Caps lock on)
     root.bind("<Control-Shift-x>", cut_bind)        #based on Linux terminal
     root.bind("<Control-Shift-X>", cut_bind)        #based on Linux terminal (if Caps lock on)
+    root.bind("<F2>", menu_bind)

@@ -110,6 +110,12 @@ def button(obj: Label, callable: object | bool, *args: tuple, **option):
 def checkbutton(obj: Checkbutton, var: IntVar):
     obj.config(variable=var, onvalue=1, offvalue=0, bg=background, activebackground=CHECKBUTTON_ACTIVE_BACKGROUND, fg=TEXT_COLOR, font=default_font, selectcolor=CHECKBUTTON_BOX_BACKGROUND, highlightthickness=0)
 
+def radiobutton(obj: Radiobutton, var: IntVar | StringVar, value: int | str, tristatevalue: int | str = None):
+    "if tristate is none, then set it to value"
+    if tristatevalue is None:
+        tristatevalue = value
+    obj.config(variable=var, value=value, tristatevalue=tristatevalue, bg=background, activebackground=CHECKBUTTON_ACTIVE_BACKGROUND, fg=TEXT_COLOR, font=default_font, selectcolor=CHECKBUTTON_BOX_BACKGROUND, highlightthickness=0)
+
 def entry(obj: Entry, var: StringVar, nama: bool = False, **more_obj):
     obj.config(textvariable=var, bg=ENTRY_BACKGROUND, fg=TEXT_COLOR, font=default_font, highlightthickness=0)
 

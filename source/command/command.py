@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from tkinter import IntVar
+from tkinter import IntVar, Toplevel
 #get class "do_progress" from gui/progress
 from tkinter.messagebox import *
 from tkinter.messagebox import WARNING
@@ -21,20 +21,29 @@ import command.copycut as copycut
 import paths
 from gui import progress
 
+def _createfile():
+    with open(paths.filename, "w") as file:
+        file.write("pass\npass\ncopy\n")
+
+def startthread():
+    if os.path.isfile(paths.filethread):
+        os.remove(paths.filethread)
+
 def make_dir(d: str):
     try:
         os.makedirs(d)
     except Exception as error: #jika sudah ada. meski ada exist_ok, itu berarti ditimpa sehingga tidak digunakan
         pass
 
-def cek_ada(path, skip: IntVar):
+def cek_ada(path: str, skip: IntVar, parent: Toplevel):
     if os.path.exists(path):
         if skip.get() == 1:
             return "skip"
         ask = askyesnocancel(
             title = "Warning",
             message = f'We found the same file/folder name in "{path}", overwrite it?\nOr "Cancel" to stop the process even though the previous action has already been processed',
-            icon = WARNING
+            icon = WARNING,
+            parent=parent
         )
         return ask
     return "tidak ada"
@@ -46,6 +55,7 @@ def perintah(command_info: progress.progress_bar,
             copy: bool,
             timpa: IntVar,
             skip: IntVar,
+            no_shutil: IntVar,
             thread: dict[str, bool]
             ):
     """tanya: Overwrites for all\n
@@ -61,6 +71,10 @@ def perintah(command_info: progress.progress_bar,
         tindakan_skip = True
     else:
         tindakan_skip = False
+    if no_shutil.get() == 1:
+        c = True
+    else:
+        c = False
 
     for ln, ls, ld in zip(list_name, list_source, list_destination):
         source = paths.separate_path(ls)
@@ -69,7 +83,12 @@ def perintah(command_info: progress.progress_bar,
 
     total_title = len(list_path)
 
+    _createfile()
+    startthread()
+
     command_info.active()
+
+    parent = command_info._get_window()
 
     try:
         if copy: #sekali dijalankan
@@ -126,7 +145,7 @@ def perintah(command_info: progress.progress_bar,
                         path = os.path.join(d, os.path.basename(s))
 
                         if timpa.get() == 0:
-                            dicek = cek_ada(path, skip)
+                            dicek = cek_ada(path, skip, parent)
 
                             if dicek == "skip": #jika ada
                                 continue
@@ -139,7 +158,7 @@ def perintah(command_info: progress.progress_bar,
                                 operasi_cancel = True
                                 break
 
-                        hasil = copycut.salin(p[0], s, d, metode_file)
+                        hasil = copycut.salin(p[0], s, d, metode_file, c)
 
                         if hasil:
                             kesalahan.append(hasil)
@@ -175,7 +194,7 @@ def perintah(command_info: progress.progress_bar,
                         path = os.path.join(d, os.path.basename(s))
 
                         if timpa.get() == 0:
-                            dicek = cek_ada(path, skip)
+                            dicek = cek_ada(path, skip, parent)
 
                             if dicek == "skip": #jika ada
                                 continue
@@ -188,7 +207,7 @@ def perintah(command_info: progress.progress_bar,
                                 operasi_cancel = True
                                 break
 
-                        hasil = copycut.pindah(p[0], s, d, metode_file)
+                        hasil = copycut.pindah(p[0], s, d, metode_file, c)
 
                         if hasil:
                             kesalahan.append(hasil)
@@ -206,7 +225,7 @@ def perintah(command_info: progress.progress_bar,
     else:
         tindakan = "MOVED"
 
-    if user:
+    if user or not thread["active"]:
         tambahan = " AND SOME CANCELLATIONS"
     elif tindakan_skip:
         tambahan = " AND SOME SKIP"

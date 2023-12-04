@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "my_copy.h": "c",
+        "t.h": "c",
+        "my_move.h": "c",
+        "_error.h": "c"
+    }
+}

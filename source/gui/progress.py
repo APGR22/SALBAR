@@ -38,8 +38,12 @@ class progress_bar():
 
         def exit():
             thread["active"] = False
+            with open(paths.filethread, "w"):...
 
         self.progress_window.protocol("WM_DELETE_WINDOW", exit)
+
+    def _get_window(self):
+        return self.progress_window
 
     def _auto_config(self):
         w = 500

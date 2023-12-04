@@ -1,0 +1,1 @@
+int start_move(char * filename, char * output, char * stopthread);

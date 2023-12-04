@@ -23,3 +23,11 @@
 • Ubuntu Linux: when there are 128 .slbr files, it starts to lag (based on my computer)
 
 • Because it uses threading, sometimes the results of loading .slbr files do not match expectations, such as not loading some files
+
+• In ubuntu very unexpected errors can occur
+
+• Sometimes the message box info button is not clickable (currently only known to occur on ubuntu)
+
+• Doing copy/move according to the first argument in com.txt (lines 1-3) always fails on ubuntu
+
+• Cannot copy/move files to the destination directory with a different name
