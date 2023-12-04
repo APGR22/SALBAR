@@ -4,6 +4,7 @@ internal modules:
 	sys
 	os
 	shutil
+	subprocess
 	platform
 	threading
 	base64
