@@ -1,1 +1,1 @@
-gcc -g run.c my_copy.c my_move.c _check.c -o run --static -Wall
+gcc -g main.c run.c my_copy.c my_move.c _check.c -o main --static -Wall
