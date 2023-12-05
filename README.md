@@ -9,15 +9,21 @@ SALBAR is an application to copy or move file/folder with just a few actions.
 # What SALBAR does and what it can do?
 SALBAR makes it easy for you to copy-paste or move-paste easily.\
 SALBAR can copy/move more than one file/folder to more than one destination directory simultaneously.\
-The commands will be saved in file form and can be shared with other computers.
+These commands will be saved in file form and can be shared with other computers and even different operating systems (unless there are absolute paths that are not supported on a particular operating system).
 
 # Requirements:
-- OS:&nbsp;&nbsp;-Windows 10 or later.\
-&emsp;&emsp;&nbsp;-Linux (especially Ubuntu) or later (haven't tested it on other distros yet)
-\
-\
-\
-Compiler: <https://nuitka.net/>
+- OS:\
+Windows 10 or later.\
+Linux (especially Ubuntu) or later (haven't tested it on other distros yet).
+
+- Architecture:\
+x64-bit.
+
+# Other
+- Compiler:\
+[Nuitka](https://nuitka.net/)\
+gcc
+
 
 # Downloads:
 <https://sites.google.com/view/apgr22-official/home/salbar/download>\

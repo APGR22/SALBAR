@@ -42,7 +42,7 @@ int start_copy(char * filename, char * output, char * stopthread)
     }
 
     BYTE buffer[b_buffer];
-    BYTE empty[b_buffer]; //Please don't change this!!😫
+    const BYTE empty[b_buffer]; //Please don't change this!!😫
 
     int file_output_exists = file_exists(output);
 
