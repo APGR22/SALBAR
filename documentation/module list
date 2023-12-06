@@ -9,6 +9,7 @@ internal modules:
 	threading
 	base64
 	time
+	datetime
 
 external modules:
 	pillow
