@@ -22,11 +22,12 @@ def eksekusi(
         n: str,
         d: str,
         t: str,
+        date: str,
         fperintah: list,
         tperintah: list,
         snama: list,
         tambahkan: bool = False
-):
+) -> tuple[IntVar, Checkbutton, object, Label, Label]:
     """pilihan = tempat checkbutton diletakkan\n
     r = baris\n #jika r = None, maka termasuk tambahakan
     n = nama\n
@@ -94,6 +95,20 @@ def eksekusi(
                                     pady=1
                                 )
 
+    globals()[f"{n}_date"] = Label(
+                                    pilihan,
+                                    text=date,
+                                    bg=pilihan["bg"],
+                                    fg=TEXT_COLOR,
+                                    height=2
+                                    )
+    globals()[f"{n}_date"].grid(
+                                    row=globals()[f"{n}_cb"].grid_info()["row"],
+                                    column=2,
+                                    sticky="w",
+                                    pady=1
+                                )
+
     globals()[f"{n}_centang"] = centang
 
-    return globals()[f"{n}_var"], globals()[f"{n}_cb"], globals()[f"{n}_centang"], globals()[f"{n}_label"]
+    return globals()[f"{n}_var"], globals()[f"{n}_cb"], globals()[f"{n}_centang"], globals()[f"{n}_label"], globals()[f"{n}_date"]

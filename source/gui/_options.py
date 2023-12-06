@@ -420,29 +420,21 @@ class options_menu:
             confirm_to_skip.set(1)
 
         no_overwrite_skip = Radiobutton(self.window, text = "No action", command = no_overwrite_skip_checked)
-        no_overwrite_skip.grid(row=1, column=0)
+        no_overwrite_skip.grid(row=1, column=0, sticky=W)
         config.radiobutton(no_overwrite_skip, overwrite_skip, 0)
         no_overwrite_skip.select()
 
         timpa = Radiobutton(self.window, text = "Overwrites all", command = timpa_dicentang)
-        timpa.grid(row=1, column=1)
+        timpa.grid(row=1, column=1, sticky=W)
         config.radiobutton(timpa, overwrite_skip, 1)
 
         lewati = Radiobutton(self.window, text = "Skips all", command = lewati_dicentang)
-        lewati.grid(row=1, column=2)
+        lewati.grid(row=1, column=2, sticky=W)
         config.radiobutton(lewati, overwrite_skip, 2)
 
-        no_shutil = Checkbutton(self.window, text = "No shutil")
-        no_shutil.grid(row=2, column=0)
+        no_shutil = Checkbutton(self.window, text = "No shutil (slower than shutil and experimental)")
+        no_shutil.grid(row=2, column=0, columnspan=2, sticky=W)
         config.checkbutton(no_shutil, confirm_to_not_shutil)
-        
-        comment_no_shuil = Label(self.window, text = "(slower than shutil")
-        comment_no_shuil.grid(row=2, column=1)
-        config.label(comment_no_shuil)
-
-        comment_no_shuil_2 = Label(self.window, text = "and experimental)")
-        comment_no_shuil_2.grid(row=2, column=2)
-        config.label(comment_no_shuil_2)
 
     def active(self):
         self.window.deiconify()

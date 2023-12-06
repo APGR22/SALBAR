@@ -18,6 +18,70 @@ from tkinter.filedialog import *
 from gui import _options
 from gui.styles import *
 from gui import config
+from file_handler import sorter
+
+def main(root: Tk | Toplevel, default_from_sort_text: str, sort_key: dict[str, str], key: str):
+    dict_texts = {
+        "Name (A-Z)⯀": sorter.SORTED_NAME,
+        "Name (Z-A)⯀": sorter.SORTED_NAME_REVERSED,
+        "Date created (OLD-NEW)⯀": sorter.SORTED_TIME,
+        "Date created (NEW-OLD)⯀": sorter.SORTED_TIME_REVERSED
+    }
+
+    def sort_button(
+                    widget: Label | Button,
+                    texts: list[str],
+                    another_widgets: list[Label] | list[Button],
+                    dict_texts: dict[str, str],
+                    sort_key: dict[str, str],
+                    key: str,
+                    use_current_text: bool = False
+                    ):
+        current_text = widget["text"]
+
+        if use_current_text and current_text.replace("⯀", "") not in texts:
+            texts.insert(0, current_text.replace("⯀", ""))
+            index = 0
+        else:
+            index = texts.index(current_text.replace("⯀", ""))
+
+        length = len(texts)
+
+        if current_text.count("⯀"):
+            if index+1 == length:
+                widget["text"] = texts[0] + "⯀"
+            else:
+                widget["text"] = texts[index+1] + "⯀"
+        else:
+            widget["text"] = current_text + "⯀"
+
+        for another_widget in another_widgets:
+            another_widget["text"] = another_widget["text"].replace("⯀", "")
+
+        sort_key[key] = dict_texts[widget["text"]]
+    
+    def set_default(widget: Label | Button, another_text: list[str] = None):
+        if dict_texts[widget["text"] + "⯀"] == default_from_sort_text:
+            widget["text"] = widget["text"] + "⯀"
+        elif another_text is not None:
+            for text in another_text:
+                if dict_texts[text + "⯀"] == default_from_sort_text:
+                    widget["text"] = text + "⯀"
+
+    Name = Label(root, text="Name (A-Z)")
+    Name.grid(row=0, column=0)
+    set_default(Name, ["Name (Z-A)"])
+
+    State = Label(root, text="State", width=10, height=BUTTON_HEIGHT)
+    State.grid(row=0, column=1, padx=1)
+    config.label(State)
+
+    Date = Label(root, text="Date created (OLD-NEW)")
+    Date.grid(row=0, column=2)
+    set_default(Date, ["Date created (NEW-OLD)"])
+
+    config.button(Name, sort_button, Name, ["Name (Z-A)"], [Date], dict_texts, sort_key, key, True, my_width=12)
+    config.button(Date, sort_button, Date, ["Date created (NEW-OLD)"], [Name], dict_texts, sort_key, key, True, my_width=22)
 
 def bingkai(root: Tk):
     bingkai_utama = Frame(root)

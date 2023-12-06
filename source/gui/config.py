@@ -64,8 +64,8 @@ class undo_redo:
 def label(obj: Label):
     obj.config(bg=background, fg=TEXT_COLOR, font=default_font)
 
-def button(obj: Label, callable: object | bool, *args: tuple, **option):
-    """jika sudah berada di *args, maka bebas menambahkan apa saja, kecuali **pilihan"""
+def button(obj: Label, callable: object | bool, *args: tuple | str, **option):
+    """jika sudah berada di *args, maka bebas menambahkan apa saja tanpa jadi tuple, kecuali **pilihan"""
 
     DEFAULT_FOREGROUND = '#ffffff'
     DEFAULT_BACKGROUND = '#4b4b4b'
@@ -105,7 +105,11 @@ def button(obj: Label, callable: object | bool, *args: tuple, **option):
     obj.bind("<Leave>", cursor_exit) #kursor meninggalkannya
     obj.bind("<ButtonPress-1>", click) #Button-1==tombol berubah tapi ketika kursor meninggalkannya
     obj.bind("<ButtonRelease-1>", release) #ButtonRelease-1==tombol semula setelah ditekan
-    obj.pack(padx=1)
+
+    if obj.grid_info() != {}:
+        obj.grid(padx=1)
+    else:
+        obj.pack(padx=1)
 
 def checkbutton(obj: Checkbutton, var: IntVar):
     obj.config(variable=var, onvalue=1, offvalue=0, bg=background, activebackground=CHECKBUTTON_ACTIVE_BACKGROUND, fg=TEXT_COLOR, font=default_font, selectcolor=CHECKBUTTON_BOX_BACKGROUND, highlightthickness=0)
