@@ -31,3 +31,5 @@
 • Doing copy/move according to the first argument in com.txt (lines 1-3) always fails on ubuntu
 
 • Cannot copy/move files to the destination directory with a different name
+
+• I made a feature of selecting multiple check buttons in the worst possible way
