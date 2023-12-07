@@ -29,7 +29,7 @@ class refresh:
                 list_destination: list[str],
                 list_name: list[str],
                 nama_edit_timpa: dict[str, str],
-                from_globals: dict[str, typing.Any],
+                dict_program_list: dict[str, typing.Any],
                 sort_key: dict[str, str],
                 baca: object
                 ) -> None:
@@ -42,7 +42,7 @@ class refresh:
         self.list_destination = list_destination
         self.list_name = list_name
         self.nama_edit_timpa = nama_edit_timpa
-        self.from_globals = from_globals
+        self.dict_program_list = dict_program_list
         self.sort_key = sort_key
         self.key = "sort"
         self.current_sort_key = sort_key[self.key]
@@ -118,27 +118,27 @@ class refresh:
         for r, i in enumerate(self.program_list):
             #reconfig
             try:
-                self.from_globals[f"{i}_cb"].grid(row=r+1)
-                self.from_globals[f"{i}_label"].grid(row=r+1)
-                self.from_globals[f"{i}_date"].grid(row=r+1)
+                self.dict_program_list[f"{i}_cb"].grid(row=r+1)
+                self.dict_program_list[f"{i}_label"].grid(row=r+1)
+                self.dict_program_list[f"{i}_date"].grid(row=r+1)
             except: #seandainya kesalahannya berasal dari tindakan pengguna yang rename file .slbr secara manual
                 self.baca(i)
-                self.from_globals[f"{i}_cb"].grid(row=r+1)
-                self.from_globals[f"{i}_label"].grid(row=r+1)
-                self.from_globals[f"{i}_date"].grid(row=r+1)
+                self.dict_program_list[f"{i}_cb"].grid(row=r+1)
+                self.dict_program_list[f"{i}_label"].grid(row=r+1)
+                self.from_gdict_program_listlobals[f"{i}_date"].grid(row=r+1)
 
     def destroy(self, name: str):
-        del self.from_globals[f"{name}_var"], self.from_globals[f"{name}_centang"]
-        self.from_globals[f"{name}_cb"].destroy()
-        self.from_globals[f"{name}_label"].destroy()
-        self.from_globals[f"{name}_date"].destroy()
+        del self.dict_program_list[f"{name}_var"], self.dict_program_list[f"{name}_centang"]
+        self.dict_program_list[f"{name}_cb"].destroy()
+        self.dict_program_list[f"{name}_label"].destroy()
+        self.dict_program_list[f"{name}_date"].destroy()
 
     def perbarui(self):
         daftar_pembaruan_2 = os.listdir("Paths")
         self.remove_non_slbr(daftar_pembaruan_2)
 
         if len(self.nama_edit_timpa) == 2: #edit
-            cache_row = self.from_globals[f"{self.nama_edit_timpa['nama_lama']}_cb"].grid_info()["row"]
+            cache_row = self.dict_program_list[f"{self.nama_edit_timpa['nama_lama']}_cb"].grid_info()["row"]
             self.destroy(self.nama_edit_timpa['nama_lama'])
             self.baca(self.nama_edit_timpa["nama"], cache_row)
             self.reset_list()
@@ -169,8 +169,8 @@ class refresh:
                 jumlah = set(self.daftar_pembaruan) - set(daftar_pembaruan_2)
 
                 for i in jumlah:
-                    self.from_globals[f"{i[:-5]}_cb"].deselect() #pastikan untuk membatalkan centangnya
-                    self.from_globals[f"{i[:-5]}_centang"]() #pastikan fungsinya berjalan tanpa checkbutton
+                    self.dict_program_list[f"{i[:-5]}_cb"].deselect() #pastikan untuk membatalkan centangnya
+                    self.dict_program_list[f"{i[:-5]}_centang"]() #pastikan fungsinya berjalan tanpa checkbutton
                     self.destroy(i[:-5])
 
                 self.reconfig()

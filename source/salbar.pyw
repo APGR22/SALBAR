@@ -46,6 +46,7 @@ from gui import progress
 from gui import gui
 from gui.styles import *
 from gui import image
+from gui import selector
 from file_handler import extension
 from file_handler import execute
 from file_handler import refresh
@@ -82,12 +83,16 @@ list_destination = []
 list_name = []
 nama_edit_timpa = {} #as communication between this program and the "maker" module
 
+selected = []
+reset_shift = [True]
+
 kanvas_bingkai = gui.bingkai(jendela_utama)
 kanvas = kanvas_bingkai[0]
 bingkai = kanvas_bingkai[1]
 
 gui.tombol(jendela_utama, list_name, list_source, list_destination, nama_edit_timpa)
 
+dict_program_list = {}
 program_list = [] #daftar program yang untuk dijalankan
 excluded_program_list = [] #daftar program yang dilarang untuk dijalankan
 key = "sort"
@@ -110,14 +115,14 @@ def baca(nama: str, r: int | None = None, tambahkan: bool = False):
     date = datetime.datetime.fromtimestamp(float(extension.ekstensi.read_time(nama)))
     #untuk didefinisi ulang di utama
     if tambahkan:
-        hasil = execute.eksekusi(f_pilihan, r, nama, direktori, tujuan, date, list_source, list_destination, list_name, tambahkan)
+        hasil = execute.eksekusi(f_pilihan, r, nama, direktori, tujuan, date, list_source, list_destination, list_name, selected, tambahkan)
     else:
-        hasil = execute.eksekusi(f_pilihan, r+1, nama, direktori, tujuan, date, list_source, list_destination, list_name)
-    globals()[f"{nama}_var"] = hasil[0]
-    globals()[f"{nama}_cb"] = hasil[1]
-    globals()[f"{nama}_centang"] = hasil[2]
-    globals()[f"{nama}_label"] = hasil[3]
-    globals()[f"{nama}_date"] = hasil[4]
+        hasil = execute.eksekusi(f_pilihan, r+1, nama, direktori, tujuan, date, list_source, list_destination, list_name, selected)
+    dict_program_list[f"{nama}_var"] = hasil[0]
+    dict_program_list[f"{nama}_cb"] = hasil[1]
+    dict_program_list[f"{nama}_centang"] = hasil[2]
+    dict_program_list[f"{nama}_label"] = hasil[3]
+    dict_program_list[f"{nama}_date"] = hasil[4]
 
 refresh_class = refresh.refresh(
     jendela_utama,
@@ -127,7 +132,7 @@ refresh_class = refresh.refresh(
     list_destination,
     list_name,
     nama_edit_timpa,
-    globals(),
+    dict_program_list,
     sort_key,
     baca
 )
@@ -186,20 +191,12 @@ check_deletion()
 
 threading.Thread(target = start).start()
 
-def pilih(event):
-    for i in program_list: #kalau kosong maka for loop-nya tidak berjalan dan dikira selesai
-        globals()[f"{i}_cb"].select()
-        globals()[f"{i}_centang"]()
+selector.simple_select(kanvas, program_list, dict_program_list)
 
-def tidak_pilih(event):
-    for i in program_list:
-        globals()[f"{i}_cb"].deselect()
-        globals()[f"{i}_centang"]()
+if config.get_value("shift") == True:
+    selector_class = selector.main(kanvas, program_list, dict_program_list, list_name, sort_key, key)
 
-#doesn't catch the exception even if the user disables the progress bar window
-kanvas.bind("<Control-a>",  pilih)
-kanvas.bind("<Control-A>",  pilih)
-kanvas.bind("<Control-Shift-a>",  tidak_pilih)
-kanvas.bind("<Control-Shift-A>",  tidak_pilih)
+    kanvas.bind("<Shift-Up>", selector_class.up)
+    kanvas.bind("<Shift-Down>", selector_class.down)
 
 jendela_utama.mainloop()

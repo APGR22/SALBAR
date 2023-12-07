@@ -26,6 +26,7 @@ def eksekusi(
         fperintah: list,
         tperintah: list,
         snama: list,
+        selected: list[str],
         tambahkan: bool = False
 ) -> tuple[IntVar, Checkbutton, object, Label, Label]:
     """pilihan = tempat checkbutton diletakkan\n
@@ -38,7 +39,11 @@ def eksekusi(
     snama = daftar nama\n
     tambahkan = menambah tanpa bergantung row
     """
-    def centang():
+    def centang(reset: bool = True):
+        if reset:
+            selected.clear()
+            selected.append(n)
+
         if globals()[f"{n}_var"].get() == 1:
             if d not in fperintah or t not in tperintah or n not in snama:
                 fperintah.append(d)
