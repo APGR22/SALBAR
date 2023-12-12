@@ -27,14 +27,14 @@ int file_exists(char * file)
     return 0;
 }
 
-int check_threading(char * stopthread, FILE * file, FILE * file_output, char * output, int removefile)
+int check_threading(char * stopthread, FILE * file, FILE * file_output, char * output, int cache_output_file_exists)
 {
     if (file_exists(stopthread) != 0) return 1;
 
     fclose(file);
     fclose(file_output);
 
-    if (removefile != 0)
+    if (cache_output_file_exists != 0)
     {
         if (remove(output) != 0) return rm_file_while_stop_threading;
     }

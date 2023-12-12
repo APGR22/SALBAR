@@ -14,13 +14,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <sys/stat.h>
 #include "include/_check.h"
 #include "include/_error.h"
 
-const int total_buffer = 12288; //1024 * 12
-const size_t b_buffer = total_buffer;
+#define EMPTY 0
+
+const size_t b_buffer = 12288; //1024 * 12 = 12 KB
 
 typedef unsigned char BYTE;
 
@@ -56,9 +56,9 @@ int start_copy(char * filename, char * output, char * stopthread)
     }
 
     BYTE buffer[b_buffer];
-    const BYTE empty[b_buffer]; //Please don't change this!!😫
 
-    int file_output_exists = file_exists(output);
+    //check if the file previously existed
+    int cache_output_file_exists = file_exists(output);
 
     FILE * file_output;
     file_output = fopen(output, "wb");
@@ -69,32 +69,20 @@ int start_copy(char * filename, char * output, char * stopthread)
         return open_file_output;
     }
 
-    int total = 0;
-    int c;
+    int error;
+    size_t size;
 
-    //https://stackoverflow.com/questions/4823177/reading-a-file-character-by-character-in-c
-    while ( (c = fgetc(file_input)) != EOF )
+    // https://stackoverflow.com/questions/6160319/how-to-read-unsigned-character-array-using-gets
+    // https://stackoverflow.com/questions/18255384/read-an-empty-file-with-fread
+
+    while ( (size = fread(buffer, 1, sizeof(buffer), file_input)) > EMPTY )
     {
-        //append
-        buffer[total] = (BYTE) c;
-        total++;
+        error = check_threading(stopthread, file_input, file_output, output, cache_output_file_exists);
+        if (error == 0) return stop_threading;
+        else if (error == rm_file_while_stop_threading) return rm_file_while_stop_threading;
 
-        if (total == total_buffer)
-        {
-            if (check_threading(stopthread, file_input, file_output, output, file_output_exists) == 0) return stop_threading;
-
-            fwrite(buffer, sizeof(buffer), 1, file_output);
-
-            //reset
-            memset(buffer, 0, b_buffer);
-            total = 0;
-        }
+        fwrite(buffer, 1, sizeof(buffer), file_output);
     }
-
-    if (check_threading(stopthread, file_input, file_output, output, file_output_exists) == 0) return stop_threading;
-
-    //jika buffer-nya masih ada
-    if (memcmp(buffer, empty, b_buffer) != 0) fwrite(buffer, total, 1, file_output);
 
     // free(buffer);
     fclose(file_input);
