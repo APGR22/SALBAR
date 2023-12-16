@@ -14,12 +14,22 @@
 
 import os
 import subprocess
-import shutil
 from paths import filename, filethread, executable
 from command import _folders
 from command import _c_errors
 
-def _writetofile(s: str, d: str, copy: bool, symlink: bool):
+def _createfile():
+    with open(filename, "w") as file:
+        file.write("n\npass\npass\ncopy\n")
+
+def startthread():
+    if os.path.isfile(filethread):
+        os.remove(filethread)
+
+def stopthread():
+    with open(filethread, "w"):...
+
+def _writetofile(n: str, s: str, d: str, copy: bool, symlink: bool):
     if symlink:
         s = os.path.realpath(s)
         d = os.path.realpath(d)
@@ -28,6 +38,7 @@ def _writetofile(s: str, d: str, copy: bool, symlink: bool):
         d = os.path.abspath(d)
 
     with open(filename, "a") as file:
+        file.write(f"{n}\n")
         file.write(f"{s}\n")
         file.write(f"{d}\n")
         if copy:
@@ -35,29 +46,31 @@ def _writetofile(s: str, d: str, copy: bool, symlink: bool):
         else:
             file.write("move\n")
 
-def copymove_file(s: str, d: str, copy: bool, symlink: bool = False) -> str:
-    _writetofile(s, d, copy, symlink)
+def _writedirectories(n: str, s: str, d: str, copy: bool, symlink: bool): #took this method from the copycut module
+    for file_s, file_d in _folders.make_directories(s, d):
+        _writetofile(n, file_s, file_d, copy, symlink)
 
+def writetofile(n: str, s: str, d: str, file_method: bool, copy: bool, symlink: bool = False) -> (str | None):
+    "if file then 's' and 'd' must file path"
+    try:
+        if file_method:
+            _writetofile(n, s, d, copy, symlink)
+        else:
+            _writedirectories(n, s, d, copy, symlink)
+    except Exception as error:
+        return f"{n}: {error}"
+
+def copymove(list_errors: list[str]):
     get = subprocess.check_output([executable, filename, filethread])
 
-    return _c_errors.identify(get[2:])
+    #get = "{name}:{error}{\n}"
 
+    #[4:] = "n:3\n" #for pass
+            #^^^ ^
+            #123 4 
+    #[:-2] = "\n0" #for debugging
+             # ^^
+             # 12 
 
-def copymove_folder(s: str, d: str, copy: bool, symlink: bool = False) -> str: #took this method from the copycut module
-    path_sd = _folders.make_directories(s, d)
-    path_s = path_sd[0]
-    path_d = path_sd[1]
-
-    for file_s, file_d in zip(path_s, path_d):
-        # results.append(copymove_file(file_s, file_d, copy, symlink))
-        _writetofile(file_s, file_d, copy, symlink)
-
-    get = subprocess.check_output([executable, filename, filethread])
-
-    if not copy:
-        try:
-            shutil.rmtree(s)
-        except FileNotFoundError: #firasat saya tidak enak kalau tidak ada pengecualian
-            pass
-
-    return _c_errors.identify(get[2:])
+    get = get.replace(b"\r", b"")[4:][:-2]
+    _c_errors.identify(get, list_errors)

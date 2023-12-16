@@ -13,20 +13,16 @@
 // limitations under the License.
 
 #include <stdio.h>
-#include "include/my_copy.h"
 #include "include/_check.h"
+#include "include/_error.h"
 
 int start_move(char * filename, char * output, char * stopthread)
 {
-    int result;
-    result = start_copy(filename, output, stopthread);
+    if (file_exists(stopthread) == 0) return stop_threading;
 
-    if (result != 0) return 1;
+    int result = rename(filename, output);
 
-    if (file_exists(stopthread) == 0)
-    {
-        if (remove(filename) != 0) return 1;
-    }
+    if (result != 0) return failed_to_move;
 
     return 0;
 }

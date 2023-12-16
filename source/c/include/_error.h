@@ -18,3 +18,5 @@
 #define open_file_output 4
 #define stop_threading 5
 #define rm_file_while_stop_threading 6
+#define failed_to_move 7
+#define memory_error 8

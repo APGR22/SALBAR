@@ -36,7 +36,7 @@ class options:
                     list_destination: list[str],
                     confirm_to_overwrite: IntVar,
                     confirm_to_skip: IntVar,
-                    confirm_to_not_shutil: IntVar,
+                    confirm_to_use_c: IntVar,
                     nama_edit_timpa: dict
                 ) -> None:
 
@@ -50,7 +50,7 @@ class options:
         self.list_destination = list_destination
         self.confirm_to_overwrite = confirm_to_overwrite
         self.confirm_to_skip = confirm_to_skip
-        self.confirm_to_not_shutil = confirm_to_not_shutil
+        self.confirm_to_use_c = confirm_to_use_c
         self.nama_edit_timpa = nama_edit_timpa
 
         self._menu = _menu(self.root, self.name, self.source, self.destination, self.nama_edit_timpa)
@@ -107,7 +107,7 @@ class options:
     #actually only specifically for threading
     def _run_command(self, command_info: progress.progress_bar, copy: bool, thread: dict[str, bool]):
         """(not active) command_info = ["title", "source", "destination"]"""
-        hasil = command.perintah(
+        hasil = command.command(
                                 command_info,
                                 self.list_name,
                                 self.list_source,
@@ -115,39 +115,42 @@ class options:
                                 copy,
                                 self.confirm_to_overwrite,
                                 self.confirm_to_skip,
-                                self.confirm_to_not_shutil,
+                                self.confirm_to_use_c,
                                 thread
                                 )
-        if hasil.count("SUCCESSFULLY"):
-            showinfo(
-                title = "Command-Info",
-                message = hasil,
-                parent=self.root
-            )
+        if hasil.startswith("SUCCESSFULLY"):
+            show = showinfo
+            title = "Command-Info"
+            message = hasil
+        elif hasil.startswith("ERROR(S)"):
+            show = showerror
+            title = "Command-Error"
+            message = hasil
         elif hasil == "CANCELED":
-            showinfo(
-                title = "Command-Info",
-                message = "CANCELED BY USER",
-                parent=self.root
-            )
+            show = showinfo
+            title = "Command-Info"
+            message = "CANCELED BY USER"
         elif hasil == "SKIP":
-            showinfo(
-                title = "Command-Info",
-                message = "SKIPPED BY USER",
-                parent=self.root
-            )
+            show = showinfo
+            title = "Command-Info"
+            message = "SKIPPED BY USER"
         else:
-            showerror(
-                title = "Command-Error",
-                message = hasil,
-                parent=self.root
-            )
+            show = showinfo
+            title = "Command-:)"
+            message = hasil
+
+        show(
+            title = title,
+            message = message,
+            parent=self.root
+        )
 
     def run_command(self, copy: bool):
         """if copy == False: cut"""
         if self.list_name and self.list_source and self.list_destination:
 
-            if configurator.config("user.yaml").get_value("warning0") != False:
+            config = configurator.config("user.yaml")
+            if config.get_value("warning0") != False:
                 answer = message_box.create(
                                         title="Command-Warning",
                                         message="Copy/move action cannot be stopped while it is in progress, continue?",
@@ -158,10 +161,10 @@ class options:
                                         bell=True
                                         )[0]
                 if answer == "Always Yes":
-                        if configurator.config("user.yaml").find("warning0"):
-                            configurator.config("user.yaml").change("warning0", False)
+                        if config.find("warning0"):
+                            config.change("warning0", False)
                         else:
-                            configurator.config("user.yaml").add("warning0: false")
+                            config.add("warning0: false")
 
                         showinfo(
                             title="Command-Warning-Info",
@@ -379,7 +382,7 @@ class _menu:
         self.menu_window.withdraw()
 
 class options_menu:
-    def __init__(self, confirm_to_overwrite: IntVar, confirm_to_skip: IntVar, confirm_to_not_shutil: IntVar) -> None:
+    def __init__(self, confirm_to_overwrite: IntVar, confirm_to_skip: IntVar, confirm_to_use_c: IntVar) -> None:
         self.window = Toplevel()
         self.window.title("Configuration")
         self.window.resizable(0,0)
@@ -388,7 +391,7 @@ class options_menu:
         #config
         screen_width = self.window.winfo_screenwidth()
         screen_height = self.window.winfo_screenheight()
-        w = 400
+        w = 420
         h = 50
 
         x = (screen_width/2) - (w/2)
@@ -424,17 +427,17 @@ class options_menu:
         config.radiobutton(no_overwrite_skip, overwrite_skip, 0)
         no_overwrite_skip.select()
 
-        timpa = Radiobutton(self.window, text = "Overwrites all", command = timpa_dicentang)
-        timpa.grid(row=1, column=1, sticky=W)
-        config.radiobutton(timpa, overwrite_skip, 1)
+        overwrite = Radiobutton(self.window, text = "Overwrites all", command = timpa_dicentang)
+        overwrite.grid(row=1, column=1, sticky=W)
+        config.radiobutton(overwrite, overwrite_skip, 1)
 
-        lewati = Radiobutton(self.window, text = "Skips all", command = lewati_dicentang)
-        lewati.grid(row=1, column=2, sticky=W)
-        config.radiobutton(lewati, overwrite_skip, 2)
+        skip = Radiobutton(self.window, text = "Skips all", command = lewati_dicentang)
+        skip.grid(row=1, column=2, sticky=W)
+        config.radiobutton(skip, overwrite_skip, 2)
 
-        no_shutil = Checkbutton(self.window, text = "No shutil (slower than shutil and experimental)")
-        no_shutil.grid(row=2, column=0, columnspan=2, sticky=W)
-        config.checkbutton(no_shutil, confirm_to_not_shutil)
+        with_slbr_cpmv = Checkbutton(self.window, text = "With SALBAR copymove (slower than shutil and experimental)")
+        with_slbr_cpmv.grid(row=2, column=0, columnspan=3, sticky=W)
+        config.checkbutton(with_slbr_cpmv, confirm_to_use_c)
 
     def active(self):
         self.window.deiconify()

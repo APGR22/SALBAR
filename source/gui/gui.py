@@ -129,11 +129,11 @@ def bingkai(root: Tk):
 def tombol(root: Tk, list_name: list, list_source: list, list_destination: list, nama_edit_timpa: dict):
     confirm_to_overwrite = IntVar()
     confirm_to_skip = IntVar()
-    confirm_to_not_shutil = IntVar()
+    confirm_to_use_c = IntVar()
 
-    options_class = _options.options(root, list_name, list_source, list_destination, confirm_to_overwrite, confirm_to_skip, confirm_to_not_shutil, nama_edit_timpa)
+    options_class = _options.options(root, list_name, list_source, list_destination, confirm_to_overwrite, confirm_to_skip, confirm_to_use_c, nama_edit_timpa)
 
-    start = _options.options_menu(confirm_to_overwrite, confirm_to_skip, confirm_to_not_shutil)
+    start = _options.options_menu(confirm_to_overwrite, confirm_to_skip, confirm_to_use_c)
 
     new = Label(root, text="New")
     new.pack(side=LEFT, fill=Y)

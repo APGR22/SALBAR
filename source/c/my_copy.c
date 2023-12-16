@@ -20,7 +20,7 @@
 
 #define EMPTY 0
 
-const size_t b_buffer = 12288; //1024 * 12 = 12 KB
+const size_t b_buffer = 1024 * 512; //512 KB for safety because of better than 2 MB
 
 typedef unsigned char BYTE;
 
@@ -55,10 +55,16 @@ int start_copy(char * filename, char * output, char * stopthread)
         return 0;
     }
 
-    BYTE buffer[b_buffer];
+    // BYTE buffer[b_buffer];
+    BYTE * buffer;
+    buffer = malloc(b_buffer);
+
+    if (buffer == NULL) return memory_error;
 
     //check if the file previously existed
     int cache_output_file_exists = file_exists(output);
+
+    remove(output);
 
     FILE * file_output;
     file_output = fopen(output, "wb");
@@ -75,16 +81,21 @@ int start_copy(char * filename, char * output, char * stopthread)
     // https://stackoverflow.com/questions/6160319/how-to-read-unsigned-character-array-using-gets
     // https://stackoverflow.com/questions/18255384/read-an-empty-file-with-fread
 
-    while ( (size = fread(buffer, 1, sizeof(buffer), file_input)) > EMPTY )
+    while ( (size = fread(buffer, 1, b_buffer, file_input)) > EMPTY )
     {
         error = check_threading(stopthread, file_input, file_output, output, cache_output_file_exists);
         if (error == 0) return stop_threading;
         else if (error == rm_file_while_stop_threading) return rm_file_while_stop_threading;
 
-        fwrite(buffer, 1, sizeof(buffer), file_output);
+        // printf("%lld\n", size);
+
+        fwrite(buffer, 1, size, file_output);
+
+        free(buffer);
+        buffer = malloc(b_buffer);
     }
 
-    // free(buffer);
+    free(buffer);
     fclose(file_input);
     fclose(file_output);
 

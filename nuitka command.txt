@@ -2,7 +2,9 @@ Windows:
 	nuitka "salbar.pyw"
 			--disable-console
 			--output-dir=<output directory>
+			--output-filename="salbar.exe"
 			--standalone
+			--disable-console
 			--remove-output
 			--prefer-source-code
 			--plugin-enable=upx
@@ -12,12 +14,16 @@ Windows:
 			--windows-icon-from-ico="resource\salbar.ico"
 			--include-data-files="SALBAR.png"="SALBAR.png"
 			--include-data-files="icons\Warning.png"="icons\Warning.png"
+			--include-data-files="c\main.exe"="c\main.exe"
+			--include-data-dir="c\include"="c\include"
 
 Linux:
 	{nuitka/nuitka3} "salbar.pyw" 
 					--disable-console
 					--output-dir=<output directory>
+					--output-filename="salbar"
 					--standalone
+					--disable-console
 					--remove-output
 					--prefer-source-code
 					--plugin-enable=upx
@@ -26,3 +32,5 @@ Linux:
 					--linux-icon="resources/salbar.ico"
 					--include-data-files="SALBAR.png"="SALBAR.png"
 					--include-data-files="icons/Warning (ubuntu).png"="icons/Warning (ubuntu).png"
+					--include-data-files="c/main"="c/main"
+					--include-data-dir="c/include"="c/include"

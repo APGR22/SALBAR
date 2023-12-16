@@ -31,7 +31,7 @@ def replace_path_symbol(path: str) -> str:
 def get_current_path() -> str:
     return os.path.dirname(__file__)
 
-def separate_path(path: str) -> list:
+def separate_path(path: str) -> list[str]:
     path = path.replace('" "', '"')
     paths = path.split('"')
     while True:
@@ -49,7 +49,7 @@ def is_abs_path(path: str) -> bool:
             break
     return abs_path
 
-path = os.path.join(get_current_path(), "command", "c")
+path = os.path.join(get_current_path(), "c")
 filename = os.path.join(path, "com.txt")
 filethread = os.path.join(path, ".stopthread")
 if platform.system() == "Windows":

@@ -12,243 +12,226 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from tkinter import IntVar, Toplevel
-#get class "do_progress" from gui/progress
-from tkinter.messagebox import *
-from tkinter.messagebox import WARNING
-import os
-import command.copycut as copycut
-import paths
+from tkinter import IntVar
 from gui import progress
+import paths
+from command import copycut
+from command import _c
+from command._for_command import *
 
-def _createfile():
-    with open(paths.filename, "w") as file:
-        file.write("pass\npass\ncopy\n")
-
-def startthread():
-    if os.path.isfile(paths.filethread):
-        os.remove(paths.filethread)
-
-def make_dir(d: str):
-    try:
-        os.makedirs(d)
-    except Exception as error: #jika sudah ada. meski ada exist_ok, itu berarti ditimpa sehingga tidak digunakan
-        pass
-
-def cek_ada(path: str, skip: IntVar, parent: Toplevel):
-    if os.path.exists(path):
-        if skip.get() == 1:
-            return "skip"
-        ask = askyesnocancel(
-            title = "Warning",
-            message = f'We found the same file/folder name in "{path}", overwrite it?\nOr "Cancel" to stop the process even though the previous action has already been processed',
-            icon = WARNING,
-            parent=parent
-        )
-        return ask
-    return "tidak ada"
-
-def perintah(command_info: progress.progress_bar,
+def command(command_info: progress.progress_bar,
             list_name: list,
             list_source: list,
             list_destination: list,
             copy: bool,
-            timpa: IntVar,
-            skip: IntVar,
-            no_shutil: IntVar,
+            overwrites: IntVar,
+            skip_intvar: IntVar,
+            use_c: IntVar,
             thread: dict[str, bool]
             ):
     """tanya: Overwrites for all\n
     skip: Skip overwrites\n
     (not active) command_info = ["title", "source", "destination"]"""
 
-    list_path = [] #0 = name, 1 = list source, 2 = list destination
-    berhasil = 0
-    kesalahan = []
-    operasi_cancel = False
-    user = False
-    if skip.get() == 1:
-        tindakan_skip = True
+    if skip_intvar.get() == 1:
+        skip = True
     else:
-        tindakan_skip = False
-    if no_shutil.get() == 1:
+        skip = False
+
+    if use_c.get() == 1:
+        process_message = "Preparing the command to be executed"
+        do = _c.writetofile
         c = True
     else:
+        process_message = "Process"
+        if copy:
+            do = copycut.copy
+        else:
+            do = copycut.move
         c = False
-
-    for ln, ls, ld in zip(list_name, list_source, list_destination):
-        source = paths.separate_path(ls)
-        destination = paths.separate_path(ld)
-        list_path.append((ln, source, destination))
-
-    total_title = len(list_path)
-
-    _createfile()
-    startthread()
-
-    command_info.active()
 
     parent = command_info._get_window()
 
-    try:
-        if copy: #sekali dijalankan
-            for count_title, p in enumerate(list_path): #perulangan
-                if not thread["active"]:
-                    break
+    total_name = len(list_name)
 
-                total_source = len(p[1])
-                total_destination = len(p[2])
+    user = False
+    cancel = False
+    success = False
+
+    dict_success = {"success": False}
+
+    list_s: list[str]
+    list_d: list[str]
+    list_s = []
+    list_d = []
+
+    list_error: list[str]
+    list_error = []
+
+    _c._createfile()
+    _c.startthread()
+
+    command_info.active()
+
+    list_error_name: list[str]
+    list_error_name = []
+    list_path: list[str]
+    list_path = []
+
+    #https://stackoverflow.com/questions/16326853/enumerate-two-python-lists-simultaneously
+    #https://www.learndatasci.com/solutions/python-valueerror-too-many-values-unpack/
+    for count_n, (n, s, d) in enumerate(zip(list_name, list_source, list_destination)):
+        if not thread["active"] or cancel:
+            break
+
+        command_info.set(
+            progress_name = "title",
+            value = (count_n+1)/total_name*100,
+            title = f"{process_message}: {count_n+1}/{total_name}",
+            message = n
+        )
+
+        ls = paths.separate_path(s)
+        ld = paths.separate_path(d)
+        total_source = len(ls)
+        total_destination = len(ld)
+
+        list_s.extend(ls)
+        list_d.extend(ld)
+
+        hs = 0
+        count_s = 0
+
+        while hs <= len(ls)-1: #it will update itself if there are any changes
+            s = ls[hs]
+            count_s += 1
+
+            if not thread["active"] or cancel:
+                break
+
+            command_info.set(
+                progress_name = "source",
+                value = (count_s)/total_source*100,
+                title = f"Source: {count_s}/{total_source}",
+                message = s
+            )
+
+            if s in list_error_name:
+                if s in ls: #re-check
+                    ls = filter_list(ls, s)
+                continue
+
+            if os.path.isfile(s):
+                file_method = True
+            elif os.path.isdir(s):
+                file_method = False
+            else:
+                list_error.append(f"{n}: No source file or folder found: '{s}'")
+                list_error_name.append(s)
+                count_s += ls.count(s) - 1 #total count - one of them
+                ls = filter_list(ls, s)
+                continue
+
+            for count_d, d in enumerate(ld):
+                if not thread["active"] or cancel:
+                    break
 
                 command_info.set(
-                                progress_name="title",
-                                value=(count_title+1)/total_title*100,
-                                title=f"Process: {count_title+1}/{total_title}",
-                                message=p[0]
-                                )
+                    progress_name = "destination",
+                    value = (count_d+1)/total_destination*100,
+                    title = f"Destination: {count_d+1}/{total_destination}",
+                    message = d
+                )
 
-                for count_s, s in enumerate(p[1]): #perulangan dalam perulangan
-                    if not thread["active"]:
+                if f"{s}-{d}" in list_path:
+                    continue
+
+                list_path.append(f"{s}-{d}")
+
+                make_dir(d)
+                d = os.path.join(d, os.path.basename(s))
+
+                if overwrites.get() == 0:
+                    result = if_exists(d, skip_intvar, parent)
+
+                    if result == "skip": #if exists
+                        skip = True
+                        continue
+                    elif result == False: #No
+                        user = True
+                        continue
+                    elif result == None: #Cancel
+                        cancel = True
                         break
+                    #elif result == True: Yes
 
-                    command_info.set(
-                                    progress_name="source",
-                                    value=(count_s+1)/total_source*100,
-                                    title=f"Source: {count_s+1}/{total_source}",
-                                    message=s
-                                    )
+                result = do(n, s, d, file_method, copy)
+                if result is not None: #error
+                    list_error.append(result)
+                else:
+                    success = True
 
-                    if operasi_cancel:
-                        break
-
-                    #perulangan dalam perulangan dalam perulangan
-                    for count_d, d in enumerate(p[2]):
-                        if not thread["active"]:
-                            break
-
-                        command_info.set(
-                                        progress_name="destination",
-                                        value=(count_d+1)/total_destination*100,
-                                        title=f"Destination: {count_d+1}/{total_destination}",
-                                        message=d
-                                        )
-
-                        if os.path.isfile(s):
-                            metode_file = True
-                        elif os.path.isdir(s):
-                            metode_file = False
-                        else:
-                            kesalahan.append(f"{p[0]}: No source file or folder found: '{s}'")
-                            continue
-
-                        make_dir(d)
-
-                        path = os.path.join(d, os.path.basename(s))
-
-                        if timpa.get() == 0:
-                            dicek = cek_ada(path, skip, parent)
-
-                            if dicek == "skip": #jika ada
-                                continue
-                            if dicek == True: #Yes
-                                pass
-                            elif dicek == False: #No
-                                user = True
-                                continue
-                            elif dicek == None: #Cancel
-                                operasi_cancel = True
-                                break
-
-                        hasil = copycut.salin(p[0], s, d, metode_file, c)
-
-                        if hasil:
-                            kesalahan.append(hasil)
-                            continue
-
-                        berhasil += 1
-        else:
-            for p in list_path: #perulangan
-                if not thread["active"]:
-                    break
-
-                for s in p[1]: #perulangan dalam perulangan
-                    if not thread["active"]:
-                        break
-
-                    if operasi_cancel: #perulangan dalam perulangan dalam perulangan
-                        break
-
-                    for d in p[2]:
-                        if not thread["active"]:
-                            break
-
-                        if os.path.isfile(s):
-                            metode_file = True
-                        elif os.path.isdir(s):
-                            metode_file = False
-                        else:
-                            kesalahan.append(f"{p[0]}: No source file or folder found: '{s}'")
-                            continue
-
-                        make_dir(d)
-
-                        path = os.path.join(d, os.path.basename(s))
-
-                        if timpa.get() == 0:
-                            dicek = cek_ada(path, skip, parent)
-
-                            if dicek == "skip": #jika ada
-                                continue
-                            elif dicek == True: #Yes
-                                pass
-                            elif dicek == False: #No
-                                user = True
-                                continue
-                            elif dicek == None: #Cancel
-                                operasi_cancel = True
-                                break
-
-                        hasil = copycut.pindah(p[0], s, d, metode_file, c)
-
-                        if hasil:
-                            kesalahan.append(hasil)
-                            continue
-                        
-                        berhasil += 1
-    except Exception as error:
-        print(error)
-        kesalahan.append(str(error))
+            hs += 1
 
     command_info.destroy()
 
     if copy:
-        tindakan = "COPIED"
+        method = "COPIED"
+        message = "copying"
     else:
-        tindakan = "MOVED"
+        method = "MOVED"
+        message = "moving"
+
+    if success and c:
+        progress_copymove = progress.simple_progress_messagebox(thread)
+        progress_copymove.set(f"Start {message}")
+        progress_copymove.active()
+        progress_copymove.start()
+
+        _c.copymove(list_error)
+        if not copy:
+            for s, d in zip(list_s, list_d):
+                d = os.path.join(d, os.path.basename(s))
+                rmtree(s, d)
+
+        progress_copymove.stop()
+        progress_copymove.destroy()
 
     if user or not thread["active"]:
-        tambahan = " AND SOME CANCELLATIONS"
-    elif tindakan_skip:
-        tambahan = " AND SOME SKIP"
+        additional = " AND SOME CANCELLATIONS"
+    elif skip:
+        additional = " AND SOME SKIP"
     else:
-        tambahan = ""
+        additional = ""
 
-    salah = ", ".join(kesalahan)
-    if len(salah) > 160:
-        with open("errors.txt", "w") as o:
-            o.write("This file will be deleted and overwritten if a very long error occurs again in the future!\n\n")
-            for error in kesalahan:
-                o.write(error.replace("\\\\", chr(92))+"\n") #.replace() only applied when in Windows
-        salah = f'(SEE "{os.path.join(os.getcwd(), "errors.txt")}")'
-    if berhasil and kesalahan:
-        teks = f"SUCCESSFULLY {tindakan} FILE(S) WITH ERROR(S): "+salah+tambahan
-    elif berhasil and tambahan:
-        teks = f"SUCCESSFULLY {tindakan} FILE(S)"+tambahan
-    elif berhasil:
-        teks = f"SUCCESSFULLY {tindakan} FILE(S)"
-    elif tindakan_skip:
-        teks = "SKIP"
-    elif operasi_cancel or user:
-        teks = "CANCELED"
+    if dict_success["success"]:
+        success = True
+
+    if len(list_error) > max_error:
+        write_error(list_error)
+        error = f'(SEE "{os.path.join(os.getcwd(), "errors.txt")}")'
     else:
-        teks = "ERROR(S): "+salah
-    return teks
+        error = ",\n".join(list_error) #will empty if list_error empty too
+
+    #success and error
+    if success and error:
+        text = f"SUCCESSFULLY {method} FILE(S) WITH ERROR(S): " + error + additional
+    #success
+    elif success and additional:
+        text = f"SUCCESSFULLY {method} FILE(S)"+additional
+    elif success:
+        text = f"SUCCESSFULLY {method} FILE(S)"
+    #error
+    elif error and additional:
+        text = f"ERROR(S): " + error + additional
+    elif error:
+        text = f"ERROR(S): " + error
+    #else
+    elif skip:
+        text = "SKIP"
+    elif cancel or user:
+        text = "CANCELED"
+    else:
+        text = "There are currently no messages available. Go home now"
+
+    return text

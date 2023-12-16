@@ -12,20 +12,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-total_errors = 6
+SUCCESS = b"0"
 
 errors = {
-    1: "too few arguments",
-    2: "cannot open file from arguments",
-    3: "cannot open source file",
-    4: "cannot open destination file",
-    5: "the process is stopped",
-    6: "cannot delete unfinished file"
+    1: "Too few arguments",
+    2: "Cannot open file from arguments",
+    3: "Cannot open source file",
+    4: "Cannot create destination file",
+    5: "The process is stopped",
+    6: "Cannot delete unfinished file",
+    7: "Cannot delete source file",
+    8: "Unable to allocate required memory"
 }
 
-def identify(s: int | str | bytes) -> str:
-    for i in range(total_errors):
-        if i+1 in s:
-            return errors[i+1]
+def identify(results: bytes, list_errors: list[str]):
+    list_results = results.splitlines()
 
-    return "success"
+    while True:
+        try:
+            list_results.remove(b"")
+        except:
+            break
+
+    # for i in range(len(errors)):
+    #     if i+1 in s:
+    #         return errors[i+1]
+
+    for result in list_results:
+        name_result_int = result.split(b":")
+        name = name_result_int[0]
+        result_int = name_result_int[1]
+
+        if result_int != SUCCESS:
+            list_errors.append(f"{name.decode()}: {errors[int(result_int)]}")

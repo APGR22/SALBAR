@@ -19,14 +19,15 @@ import typing
 EMPTY = """- null"""
 
 def _check_syntax(content: str) -> bool:
-    """must not use '-'\n
+    """returns True if the syntax is correctly\n
+    must not use '-'\n
     must not use '#'\n
     must use ':'"""
-    error = True
+    correctly = True
     for line in content.splitlines():
         if line.count(":") and not line.count("-") and not line.count("#"):
-            error = False
-    return not error
+            correctly = False
+    return correctly
 
 class config:
     def __init__(self, filepath: str):

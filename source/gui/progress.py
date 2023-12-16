@@ -1,6 +1,22 @@
-from tkinter import Toplevel, Frame, HORIZONTAL, X
+# Copyright © 2023 APGR22
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from tkinter import Toplevel, Frame, HORIZONTAL, X, Y, LEFT
 from tkinter.ttk import Progressbar, Label
 from gui.styles import *
+from command import _c
+import time
 
 class progress_bar():
     def __init__(self, progress_names: list[str], thread: dict[str, bool]) -> None:
@@ -38,7 +54,7 @@ class progress_bar():
 
         def exit():
             thread["active"] = False
-            with open(paths.filethread, "w"):...
+            _c.stopthread()
 
         self.progress_window.protocol("WM_DELETE_WINDOW", exit)
 
@@ -118,18 +134,103 @@ class simple_progress_bar():
         self.progress_window.focus_set()
     
     actived = active
-    
+
     def disable(self):
         self.progress.stop()
         self.progress_window.grab_release()
         self.progress_window.withdraw()
-    
+
     disabled = disable
 
     def set(self, value: int):
         self.progress["value"] = value
-    
+
     def destroy(self):
         self.progress_window.destroy()
-    
+
+    delete = deleted = destroyed = destroy
+
+class simple_progress_messagebox:
+    def __init__(self, thread: dict[str, bool]):
+        self.progress_window = Toplevel()
+        self.progress_window.resizable(0, 0)
+        self.progress_window.configure(bg=PROGRESS_BACKGROUND)
+
+        wp = 200
+        hp = 80
+        xp = (self.progress_window.winfo_screenwidth()/2) - (wp/2)
+        yp = (self.progress_window.winfo_screenheight()/2) - (hp/2)
+
+        self.progress_window.geometry('%dx%d+%d+%d' % (wp, hp, xp, yp))
+        self.progress_window.withdraw()
+
+        self.progress_window.protocol("WM_DELETE_WINDOW", self.disable)
+
+        self.font_size = 13
+        self.padx = 15
+
+        self.message = Label(self.progress_window, font=(just_font, self.font_size), background=PROGRESS_BACKGROUND, foreground=PROGRESS_FOREGROUND)
+        self.message.pack(side=LEFT, fill=Y, padx=self.padx)
+
+        self.loading = Label(self.progress_window, font=(just_font, self.font_size), background=PROGRESS_BACKGROUND, foreground=PROGRESS_FOREGROUND)
+        self.loading.pack(side=LEFT, fill=Y, padx=self.padx)
+
+        self.animation = ["|", "/", "-", "\\"]
+        self.total_animation = len(self.animation)-1
+
+        self.switch = 0
+        self.duration = 200 #ms
+
+        self.start_loading = False
+
+        self.thread = thread
+
+    def active(self):
+        self.progress_window.deiconify()
+        self.progress_window.grab_set()
+        self.progress_window.focus_set()
+
+    actived = active
+
+    def disable(self):
+        self.stop()
+
+        _c.stopthread()
+        self.message["text"] = "Cancel"
+        self.thread["active"] = False
+
+        #restart
+        self.start()
+
+    disabled = disable
+
+    def set(self, message: str):
+        self.message["text"] = message
+
+    def _start(self):
+        try: self.loading["text"] = self.animation[self.switch]
+        except: pass
+
+        if self.start_loading:
+
+            if self.switch == self.total_animation:
+                self.switch = 0
+            else:
+                self.switch += 1
+
+            self.progress_window.after(self.duration, self._start)
+
+    def start(self):
+        self.start_loading = True
+        self._start()
+
+    def stop(self):
+        self.start_loading = False
+        self.loading["text"] = self.animation[0]
+
+    def destroy(self):
+        self.stop()
+        time.sleep(self.duration / 1000) #milisecond to second
+        self.progress_window.destroy()
+
     delete = deleted = destroyed = destroy
