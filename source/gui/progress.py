@@ -176,7 +176,7 @@ class simple_progress_messagebox:
         self.loading = Label(self.progress_window, font=(just_font, self.font_size), background=PROGRESS_BACKGROUND, foreground=PROGRESS_FOREGROUND)
         self.loading.pack(side=LEFT, fill=Y, padx=self.padx)
 
-        self.animation = ["|", "/", "-", "\\"]
+        self.animation = "|/-\\"
         self.total_animation = len(self.animation)
 
         self.duration = 0.1 #s
