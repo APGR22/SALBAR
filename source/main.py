@@ -137,6 +137,8 @@ refresh_class = refresh.refresh(
     baca
 )
 
+done = [False]
+
 #tidak bisa untuk threading semua kode
 def start():
     progress_window = progress.simple_progress_bar()
@@ -166,6 +168,8 @@ def start():
     progress_window.destroy()
     kanvas.focus_set()
 
+    done[0] = True
+
 if len(sys.argv) > 2:
     showinfo(
         title="Info",
@@ -177,6 +181,33 @@ if pending_error_message:
         message=f'Failed to set path: {pending_error_message}\nSo set the path to: "{os.getcwd()}"'
         )
 
+def _check_successful():
+    if done[0]:
+        cache_list = os.listdir("Paths")
+
+        #remove non-slbr
+        for f in cache_list:
+            f = os.path.join("Paths", f)
+            if os.path.isfile(f):
+                if not f.endswith(".slbr"):
+                    cache_list.remove(f)
+            else:
+                cache_list.remove(f)
+
+        if len(program_list) != len(cache_list):
+            showerror(
+                title="salbar",
+                message="threading has failed, salbar will be reopening"
+            )
+            jendela_utama.destroy()
+            os.system(__file__)
+            sys.exit(1)
+
+        globals().pop("done") #same as (global done; del done)
+    else:
+        jendela_utama.after(100, _check_successful)
+
+_check_successful()
 
 def check_deletion():
     if not os.path.isdir("Paths"):
