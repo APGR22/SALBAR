@@ -15,6 +15,7 @@
 import os
 import typing
 from tkinter import Tk
+from tkinter import Checkbutton
 from tkinter.messagebox import *
 from file_handler import extension
 from file_handler import sorter
@@ -34,6 +35,9 @@ class refresh:
                 baca: object
                 ) -> None:
         "auto run"
+        #annotation
+        self.dict_program_list: dict[str, Checkbutton]
+
         #variable
         self.root = root
         self.program_list = program_list
@@ -125,7 +129,7 @@ class refresh:
                 self.baca(i)
                 self.dict_program_list[f"{i}_cb"].grid(row=r+1)
                 self.dict_program_list[f"{i}_label"].grid(row=r+1)
-                self.from_gdict_program_listlobals[f"{i}_date"].grid(row=r+1)
+                self.dict_program_list[f"{i}_date"].grid(row=r+1)
 
     def destroy(self, name: str):
         del self.dict_program_list[f"{name}_var"], self.dict_program_list[f"{name}_centang"]
