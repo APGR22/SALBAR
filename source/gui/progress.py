@@ -16,6 +16,7 @@ from tkinter import Toplevel, Frame, HORIZONTAL, X, Y, LEFT
 from tkinter.ttk import Progressbar, Label
 from gui.styles import *
 from command import _c
+import threading
 import time
 
 class progress_bar():
@@ -176,10 +177,9 @@ class simple_progress_messagebox:
         self.loading.pack(side=LEFT, fill=Y, padx=self.padx)
 
         self.animation = ["|", "/", "-", "\\"]
-        self.total_animation = len(self.animation)-1
+        self.total_animation = len(self.animation)
 
-        self.switch = 0
-        self.duration = 200 #ms
+        self.duration = 0.1 #s
 
         self.start_loading = False
 
@@ -208,21 +208,18 @@ class simple_progress_messagebox:
         self.message["text"] = message
 
     def _start(self):
-        try: self.loading["text"] = self.animation[self.switch]
-        except: pass
+        #https://stackoverflow.com/questions/7039114/waiting-animation-in-command-prompt-python
+        #https://stackoverflow.com/questions/961344/what-does-the-percentage-sign-mean-in-python
 
-        if self.start_loading:
-
-            if self.switch == self.total_animation:
-                self.switch = 0
-            else:
-                self.switch += 1
-
-            self.progress_window.after(self.duration, self._start)
+        switch = 0
+        while self.start_loading:
+            self.loading["text"] = self.animation[switch % self.total_animation]
+            switch += 1
+            time.sleep(self.duration)
 
     def start(self):
         self.start_loading = True
-        self._start()
+        threading.Thread(target = self._start).start()
 
     def stop(self):
         self.start_loading = False
@@ -230,7 +227,7 @@ class simple_progress_messagebox:
 
     def destroy(self):
         self.stop()
-        time.sleep(self.duration / 1000) #milisecond to second
+        time.sleep(self.duration)
         self.progress_window.destroy()
 
     delete = deleted = destroyed = destroy
