@@ -200,8 +200,10 @@ def _check_successful():
                 message="threading has failed, salbar will be reopening"
             )
             jendela_utama.destroy()
-            os.system(__file__)
-            sys.exit(1)
+
+            #https://stackoverflow.com/questions/11329917/restart-python-script-from-within-itself
+            try: os.execv(os.path.join(paths.get_current_path(), "salbar.exe"), sys.argv) #after compile
+            except: pass #before compile
 
         globals().pop("done") #same as (global done; del done)
     else:
