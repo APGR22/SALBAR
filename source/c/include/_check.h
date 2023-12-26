@@ -16,6 +16,8 @@
 
 #define EMPTY 0
 
+int file_exists(char * file);
+
 //just a check with a slight drop in performance
 int check_threading(char * stopthread, FILE * file, FILE * file_output, char * output);
 
