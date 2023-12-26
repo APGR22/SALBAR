@@ -14,8 +14,9 @@
 
 #include <stdio.h>
 
-//check if the file exists
-int file_exists(char * file);
+#define EMPTY 0
 
 //just a check with a slight drop in performance
-int check_threading(char * stopthread, FILE * file, FILE * file_output, char * output, int cache_output_file_exists);
+int check_threading(char * stopthread, FILE * file, FILE * file_output, char * output);
+
+long long size_of_file(char * filename, FILE * file);

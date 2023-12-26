@@ -15,14 +15,15 @@
 SUCCESS = b"0"
 
 errors = {
+    #the errors from command._c.py
+    #{
     1: "Too few arguments",
     2: "Cannot open file from arguments",
+    # }
     3: "Cannot open source file",
     4: "Cannot create destination file",
     5: "The process is stopped",
-    6: "Cannot delete unfinished file",
-    7: "Cannot delete source file",
-    8: "Unable to allocate required memory"
+    6: "Failed to move the file"
 }
 
 def identify(results: bytes, list_errors: list[str]):

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <stdio.h>
+#include <sys/stat.h>
 #include "include/_error.h"
 
 int file_exists(char * file)
@@ -21,23 +22,39 @@ int file_exists(char * file)
 
     search_file = fopen(file, "r");
 
-    if (search_file == NULL) return 1;
+    if (search_file == NULL) return -1;
 
     fclose(search_file);
     return 0;
 }
 
-int check_threading(char * stopthread, FILE * file, FILE * file_output, char * output, int cache_output_file_exists)
+int check_threading(char * stopthread, FILE * file, FILE * file_output, char * output)
 {
-    if (file_exists(stopthread) != 0) return 1;
+    if (file_exists(stopthread) == -1) return -1;
 
     fclose(file);
     fclose(file_output);
 
-    if (cache_output_file_exists != 0)
-    {
-        if (remove(output) != 0) return rm_file_while_stop_threading;
-    }
+    remove(output);
 
-    return 0;
+    return stop_threading;
+}
+
+long long size_of_file(char * filename, FILE * file)
+{
+    struct stat64 my_stat;
+
+    int s = _stat64(filename, &my_stat);
+
+    if (s == 0) return my_stat.st_size;
+
+    //alternative way
+
+    long long size;
+
+    fseeko64(file, 0, SEEK_END); //to end
+    size = ftello64(file);
+    fseeko64(file, 0, SEEK_SET); //to beginning
+
+    return size;
 }

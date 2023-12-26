@@ -13,58 +13,42 @@
 // limitations under the License.
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <sys/stat.h>
+#include "include/_copy.h"
 #include "include/_check.h"
 #include "include/_error.h"
 
-#define EMPTY 0
+#define MAX_FILE_SIZE 2147483648 //2 GiB (1024 * 1024 * 1024 * 2)
 
-const size_t b_buffer = 1024 * 512; //512 KB for safety because of better than 2 MB
-
-typedef unsigned char BYTE;
-
-void create_file(char * filename)
+int create_file(char * filename)
 {
     FILE * file;
     file = fopen(filename, "wb");
 
-    if (file != NULL) fclose(file);
+    if (file == NULL) return open_file_output;
+
+    fclose(file);
+
+    return 0;
 }
 
 int start_copy(char * filename, char * output, char * stopthread)
 {
-    // printf("%s | %s | %s\n", filename, output, stopthread);
-
     FILE * file_input;
     file_input = fopen(filename, "rb");
 
-    if (file_input == NULL)
+    if (file_input == NULL) return open_file_input;
+
+    long long size;
+    size = size_of_file(filename, file_input);
+
+    if (size == EMPTY) //empty file
     {
-        return open_file_input;
-    }
+        int result;
+        result = create_file(output);
 
-    struct stat my_stat;
-
-    int s = stat(filename, &my_stat);
-
-    if (s == 0 && my_stat.st_size == 0) //empty file
-    {
-        create_file(output);
         fclose(file_input);
-        return 0;
+        return result;
     }
-
-    // BYTE buffer[b_buffer];
-    BYTE * buffer;
-    buffer = malloc(b_buffer);
-
-    if (buffer == NULL) return memory_error;
-
-    //check if the file previously existed
-    int cache_output_file_exists = file_exists(output);
-
-    remove(output);
 
     FILE * file_output;
     file_output = fopen(output, "wb");
@@ -75,29 +59,19 @@ int start_copy(char * filename, char * output, char * stopthread)
         return open_file_output;
     }
 
-    int error;
-    size_t size;
+    int result;
 
-    // https://stackoverflow.com/questions/6160319/how-to-read-unsigned-character-array-using-gets
-    // https://stackoverflow.com/questions/18255384/read-an-empty-file-with-fread
+    if (size >= MAX_FILE_SIZE) result = copy_with_malloc(output, stopthread, file_input, file_output);
+    else result = copy_no_malloc(output, stopthread, file_input, file_output);
 
-    while ( (size = fread(buffer, 1, b_buffer, file_input)) > EMPTY )
-    {
-        error = check_threading(stopthread, file_input, file_output, output, cache_output_file_exists);
-        if (error == 0) return stop_threading;
-        else if (error == rm_file_while_stop_threading) return rm_file_while_stop_threading;
-
-        // printf("%lld\n", size);
-
-        fwrite(buffer, 1, size, file_output);
-
-        free(buffer);
-        buffer = malloc(b_buffer);
-    }
-
-    free(buffer);
     fclose(file_input);
     fclose(file_output);
+
+    if (result != 0) //there is an error
+    {
+        remove(output);
+        return result;
+    }
 
     return 0;
 }
