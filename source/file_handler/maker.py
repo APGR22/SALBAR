@@ -42,7 +42,7 @@ def buat(
     t = tujuan.get()
     if not n or not d or not t:
         showerror(
-            title="Error",
+            title="Error - (buat)",
             message="You can't fill empty!",
             parent=root
         )
@@ -82,7 +82,7 @@ def buat(
             daftar_nama_edit_timpa["nama_lama"] = old_name
         except Exception as error:
             showerror(
-                title="System error",
+                title="System error - (old name)",
                 message=error,
                 parent=root
             )
@@ -108,7 +108,7 @@ def buat(
         extension.ekstensi.make(n, d, t)
     except Exception as error:
         showerror(
-            title="System error",
+            title="System error - (make)",
             message=error,
             parent=root
         )

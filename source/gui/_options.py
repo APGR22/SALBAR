@@ -62,12 +62,12 @@ class options:
             self.menu(True)
         elif len(self.info.list_source) == 0 or len(self.info.list_destination) == 0 or len(self.info.list_name) == 0:
             showerror(
-                title="Error",
+                title="Error - (edit file) - 1",
                 message="You not selected anything"
             )
         else:
             showerror(
-                title="Error",
+                title="Error - (edit file) - 2",
                 message="You cannot select more than one file!"
             )
 
@@ -87,7 +87,7 @@ class options:
                 self.info.list_destination.clear()
         else:
             showerror(
-                title="Error",
+                title="Error - (delete file)",
                 message="You not selected anything"
         )
 
@@ -161,7 +161,7 @@ class options:
                 threading.Thread(target=self._run_command, args=(command_info, copy, thread)).start()
         else:
             showerror(
-                title = "Error",
+                title = "Error - (run command)",
                 message = "You not selected anything"
             )
 

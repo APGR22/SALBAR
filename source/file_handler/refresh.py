@@ -41,7 +41,7 @@ class refresh:
                 title="Warning",
                 message="Check button exceeds 744.\nPossible rendering will be broken at the very bottom"
             )
-        
+
         self.perbarui()
 
     def refresh_program_list(self):
@@ -78,7 +78,7 @@ class refresh:
                     extension.ekstensi.check_read(path[:-5])
                 except Exception as error:
                     showerror(
-                        title="Error",
+                        title="Error - (remove non slbr)",
                         message=f"{path[:-5]}: {error}"
                     )
                     self.info.excluded_program_list.append(path[:-5])

@@ -33,13 +33,20 @@ class sort:
         self.info = info
 
     def _get_program(self):
-        for program in self.info.program_list:
+        h = 0
+
+        #Items in the list may decrease while it is being iterated resulting in changes to the index.
+        #This is better handled with a while loop rather than a for loop
+        while h < len(self.info.program_list):
+            program = self.info.program_list[h]
             if program.endswith(".slbr"):
                 name = program[:-5]
                 if name in self.info.excluded_program_list:
                     self.info.program_list.remove(program)
                 else:
                     yield name
+
+                    h += 1
 
     def _reversed_dict(self, input: dict[str, str]) -> dict[str, str]:
         return dict(reversed(input.items()))
@@ -69,7 +76,7 @@ class sort:
                     output[date] = [name]
             except Exception as error:
                 showerror(
-                    title="Error",
+                    title="Error - (time)",
                     message=f"{name}: {error}"
                 )
                 self.info.excluded_program_list.append(name)

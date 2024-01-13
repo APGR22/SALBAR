@@ -127,7 +127,9 @@ def baca(nama: str, r: int | None = None, tambahkan: bool = False):
     if tambahkan:
         hasil = execute.eksekusi(f_pilihan, r, nama, direktori, tujuan, date, info.info, tambahkan)
     else:
-        hasil = execute.eksekusi(f_pilihan, r+1, nama, direktori, tujuan, date, info.info)
+        if r is not None:
+            r += 1
+        hasil = execute.eksekusi(f_pilihan, r, nama, direktori, tujuan, date, info.info)
     dict_program_list[f"{nama}_var"] = hasil[0]
     dict_program_list[f"{nama}_cb"] = hasil[1]
     dict_program_list[f"{nama}_centang"] = hasil[2]
@@ -139,7 +141,7 @@ info.info.baca = baca
 
 refresh_class = refresh.refresh(info.info)
 
-done = [False]
+done = False
 
 #tidak bisa untuk threading semua kode
 def start():
@@ -164,13 +166,13 @@ def start():
     if nama_kesalahan:
         for i, j in zip(nama_kesalahan, kesalahan):
             showerror(
-                title="Error",
+                title="Error - (start)",
                 message=f"{i}: {j}"
             )
     progress_window.destroy()
     kanvas.focus_set()
 
-    done[0] = True
+    globals()["done"] = True
 
 if len(sys.argv) > 2:
     showinfo(
@@ -179,19 +181,22 @@ if len(sys.argv) > 2:
     )
 if pending_error_message:
     showerror(
-        title="Error",
+        title="Error - (pending error message)",
         message=f'Failed to set path: {pending_error_message}\nSo set the path to: "{os.getcwd()}"'
         )
 
 def _check_successful():
-    if done[0]:
+    if done:
         cache_list = os.listdir("Paths")
 
-        #remove non-slbr
+        #remove non-slbr or excluded program
         for f in cache_list:
-            f = os.path.join("Paths", f)
-            if os.path.isfile(f):
+            f = f
+            f_f = os.path.join("Paths", f)
+            if os.path.isfile(f_f):
                 if not f.endswith(".slbr"):
+                    cache_list.remove(f)
+                elif f[:-5] in excluded_program_list:
                     cache_list.remove(f)
             else:
                 cache_list.remove(f)
