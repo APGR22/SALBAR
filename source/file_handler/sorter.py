@@ -14,6 +14,7 @@
 
 from tkinter.messagebox import *
 from file_handler import extension
+import info
 
 SORTED_NAME = "A-Z"
 SORTED_NAME_REVERSED = "Z-A"
@@ -28,16 +29,15 @@ list_sorted = [
 ]
 
 class sort:
-    def __init__(self, program_list: list[str], excluded_program_list: list[str]) -> None:
-        self.program_list = program_list
-        self.excluded_program_list = excluded_program_list
+    def __init__(self, info: info._info) -> None:
+        self.info = info
 
     def _get_program(self):
-        for program in self.program_list:
+        for program in self.info.program_list:
             if program.endswith(".slbr"):
                 name = program[:-5]
-                if name in self.excluded_program_list:
-                    self.program_list.remove(program)
+                if name in self.info.excluded_program_list:
+                    self.info.program_list.remove(program)
                 else:
                     yield name
 
@@ -72,7 +72,7 @@ class sort:
                     title="Error",
                     message=f"{name}: {error}"
                 )
-                self.excluded_program_list.append(name)
+                self.info.excluded_program_list.append(name)
 
         new_output = {}
         h = 0

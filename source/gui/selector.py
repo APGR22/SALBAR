@@ -12,78 +12,90 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from tkinter import Tk, Toplevel, Frame
-import typing
+import info
+import copy
 
 class main:
     def __init__(
                 self,
-                root: Tk | Toplevel | Frame,
-                program_list: list[str],
-                dict_program_list: dict[str, typing.Any],
-                selected: list[str],
-                sort_key: dict[str, str],
-                key: str,
+                info: info._info
                 ) -> None:
-        self.program_list = program_list
-        self.dict_program_list = dict_program_list
-        self.selected = selected
+        self.info = info
+        self.cache_program_list = copy.copy(info.program_list)
         self.current = ""
-        self.sort_key = sort_key
-        self.current_sort_key = sort_key[key]
-        self.key = key
+        self.current_index = 0
+        self.current_sort_key = info.sort_key
         self.session = False
         self.shift = 0 #n<0 = up, n>0 = down
 
+        #will update if there is a reduction in the list
         def refresh():
-            if self.dict_program_list != dict_program_list:
+            current_index = self.current_index + self.shift
+            if (
+                len(self.cache_program_list) > len(info.program_list)
+                and
+                    (
+                    current_index == 0 #beginning
+                    or
+                    current_index == len(info.program_list)-1 #end
+                    )
+                ):
                 if self.shift < 0:
                     self.shift += 1
                 elif self.shift > 0:
                     self.shift -= 1
 
-                self.dict_program_list = dict_program_list
+                self.cache_program_list = copy.copy(info.program_list)
 
-            root.after(100, refresh)
+            info.kanvas.after(100, refresh)
+
+        refresh()
+
+    def _cancel(self):
+        self.session = False
+
+        self.current_sort_key = self.info.sort_key
+        self.shift = 0
 
     def _refresh(self):
-        if self.current_sort_key == self.sort_key[self.key] and len(self.selected) != 0:
-            self.session = True
+        try:
+            if self.current_sort_key == self.info.sort_key and len(self.info.selected) != 0:
+                self.session = True
 
-            if self.current != self.selected[0]:
-                self.shift = 0
-            self.current = self.selected[0]
-            self.current_index = self.program_list.index(self.current)
-        else:
-            self.session = False
-
-            self.current_sort_key = self.sort_key[self.key]
-            self.shift = 0
+                if self.current != self.info.selected:
+                    self.shift = 0
+                self.current = self.info.selected
+                self.current_index = self.info.program_list.index(self.current)
+            else:
+                self._cancel()
+        except:
+            self._cancel()
 
     def _select(self, program_name: str):
-        self.dict_program_list[f"{program_name}_cb"].select()
-        self.dict_program_list[f"{program_name}_centang"](False)
+        self.info.dict_program_list[f"{program_name}_cb"].select()
+        self.info.dict_program_list[f"{program_name}_centang"](False)
 
     def _deselect(self, program_name: str):
-        self.dict_program_list[f"{program_name}_cb"].deselect()
-        self.dict_program_list[f"{program_name}_centang"](False)
+        self.info.dict_program_list[f"{program_name}_cb"].deselect()
+        self.info.dict_program_list[f"{program_name}_centang"](False)
 
     def _config(self, up: bool) -> bool:
+        "(select or deselect) and prevent the selection from being outside the program list"
         current_index = self.current_index + self.shift
-        if current_index >=0 and current_index < len(self.program_list):
+        if 0 <= current_index < len(self.info.program_list):
             under_index = current_index + 1
             above_index = current_index - 1
 
             try:
-                under_program = self.program_list[under_index]
+                under_program = self.info.program_list[under_index]
             except:
                 under_program = None
             try:
-                above_program = self.program_list[above_index]
+                above_program = self.info.program_list[above_index]
             except:
                 above_program = None
 
-            self._select(self.program_list[current_index])
+            self._select(self.info.program_list[current_index])
 
             if self.shift < 0: #up
                 if up:...
@@ -103,6 +115,8 @@ class main:
 
             return True
 
+        return False
+
     def up(self, *args): #-1
         self._refresh()
         if self.session == True:
@@ -117,20 +131,20 @@ class main:
             if not self._config(False):
                 self.shift -= 1
 
-def simple_select(root: Tk | Toplevel | Frame, program_list: list[str], dict_program_list: dict[str, typing.Any]) -> None:
+def simple_select(info: info._info) -> None:
 
     def pilih(event):
-        for i in program_list: #kalau kosong maka for loop-nya tidak berjalan dan dikira selesai
-            dict_program_list[f"{i}_cb"].select()
-            dict_program_list[f"{i}_centang"]()
+        for i in info.program_list: #kalau kosong maka for loop-nya tidak berjalan dan dikira selesai
+            info.dict_program_list[f"{i}_cb"].select()
+            info.dict_program_list[f"{i}_centang"]()
 
     def tidak_pilih(event):
-        for i in program_list:
-            dict_program_list[f"{i}_cb"].deselect()
-            dict_program_list[f"{i}_centang"]()
+        for i in info.program_list:
+            info.dict_program_list[f"{i}_cb"].deselect()
+            info.dict_program_list[f"{i}_centang"]()
 
     #doesn't catch the exception even if the user disables the progress bar window
-    root.bind("<Control-a>",  pilih)
-    root.bind("<Control-A>",  pilih)
-    root.bind("<Control-Shift-a>",  tidak_pilih)
-    root.bind("<Control-Shift-A>",  tidak_pilih)
+    info.kanvas.bind("<Control-a>",  pilih)
+    info.kanvas.bind("<Control-A>",  pilih)
+    info.kanvas.bind("<Control-Shift-a>",  tidak_pilih)
+    info.kanvas.bind("<Control-Shift-A>",  tidak_pilih)

@@ -12,33 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from tkinter import IntVar
 from gui import progress
 import paths
 from command import copycut
 from command import _c
 from command._for_command import *
+import info
 
 def command(command_info: progress.progress_bar,
-            list_name: list,
-            list_source: list,
-            list_destination: list,
+            info: info._info,
             copy: bool,
-            overwrites: IntVar,
-            skip_intvar: IntVar,
-            use_c: IntVar,
             thread: dict[str, bool]
             ):
     """tanya: Overwrites for all\n
     skip: Skip overwrites\n
     (not active) command_info = ["title", "source", "destination"]"""
 
-    if skip_intvar.get() == 1:
+    if info.confirm_to_skip.get() == 1:
         skip = True
     else:
         skip = False
 
-    if use_c.get() == 1:
+    if info.confirm_to_use_c.get() == 1:
         process_message = "Preparing the command to be executed"
         do = _c.writetofile
         c = True
@@ -52,7 +47,7 @@ def command(command_info: progress.progress_bar,
 
     parent = command_info._get_window()
 
-    total_name = len(list_name)
+    total_name = len(info.list_name)
 
     user = False
     cancel = False
@@ -80,7 +75,7 @@ def command(command_info: progress.progress_bar,
 
     #https://stackoverflow.com/questions/16326853/enumerate-two-python-lists-simultaneously
     #https://www.learndatasci.com/solutions/python-valueerror-too-many-values-unpack/
-    for count_n, (n, s, d) in enumerate(zip(list_name, list_source, list_destination)):
+    for count_n, (n, s, d) in enumerate(zip(info.list_name, info.list_source, info.list_destination)):
         if not thread["active"] or cancel:
             break
 
@@ -151,8 +146,8 @@ def command(command_info: progress.progress_bar,
                 make_dir(d)
                 d = os.path.join(d, os.path.basename(s))
 
-                if overwrites.get() == 0:
-                    result = if_exists(d, skip_intvar, parent)
+                if info.confirm_to_overwrite.get() == 0:
+                    result = if_exists(d, info.confirm_to_skip, parent)
 
                     if result == "skip": #if exists
                         skip = True

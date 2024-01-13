@@ -53,6 +53,7 @@ from file_handler import refresh
 from file_handler import sorter
 import datetime
 import threading
+import info
 
 config = configurator.config("user.yaml")
 
@@ -78,19 +79,21 @@ image.set_icon(jendela_utama)
 if not os.path.isdir("Paths"):
     os.makedirs("Paths")
 
+list_name = []
 list_source = []
 list_destination = []
-list_name = []
 nama_edit_timpa = {} #as communication between this program and the "maker" module
 
-selected = []
-reset_shift = [True]
+#insert to info
+info.info.root = jendela_utama
+info.info.list_name = list_name
+info.info.list_source = list_source
+info.info.list_destination = list_destination
+info.info.nama_edit_timpa = nama_edit_timpa
 
-kanvas_bingkai = gui.bingkai(jendela_utama)
-kanvas = kanvas_bingkai[0]
-bingkai = kanvas_bingkai[1]
+kanvas, bingkai = gui.bingkai(jendela_utama)
 
-gui.tombol(jendela_utama, list_name, list_source, list_destination, nama_edit_timpa)
+gui.tombol(info.info)
 
 dict_program_list = {}
 program_list = [] #daftar program yang untuk dijalankan
@@ -98,44 +101,43 @@ excluded_program_list = [] #daftar program yang dilarang untuk dijalankan
 key = "sort"
 if config.find("sorted_by") and config.get_value("sorted_by") in sorter.list_sorted:
     default_sort_text = config.get_value("sorted_by")
-    sort_key = {key: config.get_value("sorted_by")}
+    sort_key = config.get_value("sorted_by")
 else:
     default_sort_text = sorter.SORTED_NAME
-    sort_key = {key: sorter.SORTED_NAME}
+    sort_key = sorter.SORTED_NAME
 
 f_pilihan = Frame(bingkai, bg=frame_background)
 f_pilihan.grid()
 
-gui.main(f_pilihan, default_sort_text, sort_key, key)
+#insert to info
+info.info.selected = ""
+info.info.kanvas = kanvas
+info.info.bingkai = bingkai
+info.info.dict_program_list = dict_program_list
+info.info.program_list = program_list
+info.info.excluded_program_list = excluded_program_list
+info.info.sort_key = sort_key
+
+gui.main(f_pilihan, default_sort_text, info.info)
 
 def baca(nama: str, r: int | None = None, tambahkan: bool = False):
-    dapat = extension.ekstensi.read(nama)
-    direktori = dapat[0]
-    tujuan = dapat[1]
+    direktori, tujuan = extension.ekstensi.read(nama)
     date = datetime.datetime.fromtimestamp(float(extension.ekstensi.read_time(nama)))
     #untuk didefinisi ulang di utama
     if tambahkan:
-        hasil = execute.eksekusi(f_pilihan, r, nama, direktori, tujuan, date, list_source, list_destination, list_name, selected, tambahkan)
+        hasil = execute.eksekusi(f_pilihan, r, nama, direktori, tujuan, date, info.info, tambahkan)
     else:
-        hasil = execute.eksekusi(f_pilihan, r+1, nama, direktori, tujuan, date, list_source, list_destination, list_name, selected)
+        hasil = execute.eksekusi(f_pilihan, r+1, nama, direktori, tujuan, date, info.info)
     dict_program_list[f"{nama}_var"] = hasil[0]
     dict_program_list[f"{nama}_cb"] = hasil[1]
     dict_program_list[f"{nama}_centang"] = hasil[2]
     dict_program_list[f"{nama}_label"] = hasil[3]
     dict_program_list[f"{nama}_date"] = hasil[4]
 
-refresh_class = refresh.refresh(
-    jendela_utama,
-    program_list,
-    excluded_program_list,
-    list_source,
-    list_destination,
-    list_name,
-    nama_edit_timpa,
-    dict_program_list,
-    sort_key,
-    baca
-)
+#insert to info
+info.info.baca = baca
+
+refresh_class = refresh.refresh(info.info)
 
 done = [False]
 
@@ -224,10 +226,10 @@ check_deletion()
 
 threading.Thread(target = start).start()
 
-selector.simple_select(kanvas, program_list, dict_program_list)
+selector.simple_select(info.info)
 
 if config.get_value("shift") == True:
-    selector_class = selector.main(kanvas, program_list, dict_program_list, list_name, sort_key, key)
+    selector_class = selector.main(info.info)
 
     kanvas.bind("<Shift-Up>", selector_class.up)
     kanvas.bind("<Shift-Down>", selector_class.down)

@@ -19,8 +19,9 @@ from gui import _options
 from gui.styles import *
 from gui import config
 from file_handler import sorter
+import info as _info
 
-def main(root: Tk | Toplevel, default_from_sort_text: str, sort_key: dict[str, str], key: str):
+def main(root: Tk | Toplevel, default_from_sort_text: str, info: _info._info):
     dict_texts = {
         "Name (A-Z)⯀": sorter.SORTED_NAME,
         "Name (Z-A)⯀": sorter.SORTED_NAME_REVERSED,
@@ -33,10 +34,10 @@ def main(root: Tk | Toplevel, default_from_sort_text: str, sort_key: dict[str, s
                     texts: list[str],
                     another_widgets: list[Label] | list[Button],
                     dict_texts: dict[str, str],
-                    sort_key: dict[str, str],
-                    key: str,
+                    info: _info._info,
                     use_current_text: bool = False
                     ):
+        current_text: str
         current_text = widget["text"]
 
         if use_current_text and current_text.replace("⯀", "") not in texts:
@@ -58,7 +59,7 @@ def main(root: Tk | Toplevel, default_from_sort_text: str, sort_key: dict[str, s
         for another_widget in another_widgets:
             another_widget["text"] = another_widget["text"].replace("⯀", "")
 
-        sort_key[key] = dict_texts[widget["text"]]
+        info.sort_key = dict_texts[widget["text"]]
     
     def set_default(widget: Label | Button, another_text: list[str] = None):
         if dict_texts[widget["text"] + "⯀"] == default_from_sort_text:
@@ -80,8 +81,8 @@ def main(root: Tk | Toplevel, default_from_sort_text: str, sort_key: dict[str, s
     Date.grid(row=0, column=2)
     set_default(Date, ["Date created (NEW-OLD)"])
 
-    config.button(Name, sort_button, Name, ["Name (Z-A)"], [Date], dict_texts, sort_key, key, True, my_width=12)
-    config.button(Date, sort_button, Date, ["Date created (NEW-OLD)"], [Name], dict_texts, sort_key, key, True, my_width=22)
+    config.button(Name, sort_button, Name, ["Name (Z-A)"], [Date], dict_texts, info, True, my_width=12)
+    config.button(Date, sort_button, Date, ["Date created (NEW-OLD)"], [Name], dict_texts, info, True, my_width=22)
 
 def bingkai(root: Tk):
     bingkai_utama = Frame(root)
@@ -126,64 +127,64 @@ def bingkai(root: Tk):
 
     return kanvas, bingkai
 
-def tombol(root: Tk, list_name: list, list_source: list, list_destination: list, nama_edit_timpa: dict):
-    confirm_to_overwrite = IntVar()
-    confirm_to_skip = IntVar()
-    confirm_to_use_c = IntVar()
+def tombol(info: _info._info):
+    info.confirm_to_overwrite = IntVar()
+    info.confirm_to_skip = IntVar()
+    info.confirm_to_use_c = IntVar()
 
-    options_class = _options.options(root, list_name, list_source, list_destination, confirm_to_overwrite, confirm_to_skip, confirm_to_use_c, nama_edit_timpa)
+    options_class = _options.options(info)
 
-    start = _options.options_menu(confirm_to_overwrite, confirm_to_skip, confirm_to_use_c)
+    start = _options.options_menu(info)
 
-    new = Label(root, text="New")
+    new = Label(info.root, text="New")
     new.pack(side=LEFT, fill=Y)
     config.button(new, options_class.menu)
     def new_bind(event):
         options_class.menu()
 
-    edit = Label(root, text="Edit")
+    edit = Label(info.root, text="Edit")
     edit.pack(side=LEFT, fill=Y)
     config.button(edit, options_class.edit_file)
     def edit_bind(event):
         options_class.edit_file()
 
-    delete = Label(root, text="Delete")
+    delete = Label(info.root, text="Delete")
     delete.pack(side=LEFT, fill=Y)
     config.button(delete, options_class.delete_file)
     def delete_bind(event):
         options_class.delete_file()
 
-    copy = Label(root, text="Copy")
+    copy = Label(info.root, text="Copy")
     copy.pack(side=RIGHT, fill=Y)
     config.button(copy, options_class.run_command, True)
     def copy_bind(event):
         options_class.run_command(True)
 
-    cut = Label(root, text="Move")
+    cut = Label(info.root, text="Move")
     cut.pack(side=RIGHT, fill=Y)
     config.button(cut, options_class.run_command, False)
     def cut_bind(event):
         options_class.run_command(False)
 
-    menu = Label(root, text="Menu")
+    menu = Label(info.root, text="Menu")
     menu.pack(side=RIGHT, fill=Y)
     config.button(menu, start.active)
     def menu_bind(event):
         start.active()
     
-    root.bind("<Control-n>", new_bind)
-    root.bind("<Control-N>", new_bind)              #(if Caps lock on)
-    root.bind("<Alt-d>", edit_bind)                 #based on Chrome
-    root.bind("<Alt-D>", edit_bind)                 #based on Chrome (if Caps lock on)
-    root.bind("<Control-d>", delete_bind)
-    root.bind("<Control-D>", delete_bind)           #(if Caps lock on)
-    root.bind("<Delete>", delete_bind)              #based on Ubuntu
-    root.bind("<Control-c>", copy_bind)
-    root.bind("<Control-C>", copy_bind)             #(if Caps lock on)
-    root.bind("<Control-Shift-c>", copy_bind)       #based on Linux terminal
-    root.bind("<Control-Shift-C>", copy_bind)       #based on Linux terminal (if Caps lock on)
-    root.bind("<Control-x>", cut_bind)
-    root.bind("<Control-X>", cut_bind)              #(if Caps lock on)
-    root.bind("<Control-Shift-x>", cut_bind)        #based on Linux terminal
-    root.bind("<Control-Shift-X>", cut_bind)        #based on Linux terminal (if Caps lock on)
-    root.bind("<F2>", menu_bind)
+    info.root.bind("<Control-n>", new_bind)
+    info.root.bind("<Control-N>", new_bind)              #(if Caps lock on)
+    info.root.bind("<Alt-d>", edit_bind)                 #based on Chrome
+    info.root.bind("<Alt-D>", edit_bind)                 #based on Chrome (if Caps lock on)
+    info.root.bind("<Control-d>", delete_bind)
+    info.root.bind("<Control-D>", delete_bind)           #(if Caps lock on)
+    info.root.bind("<Delete>", delete_bind)              #based on Ubuntu
+    info.root.bind("<Control-c>", copy_bind)
+    info.root.bind("<Control-C>", copy_bind)             #(if Caps lock on)
+    info.root.bind("<Control-Shift-c>", copy_bind)       #based on Linux terminal
+    info.root.bind("<Control-Shift-C>", copy_bind)       #based on Linux terminal (if Caps lock on)
+    info.root.bind("<Control-x>", cut_bind)
+    info.root.bind("<Control-X>", cut_bind)              #(if Caps lock on)
+    info.root.bind("<Control-Shift-x>", cut_bind)        #based on Linux terminal
+    info.root.bind("<Control-Shift-X>", cut_bind)        #based on Linux terminal (if Caps lock on)
+    info.root.bind("<F2>", menu_bind)

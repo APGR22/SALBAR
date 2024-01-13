@@ -4,6 +4,8 @@
         "t.h": "c",
         "my_move.h": "c",
         "_error.h": "c",
-        "_check.h": "c"
+        "_check.h": "c",
+        "stat.h": "c",
+        "stdio.h": "c"
     }
 }

@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifdef __linux__
+    #define __USE_LARGEFILE64
+    #define _LARGEFILE64_SOURCE
+#endif
+
 #include <stdio.h>
 #include <sys/stat.h>
 #include "include/_error.h"
@@ -44,7 +49,7 @@ long long size_of_file(char * filename, FILE * file)
 {
     struct stat64 my_stat;
 
-    int s = _stat64(filename, &my_stat);
+    int s = stat64(filename, &my_stat);
 
     if (s == 0) return my_stat.st_size;
 

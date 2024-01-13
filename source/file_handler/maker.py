@@ -20,7 +20,15 @@ import platform
 from file_handler import extension
 import paths
 
-def buat(root: Tk | Toplevel, disable_window: object, nama: StringVar, direktori: StringVar, tujuan: StringVar, old_name: str, daftar_nama_edit_timpa: dict = {}):
+def buat(
+            root: Tk | Toplevel,
+            disable_window: object,
+            nama: StringVar,
+            direktori: StringVar,
+            tujuan: StringVar,
+            old_name: str,
+            daftar_nama_edit_timpa: dict[str, str] = {}
+        ):
     """jika nama_lama ada, maka akan dianggap edit (daftar_nama_edit diperlukan)"""
 
     n = nama.get()

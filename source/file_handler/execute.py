@@ -15,6 +15,7 @@
 from tkinter import *
 from gui.styles import *
 import paths
+import info
 
 def eksekusi(
         pilihan: Frame,
@@ -23,10 +24,7 @@ def eksekusi(
         d: str,
         t: str,
         date: str,
-        fperintah: list,
-        tperintah: list,
-        snama: list,
-        selected: list[str],
+        info: info._info,
         tambahkan: bool = False
 ) -> tuple[IntVar, Checkbutton, object, Label, Label]:
     """pilihan = tempat checkbutton diletakkan\n
@@ -40,22 +38,21 @@ def eksekusi(
     tambahkan = menambah tanpa bergantung row
     """
     def centang(reset: bool = True):
-        if reset:
-            selected.clear()
-            selected.append(n)
+        if reset and globals()[f"{n}_var"].get() == 1:
+            info.selected = n
 
         if globals()[f"{n}_var"].get() == 1:
-            if d not in fperintah or t not in tperintah or n not in snama:
-                fperintah.append(d)
-                tperintah.append(t)
-                snama.append(n)
+            if d not in info.list_source or t not in info.list_destination or n not in info.list_name:
+                info.list_source.append(d)
+                info.list_destination.append(t)
+                info.list_name.append(n)
             globals()[f"{n}_cb"]["fg"] = checkbutton_selected_foreground
             globals()[f"{n}_cb"]["bg"] = checkbutton_selected_background
         else:
             try:
-                fperintah.remove(d)
-                tperintah.remove(t)
-                snama.remove(n)
+                info.list_source.remove(d)
+                info.list_destination.remove(t)
+                info.list_name.remove(n)
             except:
                 pass
             globals()[f"{n}_cb"]["fg"] = checkbutton_deselected_foreground

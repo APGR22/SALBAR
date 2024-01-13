@@ -26,34 +26,21 @@ from gui import message_box
 from gui import progress
 import configurator
 from file_handler import maker
+import info
 
 class options:
     def __init__(
                     self,
-                    root: Tk,
-                    list_name: list[str],
-                    list_source: list[str],
-                    list_destination: list[str],
-                    confirm_to_overwrite: IntVar,
-                    confirm_to_skip: IntVar,
-                    confirm_to_use_c: IntVar,
-                    nama_edit_timpa: dict
+                    info: info._info
                 ) -> None:
 
         self.name = StringVar()
         self.source = StringVar()
         self.destination = StringVar()
 
-        self.root = root
-        self.list_name = list_name
-        self.list_source = list_source
-        self.list_destination = list_destination
-        self.confirm_to_overwrite = confirm_to_overwrite
-        self.confirm_to_skip = confirm_to_skip
-        self.confirm_to_use_c = confirm_to_use_c
-        self.nama_edit_timpa = nama_edit_timpa
+        self.info = info
 
-        self._menu = _menu(self.root, self.name, self.source, self.destination, self.nama_edit_timpa)
+        self._menu = _menu(info, self.name, self.source, self.destination)
 
     def menu(
                 self,
@@ -68,12 +55,12 @@ class options:
 
 
     def edit_file(self):
-        if len(self.list_source) == 1 or len(self.list_destination) == 1 or len(self.list_name) == 1:
-            self.name.set(self.list_name[0])
-            self.source.set(self.list_source[0])
-            self.destination.set(self.list_destination[0])
+        if len(self.info.list_source) == 1 or len(self.info.list_destination) == 1 or len(self.info.list_name) == 1:
+            self.name.set(self.info.list_name[0])
+            self.source.set(self.info.list_source[0])
+            self.destination.set(self.info.list_destination[0])
             self.menu(True)
-        elif len(self.list_source) == 0 or len(self.list_destination) == 0 or len(self.list_name) == 0:
+        elif len(self.info.list_source) == 0 or len(self.info.list_destination) == 0 or len(self.info.list_name) == 0:
             showerror(
                 title="Error",
                 message="You not selected anything"
@@ -85,19 +72,19 @@ class options:
             )
 
     def delete_file(self):
-        if self.list_name: #Jika ada
+        if self.info.list_name: #Jika ada
             ask = askokcancel(
                 title="Warning",
                 message="Are you sure you want to delete it?\n(Deleted file/files can't be restored)",
                 icon=WARNING
             )
             if ask: #Jika "Ok"
-                for f in self.list_name:
+                for f in self.info.list_name:
                     os.remove(paths.PATH+f+".slbr")
 
-                self.list_name.clear()
-                self.list_source.clear()
-                self.list_destination.clear()
+                self.info.list_name.clear()
+                self.info.list_source.clear()
+                self.info.list_destination.clear()
         else:
             showerror(
                 title="Error",
@@ -109,13 +96,8 @@ class options:
         """(not active) command_info = ["title", "source", "destination"]"""
         hasil = command.command(
                                 command_info,
-                                self.list_name,
-                                self.list_source,
-                                self.list_destination,
+                                self.info,
                                 copy,
-                                self.confirm_to_overwrite,
-                                self.confirm_to_skip,
-                                self.confirm_to_use_c,
                                 thread
                                 )
         if hasil.startswith("SUCCESSFULLY"):
@@ -142,12 +124,12 @@ class options:
         show(
             title = title,
             message = message,
-            parent=self.root
+            parent=self.info.root
         )
 
     def run_command(self, copy: bool):
         """if copy == False: cut"""
-        if self.list_name and self.list_source and self.list_destination:
+        if self.info.list_name and self.info.list_source and self.info.list_destination:
 
             config = configurator.config("user.yaml")
             if config.get_value("warning0") != False:
@@ -186,13 +168,12 @@ class options:
 
 
 class _menu:
-    def __init__(self, root: Tk, name: StringVar, source: StringVar, destination: StringVar, nama_edit_timpa: dict) -> None:
+    def __init__(self, info: info._info, name: StringVar, source: StringVar, destination: StringVar) -> None:
 
+        self.info = info
         self.name = name
         self.source = source
         self.destination = destination
-        self.nama_edit_timpa = nama_edit_timpa
-        self.root = root
         self.old_name = ""
 
         self.menu_window = Toplevel()
@@ -341,7 +322,7 @@ class _menu:
         self.label_buat.pack(fill="x")
 
         def return_cmd(event):
-            maker.buat(self.menu_window, self.disable, self.name, self.source, self.destination, self.old_name, self.nama_edit_timpa)
+            maker.buat(self.menu_window, self.disable, self.name, self.source, self.destination, self.old_name, self.info.nama_edit_timpa)
 
         self.menu_window.bind("<Return>", return_cmd)
 
@@ -364,13 +345,13 @@ class _menu:
         self.entry_nama.focus_set()
 
         #to be able to accept changes at any time
-        config.button(self.label_buat, maker.buat, self.menu_window, self.disable, self.name, self.source, self.destination, self.old_name, self.nama_edit_timpa)
+        config.button(self.label_buat, maker.buat, self.menu_window, self.disable, self.name, self.source, self.destination, self.old_name, self.info.nama_edit_timpa)
 
         #config
-        lebar_layar = self.root.winfo_screenwidth()
-        tinggi_layar = self.root.winfo_screenheight()
-        wt = self.root.winfo_width() - 22 #Hasilnya 380
-        ht = self.root.winfo_height() - 110 #Hasilnya 220
+        lebar_layar = self.info.root.winfo_screenwidth()
+        tinggi_layar = self.info.root.winfo_screenheight()
+        wt = self.info.root.winfo_width() - 22 #Hasilnya 380
+        ht = self.info.root.winfo_height() - 110 #Hasilnya 220
 
         xt = (lebar_layar/2) - (wt/2)
         yt = (tinggi_layar/2) - (ht/2)
@@ -382,7 +363,7 @@ class _menu:
         self.menu_window.withdraw()
 
 class options_menu:
-    def __init__(self, confirm_to_overwrite: IntVar, confirm_to_skip: IntVar, confirm_to_use_c: IntVar) -> None:
+    def __init__(self, info: info._info) -> None:
         self.window = Toplevel()
         self.window.title("Configuration")
         self.window.resizable(0,0)
@@ -413,14 +394,14 @@ class options_menu:
         overwrite_skip = IntVar(value=0)
 
         def no_overwrite_skip_checked():
-            confirm_to_overwrite.set(0)
-            confirm_to_skip.set(0)
+            info.confirm_to_overwrite.set(0)
+            info.confirm_to_skip.set(0)
         def timpa_dicentang():
-            confirm_to_skip.set(0)
-            confirm_to_overwrite.set(1)
+            info.confirm_to_skip.set(0)
+            info.confirm_to_overwrite.set(1)
         def lewati_dicentang():
-            confirm_to_overwrite.set(0)
-            confirm_to_skip.set(1)
+            info.confirm_to_overwrite.set(0)
+            info.confirm_to_skip.set(1)
 
         no_overwrite_skip = Radiobutton(self.window, text = "No action", command = no_overwrite_skip_checked)
         no_overwrite_skip.grid(row=1, column=0, sticky=W)
@@ -437,7 +418,7 @@ class options_menu:
 
         with_slbr_cpmv = Checkbutton(self.window, text = "With SALBAR copymove (slower than shutil and experimental)")
         with_slbr_cpmv.grid(row=2, column=0, columnspan=3, sticky=W)
-        config.checkbutton(with_slbr_cpmv, confirm_to_use_c)
+        config.checkbutton(with_slbr_cpmv, info.confirm_to_use_c)
 
     def active(self):
         self.window.deiconify()
