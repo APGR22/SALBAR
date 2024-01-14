@@ -17,6 +17,7 @@ from tkinter.messagebox import *
 from file_handler import extension
 from file_handler import sorter
 import info
+import loop
 
 class refresh:
     def __init__(
@@ -41,8 +42,6 @@ class refresh:
                 title="Warning",
                 message="Check button exceeds 744.\nPossible rendering will be broken at the very bottom"
             )
-
-        self.perbarui()
 
     def refresh_program_list(self):
         self.info.program_list.clear()
@@ -94,17 +93,23 @@ class refresh:
 
     def reconfig(self):
         self.refresh_program_list()
-        for r, i in enumerate(self.info.program_list):
+
+        for r, i in enumerate(loop.loop(self.info.program_list)):
+
             #reconfig
             try:
                 self.info.dict_program_list[f"{i}_cb"].grid(row=r+1)
                 self.info.dict_program_list[f"{i}_label"].grid(row=r+1)
                 self.info.dict_program_list[f"{i}_date"].grid(row=r+1)
             except: #seandainya kesalahannya berasal dari tindakan pengguna yang rename file .slbr secara manual
-                self.info.baca(i)
-                self.info.dict_program_list[f"{i}_cb"].grid(row=r+1)
-                self.info.dict_program_list[f"{i}_label"].grid(row=r+1)
-                self.info.dict_program_list[f"{i}_date"].grid(row=r+1)
+                try:
+                    self.info.baca(i)
+                    self.info.dict_program_list[f"{i}_cb"].grid(row=r+1)
+                    self.info.dict_program_list[f"{i}_label"].grid(row=r+1)
+                    self.info.dict_program_list[f"{i}_date"].grid(row=r+1)
+                except:
+                    self.info.excluded_program_list.append(i)
+                    self.info.program_list.remove(i)
 
     def destroy(self, name: str):
         del self.info.dict_program_list[f"{name}_var"], self.info.dict_program_list[f"{name}_centang"]
@@ -139,18 +144,30 @@ class refresh:
 
         elif self.daftar_pembaruan != daftar_pembaruan_2:
             if len(daftar_pembaruan_2) > len(self.daftar_pembaruan): #tambah
-                jumlah = set(daftar_pembaruan_2) - set(self.daftar_pembaruan)
-                for i in jumlah:
-                    self.info.baca(i[:-5], tambahkan=True)
+                program = set(daftar_pembaruan_2) - set(self.daftar_pembaruan)
+                for i in program:
+                    try:
+                        self.info.baca(i[:-5], tambahkan=True)
+                    except Exception as error:
+                        showerror(
+                            title="Error - (perbarui - elif 2)",
+                            message=f"{i}: {error}"
+                        )
+                        self.info.excluded_program_list.append(i[:-5])
+                        try:
+                            self.info.program_list.remove(i[:-5]) #If there are
+                        except:
+                            pass
 
                 self.reconfig()
             else: #kurang
-                jumlah = set(self.daftar_pembaruan) - set(daftar_pembaruan_2)
+                program = set(self.daftar_pembaruan) - set(daftar_pembaruan_2)
 
-                for i in jumlah:
-                    self.info.dict_program_list[f"{i[:-5]}_cb"].deselect() #pastikan untuk membatalkan centangnya
-                    self.info.dict_program_list[f"{i[:-5]}_centang"]() #pastikan fungsinya berjalan tanpa checkbutton
-                    self.destroy(i[:-5])
+                for i in program:
+                    if i[:-5] not in self.info.excluded_program_list:
+                        self.info.dict_program_list[f"{i[:-5]}_cb"].deselect() #pastikan untuk membatalkan centangnya
+                        self.info.dict_program_list[f"{i[:-5]}_centang"]() #pastikan fungsinya berjalan tanpa checkbutton
+                        self.destroy(i[:-5])
 
                 self.reconfig()
         

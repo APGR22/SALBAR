@@ -11,6 +11,7 @@ internal modules:
 	time
 	datetime
 	io
+	copy
 
 external modules:
 	pillow

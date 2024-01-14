@@ -18,6 +18,7 @@ from command import copycut
 from command import _c
 from command._for_command import *
 import info
+import loop
 
 def command(command_info: progress.progress_bar,
             info: info._info,
@@ -94,11 +95,10 @@ def command(command_info: progress.progress_bar,
         list_s.extend(ls)
         list_d.extend(ld)
 
-        hs = 0
         count_s = 0
 
-        while hs <= len(ls)-1: #it will update itself if there are any changes
-            s = ls[hs]
+        for s in loop.loop_variable.loop(ls):
+            s: str
             count_s += 1
 
             if not thread["active"] or cancel:
@@ -113,7 +113,7 @@ def command(command_info: progress.progress_bar,
 
             if s in list_error_name:
                 if s in ls: #re-check
-                    ls = filter_list(ls, s)
+                    loop.loop_variable.list = ls = filter_list(ls, s)
                 continue
 
             if os.path.isfile(s):
@@ -124,7 +124,7 @@ def command(command_info: progress.progress_bar,
                 list_error.append(f"{n}: No source file or folder found: '{s}'")
                 list_error_name.append(s)
                 count_s += ls.count(s) - 1 #total count - one of them
-                ls = filter_list(ls, s)
+                loop.loop_variable.list = ls = filter_list(ls, s)
                 continue
 
             for count_d, d in enumerate(ld):
@@ -165,8 +165,6 @@ def command(command_info: progress.progress_bar,
                     list_error.append(result)
                 else:
                     success = True
-
-            hs += 1
 
     command_info.destroy()
 

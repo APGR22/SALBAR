@@ -15,6 +15,7 @@
 from tkinter.messagebox import *
 from file_handler import extension
 import info
+import loop
 
 SORTED_NAME = "A-Z"
 SORTED_NAME_REVERSED = "Z-A"
@@ -33,20 +34,13 @@ class sort:
         self.info = info
 
     def _get_program(self):
-        h = 0
-
-        #Items in the list may decrease while it is being iterated resulting in changes to the index.
-        #This is better handled with a while loop rather than a for loop
-        while h < len(self.info.program_list):
-            program = self.info.program_list[h]
+        for program in loop.loop(self.info.program_list):
             if program.endswith(".slbr"):
                 name = program[:-5]
                 if name in self.info.excluded_program_list:
                     self.info.program_list.remove(program)
                 else:
                     yield name
-
-                    h += 1
 
     def _reversed_dict(self, input: dict[str, str]) -> dict[str, str]:
         return dict(reversed(input.items()))

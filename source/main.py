@@ -54,6 +54,7 @@ from file_handler import sorter
 import datetime
 import threading
 import info
+import loop
 
 config = configurator.config("user.yaml")
 
@@ -94,6 +95,8 @@ info.info.nama_edit_timpa = nama_edit_timpa
 kanvas, bingkai = gui.bingkai(jendela_utama)
 
 gui.tombol(info.info)
+
+program_list: list[str]
 
 dict_program_list = {}
 program_list = [] #daftar program yang untuk dijalankan
@@ -154,7 +157,8 @@ def start():
     else:
         total = 100 #must not zero
     refresh_class.refresh_program_list() #start
-    for r, i in enumerate(program_list):
+
+    for r, i in enumerate(loop.loop(program_list)):
         persent = r / total * 100
         progress_window.set(persent)
         try:
@@ -163,6 +167,9 @@ def start():
             nama_kesalahan.append(i)
             kesalahan.append(error)
             excluded_program_list.append(i)
+            program_list.remove(i)
+
+
     if nama_kesalahan:
         for i, j in zip(nama_kesalahan, kesalahan):
             showerror(
@@ -171,6 +178,8 @@ def start():
             )
     progress_window.destroy()
     kanvas.focus_set()
+
+    refresh_class.perbarui()
 
     globals()["done"] = True
 
@@ -190,14 +199,17 @@ def _check_successful():
         cache_list = os.listdir("Paths")
 
         #remove non-slbr or excluded program
-        for f in cache_list:
-            f = f
+        for f in loop.loop(cache_list):
             f_f = os.path.join("Paths", f)
+
             if os.path.isfile(f_f):
                 if not f.endswith(".slbr"):
                     cache_list.remove(f)
-                elif f[:-5] in excluded_program_list:
+                    continue
+
+                if f[:-5] in excluded_program_list:
                     cache_list.remove(f)
+                    continue
             else:
                 cache_list.remove(f)
 
