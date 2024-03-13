@@ -1,4 +1,5 @@
 # Notes:
+-This repository is temporarily closed until the author continues.\
 -All this text is translated by Google Translate.\
 -This project still requires further development.\
 -Because the computer I have is old, multiplatform development is hampered.
